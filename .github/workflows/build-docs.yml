@@ -1,0 +1,39 @@
+name: Build docs
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install mdBook
+        run: cargo install mdbook
+
+      - name: Build book
+        run: |
+          shopt -s extglob
+          cd docs/
+          rm -rf !(src|book.toml)
+          mdbook build
+          cp -r book/* .
+          cd ..
+
+      - name: Commit and push docs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git commit -m "Update docs from mdBook build" || echo "No changes to commit"
+          git push

@@ -1,0 +1,40 @@
+[package]
+name = "makara"
+version = "0.1.0"
+edition = "2024"
+description = "A Bevy UI simplifier that make it easy to build GUI app with bevy engine."
+keywords = ["GUI", "Rust", "Bevy Engine", "ECS"]
+
+[dependencies.bevy]
+version = "0.17.3"
+default-features = false
+features = [
+    "debug",
+    "bevy_winit",
+    "bevy_render",
+    "bevy_ui",
+    "bevy_input_focus",
+    "bevy_text",
+    "bevy_image",
+    "bevy_window",
+    "bevy_ui_picking_backend",
+    "default_font",
+    "bevy_asset",
+    "experimental_bevy_ui_widgets",
+    "bevy_ui_render",
+    "png",
+    "jpeg",
+    "webp",
+    "https"
+]
+
+[dependencies]
+open = "5.3.3"
+cosmic-text = "0.15.0"
+smol_str = "0.2.2"
+arboard = "3.6.1"
+mdbook = "0.5.2"
+
+[lib]
+name = "makara"
+path = "src/lib.rs"
