@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2024"
 description = "A Bevy UI simplifier that make it easy to build GUI app with bevy engine."
 keywords = ["GUI", "Rust", "Bevy Engine", "ECS"]
+homepage = "https://github.com/MuongKimhong/makara"
+repository = "https://github.com/MuongKimhong/makara"
+license = "MIT"
+license-file = "LICENSE.txt"
 
 [dependencies.bevy]
 version = "0.17.3"
