@@ -1,6 +1,6 @@
-![Static Badge](https://img.shields.io/badge/Version-0.1.0-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.1.1-blue)
 ![Static Badge](https://img.shields.io/badge/OS-Mac%20Linux%20Window-orange)
-[![static Badge](https://img.shields.io/badge/crate.io-0.1.0-green)](https://crates.io/crates/makara)
+[![static Badge](https://img.shields.io/badge/crate.io-0.1.1-green)](https://crates.io/crates/makara)
 
 > [!WARNING]
 > **Makara is new**, many useful features are still missing.
