@@ -2,8 +2,31 @@
 ![Static Badge](https://img.shields.io/badge/OS-Mac%20Linux%20Window-orange)
 [![static Badge](https://img.shields.io/badge/crate.io-0.1.3-green)](https://crates.io/crates/makara)
 
-> [!WARNING]
-> **Makara is new**, many useful features are still missing.
+<p align="center">
+  <img width="200" src="assets/logo.png">
+</p>
+
+## Getting start
+```rust
+fn on_button_click(click: On<Clicked>, mut text_q: TextQuery) {
+   if let Some(text) = text_q.find_by_id("my-text") {
+       text.text.value.0 = "Hello mars!".to_string();
+   }
+}
+
+fn setup(mut commands: Commands) {
+    commands.spawn((
+       root().build(),
+       children![
+           text("Hello earth").id("my-text").build(),
+           (
+               button("Press me").build(),
+               observe(on_button_click)
+           )
+       ]
+   ));
+}
+```
 
 ## Features
 - Built-in widgets including button, modal, text input and more.
@@ -14,6 +37,11 @@
 Get latest version of `Makara`
 ```
 cargo add makara
+```
+
+## Run examples
+```
+cargo run --examples <example_name>
 ```
 
 ## Documentation
@@ -28,3 +56,7 @@ Currently, it supports only bevy 0.17.x onward.
 
 ## License
 Makara is released under the [MIT License](https://opensource.org/licenses/MIT).
+
+
+> [!WARNING]
+> **Makara is new**, many useful features are still missing.
