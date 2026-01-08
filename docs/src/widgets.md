@@ -6,11 +6,17 @@ to **Makara** in upcoming new versions.
 ```rust
 root().build()
 ```
+For more detail, see [RootBundle](https://docs.rs/makara/latest/makara/widgets/root/struct.RootBundle.html), 
+[RootQuery](https://docs.rs/makara/latest/makara/widgets/root/struct.RootQuery.html), 
+[RootWidget](https://docs.rs/makara/latest/makara/widgets/root/struct.RootWidget.html).
 
 ### Text
-```rust
+```rus
 text("Hi Mom!").build()
 ```
+For more detail, see [TextBundle](https://docs.rs/makara/latest/makara/widgets/text/struct.TextBundle.html), 
+[TextQuery](https://docs.rs/makara/latest/makara/widgets/text/struct.TextQuery.html), 
+[TextWidget](https://docs.rs/makara/latest/makara/widgets/text/struct.TextWidget.html).
 
 ### Button 
 ```rust
@@ -30,6 +36,9 @@ With event listeners
     observe(|built: On<WidgetBuilt>| {}),
 )
 ```
+For more detail, see [ButtonBundle](https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonBundle.html), 
+[ButtonQuery](https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonQuery.html), 
+[ButtonWidget](https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonWidget.html).
 
 ### Checkbox
 ```rust
@@ -53,6 +62,9 @@ With event listeners
     observe(|built: On<WidgetBuilt>| {}),
 )
 ```
+For more detail, see [CheckboxBundle](https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxBundle.html), 
+[CheckboxQuery](https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxQuery.html), 
+[CheckboxWidget](https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxWidget.html).
 
 ### Circular
 ```rust
@@ -72,6 +84,9 @@ With event listeners
     observe(|built: On<WidgetBuilt>| {}),
 )
 ```
+For more detail, see [CircularBundle](https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularBundle.html), 
+[CircularQuery](https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularQuery.html), 
+[CircularWidget](https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularWidget.html).
 
 ### Progress Bar
 ```rust
@@ -91,6 +106,9 @@ With event listeners
     observe(|built: On<WidgetBuilt>| {}),
 )
 ```
+For more detail, see [ProgressBarBundle](https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarBundle.html), 
+[ProgressBarQuery](https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarQuery.html), 
+[ProgressBarWidget](https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarWidget.html).
 
 ### Column
 ```rust
@@ -104,6 +122,9 @@ With event listener
     observe(|built: On<WidgetBuilt>| {}),
 )
 ```
+For more detail, see [ColumnBundle](https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnBundle.html), 
+[ColumnQuery](https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnQuery.html), 
+[ColumnWidget](https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnWidget.html).
 
 ### Row
 ```rust
@@ -117,6 +138,9 @@ With event listener
     observe(|built: On<WidgetBuilt>| {}),
 )
 ```
+For more detail, see [RowBundle](https://docs.rs/makara/latest/makara/widgets/row/struct.RowBundle.html), 
+[RowQuery](https://docs.rs/makara/latest/makara/widgets/row/struct.RowQuery.html), 
+[RowWidget](https://docs.rs/makara/latest/makara/widgets/row/struct.RowWidget.html).
 
 ### Link 
 ```rust
@@ -136,6 +160,9 @@ With event listeners
     observe(|built: On<WidgetBuilt>| {}),
 )
 ```
+For more detail, see [LinkBundle](https://docs.rs/makara/latest/makara/widgets/link/struct.LinkBundle.html), 
+[LinkQuery](https://docs.rs/makara/latest/makara/widgets/link/struct.LinkQuery.html), 
+[LinkWidget](https://docs.rs/makara/latest/makara/widgets/link/struct.LinkWidget.html).
 
 ### Dropdown 
 ```rust
@@ -167,6 +194,9 @@ With event listeners
     observe(|built: On<WidgetBuilt>| {})
 )
 ```
+For more detail, see [DropdownBundle](https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownBundle.html), 
+[DropdownQuery](https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownQuery.html), 
+[DropdownWidget](https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownWidget.html).
 
 ### Image 
 ```rust
@@ -187,6 +217,9 @@ With event listeners
     observe(|built: On<WidgetBuilt>| {})
 )
 ```
+For more detail, see [ImageBundle](https://docs.rs/makara/latest/makara/widgets/image/struct.ImageBundle.html), 
+[ImageQuery](https://docs.rs/makara/latest/makara/widgets/image/struct.ImageQuery.html), 
+[ImageWidget](https://docs.rs/makara/latest/makara/widgets/image/struct.ImageWidget.html).
 
 ### Modal
 Modal is independent and doesn't need to be part of `root` widget.
@@ -226,6 +259,9 @@ With event listeners
     observe(|built: On<WidgetBuilt>| {})
 )
 ```
+For more detail, see [ModalBundle](https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalBundle.html), 
+[ModalQuery](https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalQuery.html), 
+[ModalWidget](https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalWidget.html).
 
 ### Radio Group & Radio
 `radio_group` needs `radio` as its item.
@@ -263,6 +299,12 @@ With event listeners
     observe(|built: On<WidgetBuilt>| {}),
 )
 ```
+For more detail, see [RadioGroupBundle](https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupBundle.html), 
+[RadioGroupQuery](https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupQuery.html), 
+[RadioGroupWidget](https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupWidget.html),
+[RadioBundle](https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioBundle.html), 
+[RadioQuery](https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioQuery.html), 
+[RadioWidget](https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioWidget.html).
 
 ### Scroll
 ```rust
@@ -288,6 +330,9 @@ With event listener
     observe(|scrolling: On<Scrolling>| {})
 )
 ```
+For more detail, see [ScrollBundle](https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollBundle.html), 
+[ScrollQuery](https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollQuery.html), 
+[ScrollWidget](https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollWidget.html).
 
 ### Select 
 ```rust
@@ -313,7 +358,9 @@ With event listeners
     observe(|change: On<Change<String>>| {}),
 )
 ```
-
+For more detail, see [SelectBundle](https://docs.rs/makara/latest/makara/widgets/select/struct.SelectBundle.html), 
+[SelectQuery](https://docs.rs/makara/latest/makara/widgets/select/struct.SelectQuery.html), 
+[SelectWidget](https://docs.rs/makara/latest/makara/widgets/select/struct.SelectWidget.html).
 
 ### Slider 
 ```rust
@@ -337,6 +384,9 @@ With event listeners
     observe(|change: On<Change<f32>>| {}),
 )
 ```
+For more detail, see [SliderBundle](https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderBundle.html), 
+[SliderQuery](https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderQuery.html), 
+[SliderWidget](https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderWidget.html).
 
 ### Text Input
 ```rust
@@ -358,3 +408,6 @@ With event listeners
     observe(|change: On<Change<String>>| {}),
 )
 ```
+For more detail, see [TextInputBundle](https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputBundle.html), 
+[TextInputQuery](https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputQuery.html), 
+[TextInputWidget](https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputWidget.html).

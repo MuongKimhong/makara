@@ -35,6 +35,62 @@ fn setup(mut commands: Commands) {
 }
 ```
 
+### An overview of ECS
+
+Because this library is powered by a game engine which is based on ECS architecture, it's a must to understand how ECS works.
+
+ECS stands for **Entity-Component-System**.
+
+- **Entity**: entities are objects you see when you run your application. A button widget is an entity, 
+a text widget is an entity, the list goes on. Each entity consists of one or multiple **components**.
+
+- **Component**: think of component as a tag. It's used to identify different kind of data. In the context 
+of **Makara** or **Bevy**, component is just a rust struct or enum. 
+  
+  For example, you create a button with background color of red and border color of blue in **Makara**.
+
+  ```rust
+  // create button with background color of red and border color of blue
+  button("Click me")
+    .background_color(Color::RED)
+    .border_color(COLOR::BLUE)
+    .build();
+  ```
+
+  Under the hood, the button is just an entity that contains these 
+  2 components, [`BackgroundColor`](https://docs.rs/bevy/latest/bevy/prelude/struct.BackgroundColor.html) 
+  and [`BorderColor`](https://docs.rs/bevy/latest/bevy/prelude/struct.BorderColor.html) which looks 
+  something like this.
+
+  ```rust
+  (
+      BackgroundColor(Color::RED),
+      BorderColor(Color::BLUE),
+      // other components
+  )
+  ```
+
+  It's then up to the **Bevy** engine to translate it to shading language and render it on your GPU.
+
+- **System**: systems are just rust functions that take specific arguments and run at specific schedule. `Startup` schedule means the
+functions run only 1 time at the beginning. `Update` schedule means the functions run every single frame. And 
+of course, there are more schedules than just that.
+
+  ```rust
+  fn main() {
+    App::new()
+        .add_plugins(MakaraPlugin::default())
+        .add_systems(Startup, setup)
+        .run();
+  }
+  
+  fn setup(mut commands: Commands) {
+      // do something
+  }
+  ```
+  Here, `setup` function is a system that take a special argument, in this case `Commands`. It's being registered
+  to run at `Startup` schedule which means it only do something once and that's it.
+
 ### Understand Makara hierarchy
 
 Just like any other UI frameworks, you need a starting point for your application. 
