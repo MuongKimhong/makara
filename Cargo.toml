@@ -9,40 +9,22 @@ repository = "https://github.com/MuongKimhong/makara"
 license = "MIT"
 license-file = "LICENSE.txt"
 
-[dependencies.bevy]
-version = "0.17.3"
-default-features = false
-features = [
-    "debug",
-    "bevy_winit",
-    "bevy_render",
-    "bevy_ui",
-    "bevy_input_focus",
-    "bevy_text",
-    "bevy_image",
-    "bevy_window",
-    "bevy_ui_picking_backend",
-    "default_font",
-    "bevy_asset",
-    "experimental_bevy_ui_widgets",
-    "bevy_ui_render",
-    "png",
-    "jpeg",
-    "webp",
-    "https"
-]
-
 [dependencies]
 open = "5.3.3"
 cosmic-text = "0.15.0"
 smol_str = "0.2.2"
 arboard = "3.6.1"
 mdbook = "0.5.2"
+bevy = { version="0.17.3", features=[
+    "debug",
+    "default_font",
+    "png",
+    "jpeg",
+    "webp",
+    "https",
+    "experimental_bevy_ui_widgets"
+]}
 
 [lib]
 name = "makara"
 path = "src/lib.rs"
-
-[package.metadata.docs.rs]
-default-target = "x86_64-pc-windows-gnu"
-targets = ["x86_64-pc-windows-gnu", "x86_64-pc-windows-msvc"]
