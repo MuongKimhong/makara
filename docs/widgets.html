@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-afe08fd4.js";
+            window.path_to_searchindex_js = "searchindex-fdf08881.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5cefba3.js"></script>
@@ -182,11 +182,15 @@ to <strong>Makara</strong> in upcoming new versions.</p>
 </span><span class="boring">fn main() {
 </span>root().build()
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootBundle.html">RootBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootQuery.html">RootQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootWidget.html">RootWidget</a>.</p>
 <h3 id="text"><a class="header" href="#text">Text</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>text("Hi Mom!").build()
-<span class="boring">}</span></code></pre>
+<pre><code class="language-rus">text("Hi Mom!").build()
+</code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextBundle.html">TextBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextQuery.html">TextQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextWidget.html">TextWidget</a>.</p>
 <h3 id="button"><a class="header" href="#button">Button</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -207,6 +211,9 @@ to <strong>Makara</strong> in upcoming new versions.</p>
     observe(|built: On&lt;WidgetBuilt&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonBundle.html">ButtonBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonQuery.html">ButtonQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonWidget.html">ButtonWidget</a>.</p>
 <h3 id="checkbox"><a class="header" href="#checkbox">Checkbox</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -231,6 +238,9 @@ to <strong>Makara</strong> in upcoming new versions.</p>
     observe(|built: On&lt;WidgetBuilt&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxBundle.html">CheckboxBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxQuery.html">CheckboxQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxWidget.html">CheckboxWidget</a>.</p>
 <h3 id="circular"><a class="header" href="#circular">Circular</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -251,6 +261,9 @@ to <strong>Makara</strong> in upcoming new versions.</p>
     observe(|built: On&lt;WidgetBuilt&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularBundle.html">CircularBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularQuery.html">CircularQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularWidget.html">CircularWidget</a>.</p>
 <h3 id="progress-bar"><a class="header" href="#progress-bar">Progress Bar</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -271,6 +284,9 @@ to <strong>Makara</strong> in upcoming new versions.</p>
     observe(|built: On&lt;WidgetBuilt&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarBundle.html">ProgressBarBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarQuery.html">ProgressBarQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarWidget.html">ProgressBarWidget</a>.</p>
 <h3 id="column"><a class="header" href="#column">Column</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -285,6 +301,9 @@ to <strong>Makara</strong> in upcoming new versions.</p>
     observe(|built: On&lt;WidgetBuilt&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnBundle.html">ColumnBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnQuery.html">ColumnQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnWidget.html">ColumnWidget</a>.</p>
 <h3 id="row"><a class="header" href="#row">Row</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -299,6 +318,9 @@ to <strong>Makara</strong> in upcoming new versions.</p>
     observe(|built: On&lt;WidgetBuilt&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowBundle.html">RowBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowQuery.html">RowQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowWidget.html">RowWidget</a>.</p>
 <h3 id="link"><a class="header" href="#link">Link</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -319,6 +341,9 @@ to <strong>Makara</strong> in upcoming new versions.</p>
     observe(|built: On&lt;WidgetBuilt&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkBundle.html">LinkBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkQuery.html">LinkQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkWidget.html">LinkWidget</a>.</p>
 <h3 id="dropdown"><a class="header" href="#dropdown">Dropdown</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -351,6 +376,9 @@ to <strong>Makara</strong> in upcoming new versions.</p>
     observe(|built: On&lt;WidgetBuilt&gt;| {})
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownBundle.html">DropdownBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownQuery.html">DropdownQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownWidget.html">DropdownWidget</a>.</p>
 <h3 id="image"><a class="header" href="#image">Image</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -372,6 +400,9 @@ image("path/to/image.png").build()
     observe(|built: On&lt;WidgetBuilt&gt;| {})
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageBundle.html">ImageBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageQuery.html">ImageQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageWidget.html">ImageWidget</a>.</p>
 <h3 id="modal"><a class="header" href="#modal">Modal</a></h3>
 <p>Modal is independent and doesn’t need to be part of <code>root</code> widget.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -412,6 +443,9 @@ image("path/to/image.png").build()
     observe(|built: On&lt;WidgetBuilt&gt;| {})
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalBundle.html">ModalBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalQuery.html">ModalQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalWidget.html">ModalWidget</a>.</p>
 <h3 id="radio-group--radio"><a class="header" href="#radio-group--radio">Radio Group &amp; Radio</a></h3>
 <p><code>radio_group</code> needs <code>radio</code> as its item.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -450,6 +484,12 @@ image("path/to/image.png").build()
     observe(|built: On&lt;WidgetBuilt&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupBundle.html">RadioGroupBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupQuery.html">RadioGroupQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupWidget.html">RadioGroupWidget</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioBundle.html">RadioBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioQuery.html">RadioQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioWidget.html">RadioWidget</a>.</p>
 <h3 id="scroll"><a class="header" href="#scroll">Scroll</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -476,6 +516,9 @@ image("path/to/image.png").build()
     observe(|scrolling: On&lt;Scrolling&gt;| {})
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollBundle.html">ScrollBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollQuery.html">ScrollQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollWidget.html">ScrollWidget</a>.</p>
 <h3 id="select"><a class="header" href="#select">Select</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -502,6 +545,9 @@ image("path/to/image.png").build()
     observe(|change: On&lt;Change&lt;String&gt;&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectBundle.html">SelectBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectQuery.html">SelectQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectWidget.html">SelectWidget</a>.</p>
 <h3 id="slider"><a class="header" href="#slider">Slider</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -526,6 +572,9 @@ slider(0.0, 100.0).build()
     observe(|change: On&lt;Change&lt;f32&gt;&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderBundle.html">SliderBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderQuery.html">SliderQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderWidget.html">SliderWidget</a>.</p>
 <h3 id="text-input"><a class="header" href="#text-input">Text Input</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -548,6 +597,9 @@ slider(0.0, 100.0).build()
     observe(|change: On&lt;Change&lt;String&gt;&gt;| {}),
 )
 <span class="boring">}</span></code></pre>
+<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputBundle.html">TextInputBundle</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputQuery.html">TextInputQuery</a>,
+<a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputWidget.html">TextInputWidget</a>.</p>
 
                     </main>
 

@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-afe08fd4.js";
+            window.path_to_searchindex_js = "searchindex-fdf08881.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5cefba3.js"></script>
@@ -205,6 +205,58 @@ fn setup(mut commands: Commands) {
         ]
     ));
 }</code></pre>
+<h3 id="an-overview-of-ecs"><a class="header" href="#an-overview-of-ecs">An overview of ECS</a></h3>
+<p>Because this library is powered by a game engine which is based on ECS architecture, it’s a must to understand how ECS works.</p>
+<p>ECS stands for <strong>Entity-Component-System</strong>.</p>
+<ul>
+<li>
+<p><strong>Entity</strong>: entities are objects you see when you run your application. A button widget is an entity,
+a text widget is an entity, the list goes on. Each entity consists of one or multiple <strong>components</strong>.</p>
+</li>
+<li>
+<p><strong>Component</strong>: think of component as a tag. It’s used to identify different kind of data. In the context
+of <strong>Makara</strong> or <strong>Bevy</strong>, component is just a rust struct or enum.</p>
+<p>For example, you create a button with background color of red and border color of blue in <strong>Makara</strong>.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// create button with background color of red and border color of blue
+button("Click me")
+  .background_color(Color::RED)
+  .border_color(COLOR::BLUE)
+  .build();
+<span class="boring">}</span></code></pre>
+<p>Under the hood, the button is just an entity that contains these
+2 components, <a href="https://docs.rs/bevy/latest/bevy/prelude/struct.BackgroundColor.html"><code>BackgroundColor</code></a>
+and <a href="https://docs.rs/bevy/latest/bevy/prelude/struct.BorderColor.html"><code>BorderColor</code></a> which looks
+something like this.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>(
+    BackgroundColor(Color::RED),
+    BorderColor(Color::BLUE),
+    // other components
+)
+<span class="boring">}</span></code></pre>
+<p>It’s then up to the <strong>Bevy</strong> engine to translate it to shading language and render it on your GPU.</p>
+</li>
+<li>
+<p><strong>System</strong>: systems are just rust functions that take specific arguments and run at specific schedule. <code>Startup</code> schedule means the
+functions run only 1 time at the beginning. <code>Update</code> schedule means the functions run every single frame. And
+of course, there are more schedules than just that.</p>
+<pre class="playground"><code class="language-rust">fn main() {
+  App::new()
+      .add_plugins(MakaraPlugin::default())
+      .add_systems(Startup, setup)
+      .run();
+}
+
+fn setup(mut commands: Commands) {
+    // do something
+}</code></pre>
+<p>Here, <code>setup</code> function is a system that take a special argument, in this case <code>Commands</code>. It’s being registered
+to run at <code>Startup</code> schedule which means it only do something once and that’s it.</p>
+</li>
+</ul>
 <h3 id="understand-makara-hierarchy"><a class="header" href="#understand-makara-hierarchy">Understand Makara hierarchy</a></h3>
 <p>Just like any other UI frameworks, you need a starting point for your application.
 In <strong>Makara</strong>, you start by spawning a single <strong>root</strong> widget and add other widgets
