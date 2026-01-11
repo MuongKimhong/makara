@@ -326,6 +326,7 @@ impl Widget for SelectBundle {
                 (self.overlay_style, MakaraSelectOverlay, GlobalZIndex(9)),
                 (
                     Node {
+                        width: percent(100.0),
                         overflow: Overflow::clip_x(),
                         ..default()
                     },
@@ -525,11 +526,8 @@ pub(crate) fn detect_select_items_added_and_overlay_resized(
                 if !items_added.overlay_resized {
                     if overlay_computed.size.x < select_computed.size.x {
                         node.width = px(select_computed.size.x);
+                        items_added.overlay_resized = true;
                     }
-                    else {
-                        node.width = auto();
-                    }
-                    items_added.overlay_resized = true;
                 }
             }
         }
