@@ -210,7 +210,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for ModalQuery<'w, 's> {
 
     fn find_by_class(&self, target_class: &str) -> Vec<Entity> {
         self.modal_related.iter()
-            .filter(|(_, _, _, class, _, _)| class.0 == target_class)
+            .filter(|(_, _, _, class, _, _)| class.0.split(" ").any(|word| word == target_class))
             .map(|(e, _, _, _, _, _)| e)
             .collect()
     }
