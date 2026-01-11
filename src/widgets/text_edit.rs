@@ -351,21 +351,39 @@ pub(crate) fn is_ctrl_a_pressed(
     keys: &Res<ButtonInput<KeyCode>>,
     keycode: KeyCode
 ) -> bool {
-    keys.pressed(KeyCode::ControlLeft) && matches!(keycode, KeyCode::KeyA)
+    #[cfg(target_os = "macos")]
+    let modifier = keys.any_pressed([KeyCode::SuperLeft, KeyCode::SuperRight]);
+
+    #[cfg(not(target_os = "macos"))]
+    let modifier = keys.any_pressed([KeyCode::ControlLeft, KeyCode::ControlRight]);
+
+    modifier && matches!(keycode, KeyCode::KeyA)
 }
 
 pub(crate) fn is_ctrl_c_pressed(
     keys: &Res<ButtonInput<KeyCode>>,
     keycode: KeyCode
 ) -> bool {
-    keys.pressed(KeyCode::ControlLeft) && matches!(keycode, KeyCode::KeyC)
+    #[cfg(target_os = "macos")]
+    let modifier = keys.any_pressed([KeyCode::SuperLeft, KeyCode::SuperRight]);
+
+    #[cfg(not(target_os = "macos"))]
+    let modifier = keys.any_pressed([KeyCode::ControlLeft, KeyCode::ControlRight]);
+
+    modifier && matches!(keycode, KeyCode::KeyC)
 }
 
 pub(crate) fn is_ctrl_v_pressed(
     keys: &Res<ButtonInput<KeyCode>>,
     keycode: KeyCode
 ) -> bool {
-    keys.pressed(KeyCode::ControlLeft) && matches!(keycode, KeyCode::KeyV)
+    #[cfg(target_os = "macos")]
+    let modifier = keys.any_pressed([KeyCode::SuperLeft, KeyCode::SuperRight]);
+
+    #[cfg(not(target_os = "macos"))]
+    let modifier = keys.any_pressed([KeyCode::ControlLeft, KeyCode::ControlRight]);
+
+    modifier && matches!(keycode, KeyCode::KeyV)
 }
 
 pub(crate) fn blend_glyph_pixel(
