@@ -568,9 +568,15 @@ fn on_select_choice_click(
                 }
             }
 
+            let choice_to_emit = if choice.0 == "-/-" {
+                "".to_string()
+            } else {
+                choice.0.clone()
+            };
+
             commands.trigger(Change {
                 entity: select_entity.0,
-                data: choice.0.clone()
+                data: choice_to_emit
             });
         }
     }
