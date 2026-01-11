@@ -467,7 +467,7 @@ pub(crate) fn detect_select_placeholder_added(
 ) {
     for (pl_entity, mut node, mut resized, computed, children, parent) in placeholder.iter_mut() {
         if !resized.0 && computed.size.x > 0.0 {
-            node.width = px(computed.size.x);
+            node.width = px(computed.size.x * computed.inverse_scale_factor());
             node.overflow = Overflow::hidden_x();
             resized.0 = true;
 
@@ -525,7 +525,7 @@ pub(crate) fn detect_select_items_added_and_overlay_resized(
 
                 if !items_added.overlay_resized {
                     if overlay_computed.size.x < select_computed.size.x {
-                        node.width = px(select_computed.size.x);
+                        node.width = px(select_computed.size.x * select_computed.inverse_scale_factor());
                         items_added.overlay_resized = true;
                     }
                 }
@@ -560,7 +560,7 @@ fn on_select_choice_click(
                         } else {
                             text.0 = format!("{}", choice.0);
                         }
-                        node.width = px(select_computed.size.x);
+                        node.width = px(select_computed.size.x * select_computed.inverse_scale_factor());
                         break;
                     }
                 }
@@ -620,7 +620,7 @@ fn on_select_value_set(
                             } else {
                                 text.0 = format!("{}", choice.0);
                             }
-                            node.width = px(select_computed.size.x);
+                            node.width = px(select_computed.size.x * select_computed.inverse_scale_factor());
 
                             commands.trigger(Change {
                                 entity: value_set.entity,

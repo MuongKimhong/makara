@@ -420,7 +420,7 @@ pub(crate) fn detect_dropdown_overlay_added(
     for (mut node, parent, overlay_computed_node) in overlay_q.iter_mut() {
         if let Ok(dropdown_computed) = dropdown_q.get(parent.0) {
             if overlay_computed_node.size.x < dropdown_computed.size.x {
-                node.width = px(dropdown_computed.size.x);
+                node.width = px(dropdown_computed.size.x * dropdown_computed.inverse_scale_factor);
             }
         }
     }

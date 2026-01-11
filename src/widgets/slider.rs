@@ -325,11 +325,11 @@ fn on_slider_thumb_mouse_drag(
             // 2. Find where the Slider Track starts in "World Space"
             // Bevy's GlobalTransform.translation is the CENTER of the node
             let slider_center_x = slider_transform.translation.x;
-            let slider_width = slider_computed.size.x;
+            let slider_width = slider_computed.size.x * slider_computed.inverse_scale_factor();
             let slider_left_edge = slider_center_x - (slider_width / 2.0);
 
             // 3. Calculate thumb position relative to track start
-            let thumb_width = thumb_computed.size.x;
+            let thumb_width = thumb_computed.size.x * thumb_computed.inverse_scale_factor();
             let max_left = slider_width - thumb_width;
 
             // We subtract half the thumb width so the mouse stays in the center of the thumb
@@ -366,11 +366,11 @@ fn on_slider_value_set(
 
         data.value = value_set.value;
 
-        let parent_width = slider_computed.size.x;
+        let parent_width = slider_computed.size.x * slider_computed.inverse_scale_factor();
 
         for child in children {
             if let Ok((mut node, thumb_computed)) = thumbs.get_mut(*child) {
-                let thumb_width = thumb_computed.size.x;
+                let thumb_width = thumb_computed.size.x * thumb_computed.inverse_scale_factor();
                 let max_left = parent_width - thumb_width;
 
                 // Convert value to percent
@@ -422,12 +422,13 @@ pub(crate) fn detect_slider_thumb_added(
 
         if let Ok((slider_data, slider_computed)) = sliders.get(parent.0) {
             // adjust top position
-            let height_diff = thumb_computed.size.y - slider_computed.size.y;
+            let height_diff = (thumb_computed.size.y * thumb_computed.inverse_scale_factor()) -
+                              (slider_computed.size.y * slider_computed.inverse_scale_factor());
             node.top = px(-(height_diff / 2.0));
 
             // adjust left position
-            let slider_width = slider_computed.size.x;
-            let thumb_width = thumb_computed.size.x;
+            let slider_width = slider_computed.size.x * slider_computed.inverse_scale_factor();
+            let thumb_width = thumb_computed.size.x * thumb_computed.inverse_scale_factor();
             let max_left = slider_width - thumb_width;
 
             // Convert value to percent

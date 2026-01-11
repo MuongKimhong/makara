@@ -385,8 +385,8 @@ fn on_mouse_click(
                 return;
             }
 
-            let min = trans.translation - computed.size() / 2.0;
-            let max = trans.translation + computed.size() / 2.0;
+            let min = trans.translation - (computed.size() * computed.inverse_scale_factor()) / 2.0;
+            let max = trans.translation + (computed.size() * computed.inverse_scale_factor()) / 2.0;
 
             if cursor_pos.x >= min.x && cursor_pos.x <= max.x &&
                cursor_pos.y >= min.y && cursor_pos.y <= max.y
@@ -429,8 +429,8 @@ fn on_mouse_drag(
                 return;
             }
 
-            let min = trans.translation - computed.size() / 2.0;
-            let max = trans.translation + computed.size() / 2.0;
+            let min = trans.translation - (computed.size() * computed.inverse_scale_factor()) / 2.0;
+            let max = trans.translation + (computed.size() * computed.inverse_scale_factor()) / 2.0;
 
             if cursor_pos.x >= min.x && cursor_pos.x <= max.x &&
                cursor_pos.y >= min.y && cursor_pos.y <= max.y
@@ -478,8 +478,8 @@ fn on_mouse_drag_start(
                 return;
             }
 
-            let min = trans.translation - computed.size() / 2.0;
-            let max = trans.translation + computed.size() / 2.0;
+            let min = trans.translation - (computed.size() * computed.inverse_scale_factor()) / 2.0;
+            let max = trans.translation + (computed.size() * computed.inverse_scale_factor()) / 2.0;
 
             if cursor_pos.x >= min.x && cursor_pos.x <= max.x &&
                cursor_pos.y >= min.y && cursor_pos.y <= max.y
