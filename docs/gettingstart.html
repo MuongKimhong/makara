@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-fdf08881.js";
+            window.path_to_searchindex_js = "searchindex-7a6d093f.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5cefba3.js"></script>
@@ -192,8 +192,6 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn(Camera2d); // spawn 2D camera as bevy needs this.
-
     commands.spawn((
         root()
             .align_items(AlignItems::Center)
