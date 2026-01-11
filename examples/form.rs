@@ -81,9 +81,6 @@ fn form_container() -> impl Bundle {
 }
 
 fn setup(mut commands: Commands, user: Res<User>) {
-    // bevy needs this
-    commands.spawn(Camera2d);
-
     // spawning root & text widget.
     commands.spawn((
         root()

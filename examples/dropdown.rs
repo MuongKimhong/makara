@@ -9,9 +9,6 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    // bevy needs this
-    commands.spawn(Camera2d);
-
     commands.spawn((
         root()
             .id("root")

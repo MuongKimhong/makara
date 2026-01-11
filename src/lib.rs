@@ -204,6 +204,10 @@ pub mod prelude {
                 detect_link_built
             );
 
+            app.add_systems(Startup, |mut commands: Commands| {
+                commands.spawn(Camera2d);
+            });
+
             match self.run_schedule {
                 RunSchedule::AtUpdate => { app.add_systems(Update, systems); },
                 RunSchedule::AtPreUpdate => { app.add_systems(PreUpdate, systems); },

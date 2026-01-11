@@ -28,9 +28,6 @@ fn on_minus_click(_click: On<Clicked>, mut count: ResMut<Count>, mut text_q: Tex
 }
 
 fn setup(mut commands: Commands, count: Res<Count>) {
-    // bevy needs this
-    commands.spawn(Camera2d);
-
     commands.spawn((
         root()
             .align_items(AlignItems::Center)

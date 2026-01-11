@@ -9,9 +9,6 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    // bevy needs this
-    commands.spawn(Camera2d);
-
     commands.spawn((
         root()
             .background_color(Color::srgb(1.0, 0.5, 0.5))

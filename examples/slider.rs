@@ -9,9 +9,6 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    // bevy needs this
-    commands.spawn(Camera2d);
-
     // put white text under root, so that it's only visible
     // when root background alpha is low.
     commands.spawn(

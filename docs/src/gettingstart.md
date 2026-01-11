@@ -20,8 +20,6 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn(Camera2d); // spawn 2D camera as bevy needs this.
-
     commands.spawn((
         root()
             .align_items(AlignItems::Center)
