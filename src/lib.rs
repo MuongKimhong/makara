@@ -27,16 +27,18 @@ pub mod widgets;
 pub mod consts;
 pub mod events;
 pub mod utils;
+pub mod styles;
 
 pub mod prelude {
     use bevy::prelude::*;
     use bevy::asset::embedded_asset;
     use bevy::asset::io::web::WebAssetPlugin;
-    use std::collections::{HashSet, HashMap};
+    use std::collections::HashSet;
 
     pub use crate::widgets::*;
     pub use crate::consts::*;
     pub use crate::events::*;
+    pub use crate::styles::*;
     pub use bevy::ui_widgets::observe;
 
     /// Schedule for this plugin to run at.
@@ -54,12 +56,6 @@ pub mod prelude {
     pub struct CustomFont {
         pub font_path: String,
         pub font_handle: Option<Handle<Font>>
-    }
-
-    #[derive(Resource, Default)]
-    pub struct CustomStyle {
-        pub maps: HashMap<String, Style>,
-        pub(crate) changed: bool
     }
 
     /// Plugin for all makara.
@@ -232,7 +228,14 @@ pub mod prelude {
             );
 
             app.add_systems(Startup, setup);
-            app.add_systems(Update, (detect_makara_text_added, check_unique_id));
+            app.add_systems(
+                Update,
+                (
+                    detect_makara_text_added,
+                    check_unique_id,
+                    apply_custom_style_to_button
+                )
+            );
 
             match self.run_schedule {
                 RunSchedule::AtUpdate => { app.add_systems(Update, systems); },
