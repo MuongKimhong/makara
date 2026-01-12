@@ -19,12 +19,16 @@ pub struct MakaraCheckboxState(pub bool);
 #[derive(Component)]
 pub struct MakaraCheckboxButton;
 
+#[derive(Component)]
+pub struct CheckboxButtonActiveColor(pub Color);
+
 /// A struct used to mutate components attached to `checkbox` widget.
 pub struct CheckboxWidget<'a, 'w, 's> {
     pub entity: Entity,
     pub class: &'a mut Class,
     pub style: WidgetStyle<'a>,
     pub button_style: WidgetStyle<'a>,
+    pub button_active_color: &'a mut CheckboxButtonActiveColor,
     pub text: ChildText<'a>,
     pub commands: &'a mut Commands<'w, 's>
 }
@@ -56,6 +60,7 @@ pub struct CheckboxQuery<'w, 's> {
     pub button_style: StyleQuery<'w, 's,
         (With<MakaraCheckboxButton>, Without<MakaraCheckbox>)
     >,
+    pub button_active_color: Query<'w, 's, &'static mut CheckboxButtonActiveColor>,
     pub text: TextQueryAsChild<'w, 's>,
     pub children: Query<'w, 's, &'static Children>,
     pub commands: Commands<'w, 's>
@@ -65,7 +70,9 @@ impl<'w, 's> WidgetQuery<'w, 's> for CheckboxQuery<'w, 's> {
      type WidgetView<'a> = CheckboxWidget<'a, 'w, 's> where Self: 'a;
 
     fn get_components<'a>(&'a mut self, entity: Entity) -> Option<Self::WidgetView<'a>> {
-        let CheckboxQuery { id: _, class, style, button_style, text, children, commands } = self;
+        let CheckboxQuery {
+            id: _, class, style, button_style, button_active_color, text, children, commands
+        } = self;
 
         let mut text_entity = None;
         let mut btn_entity = None;
@@ -91,6 +98,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for CheckboxQuery<'w, 's> {
             // Fetch the children components mutably (only happens once!)
             let t_components = text.query.get_mut(t_ent).ok()?;
             let b_style_components = button_style.query.get_mut(b_ent).ok()?;
+            let active_color = button_active_color.get_mut(b_ent).ok()?;
 
             return Some(CheckboxWidget {
                 entity,
@@ -111,6 +119,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for CheckboxQuery<'w, 's> {
                     shadow: b_style_components.4.into_inner(),
                     z_index: b_style_components.5.into_inner(),
                 },
+                button_active_color: active_color.into_inner(),
                 text: ChildText {
                     value: t_components.0.into_inner(),
                     font: t_components.1.into_inner(),
@@ -150,6 +159,7 @@ pub struct CheckboxBundle {
     pub id_class: IdAndClass,
     pub style: ContainerStyle,
     pub button_style: ContainerStyle,
+    pub button_active_color: CheckboxButtonActiveColor,
     pub text_bundle: TextBundle,
     pub state: MakaraCheckboxState,
     pub tooltip_bundle: TooltipBundle
@@ -213,8 +223,9 @@ impl Default for CheckboxBundle {
         let state = MakaraCheckboxState(false);
         let tooltip_bundle = TooltipBundle::default();
         let id_class = IdAndClass::default();
+        let button_active_color = CheckboxButtonActiveColor(CHECKBOX_CHECKED_COLOR);
 
-        Self { style, button_style, text_bundle, state, tooltip_bundle, id_class }
+        Self { style, button_style, text_bundle, state, tooltip_bundle, id_class, button_active_color }
     }
 }
 
@@ -228,6 +239,12 @@ impl CheckboxBundle {
     /// Set checkbox as active.
     pub fn active(mut self) -> Self {
         self.state.0 = true;
+        self
+    }
+
+    /// Set color for button when active
+    pub fn button_active_color(mut self, color: Color) -> Self {
+        self.button_active_color.0 = color;
         self
     }
 
@@ -248,7 +265,11 @@ impl Widget for CheckboxBundle {
             MakaraWidget,
             WidgetFocus(false),
             children![
-                (self.button_style, MakaraCheckboxButton),
+                (
+                    self.button_style,
+                    self.button_active_color,
+                    MakaraCheckboxButton
+                ),
                 (self.text_bundle, MakaraText),
                 self.tooltip_bundle.build()
             ],
@@ -376,13 +397,16 @@ pub(crate) fn update_checkbox_style_on_state_change_system(
         (&MakaraCheckboxState, &Children),
         (With<MakaraCheckbox>, Or<(Changed<MakaraCheckboxState>, Added<MakaraCheckboxState>)>)
     >,
-    mut checkbox_btns: Query<&mut BackgroundColor, With<MakaraCheckboxButton>>,
+    mut checkbox_btns: Query<
+        (&mut BackgroundColor, &CheckboxButtonActiveColor),
+        With<MakaraCheckboxButton>
+    >,
 ) {
     for (state, children) in checkboxs.iter() {
         for child in children {
-            if let Ok(mut bg_color) = checkbox_btns.get_mut(*child) {
+            if let Ok((mut bg_color, active_color)) = checkbox_btns.get_mut(*child) {
                 match state.0 {
-                    true => bg_color.0 = CHECKBOX_CHECKED_COLOR,
+                    true => bg_color.0 = active_color.0.clone(),
                     false => bg_color.0 = CHECKBOX_UNCHECKED_COLOR
                 }
             }

@@ -233,7 +233,12 @@ pub mod prelude {
                 (
                     detect_makara_text_added,
                     check_unique_id,
-                    apply_custom_style_to_button
+                    apply_custom_style_to_button,
+                    apply_custom_style_to_checkbox,
+
+                    set_style_unchanged
+                        .after(apply_custom_style_to_button)
+                        .after(apply_custom_style_to_checkbox)
                 )
             );
 

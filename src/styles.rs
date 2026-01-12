@@ -30,6 +30,7 @@ pub struct Style {
     pub flex_basis: Option<Val>,
     pub row_gap: Option<Val>,
     pub column_gap: Option<Val>,
+    pub active_color: Option<Color>,
     pub background_color: Option<BackgroundColor>,
     pub border_color: Option<BorderColor>,
     pub border_radius: Option<BorderRadius>,
@@ -162,6 +163,11 @@ impl Style {
 
     pub fn column_gap(mut self, value: Val) -> Self {
         self.column_gap = Some(value);
+        self
+    }
+
+    pub fn active_color(mut self, value: Color) -> Self {
+        self.active_color = Some(value);
         self
     }
 
@@ -321,5 +327,67 @@ pub(crate) fn apply_custom_style_to_button(
                 }
             }
         }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_checkbox(
+    mut checkbox_q: CheckboxQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut checkbox) = checkbox_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut checkbox.style, style);
+                set_text_style(&mut checkbox.text, style);
+            }
+
+            let btn_id = format!("{}::checkbox-button", changed_id);
+
+            if let Some(btn_style) = custom_style.id_maps.get(&btn_id) {
+                set_style(&mut checkbox.button_style, btn_style);
+
+                if let Some(active_color) = btn_style.active_color {
+                    checkbox.button_active_color.0 = active_color;
+                }
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let style = custom_style.class_maps.get(changed_class);
+
+        let btn_class = format!("{}::checkbox-button", changed_class);
+        let btn_style = custom_style.class_maps.get(&btn_class);
+
+        let entities = checkbox_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut checkbox) = checkbox_q.find_by_entity(entity) {
+                if let Some(style) = style {
+                    set_style(&mut checkbox.style, style);
+                    set_text_style(&mut checkbox.text, style);
+                }
+
+                if let Some(btn_style) = btn_style {
+                    set_style(&mut checkbox.button_style, btn_style);
+
+                    if let Some(active_color) = btn_style.active_color {
+                        checkbox.button_active_color.0 = active_color;
+                    }
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn set_style_unchanged(mut custom_style: ResMut<CustomStyle>) {
+    if custom_style.has_changed {
+        custom_style.has_changed = false;
+        custom_style.id_changed.clear();
+        custom_style.class_changed.clear();
     }
 }
