@@ -32,7 +32,7 @@ pub mod prelude {
     use bevy::prelude::*;
     use bevy::asset::embedded_asset;
     use bevy::asset::io::web::WebAssetPlugin;
-    use std::collections::HashSet;
+    use std::collections::{HashSet, HashMap};
 
     pub use crate::widgets::*;
     pub use crate::consts::*;
@@ -54,6 +54,12 @@ pub mod prelude {
     pub struct CustomFont {
         pub font_path: String,
         pub font_handle: Option<Handle<Font>>
+    }
+
+    #[derive(Resource, Default)]
+    pub struct CustomStyle {
+        pub maps: HashMap<String, Style>,
+        pub(crate) changed: bool
     }
 
     /// Plugin for all makara.
@@ -96,6 +102,7 @@ pub mod prelude {
             app.insert_resource(DropdownOverlayAndTextAdded::default());
             app.insert_resource(CanBeScrolled::default());
             app.insert_resource(ImageHandleMap::default());
+            app.insert_resource(CustomStyle::default());
             app.insert_resource(CustomFont {
                 font_path: self.font_path.clone(),
                 font_handle: None
