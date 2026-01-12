@@ -193,7 +193,7 @@ pub fn text(text: &str) -> TextBundle {
 
 pub(crate) fn update_text_color_on_theme_change_system(
     makara_theme: Res<MakaraTheme>,
-    mut text_q: Query<&mut TextColor, With<MakaraText>>
+    mut text_q: Query<&mut TextColor, (With<MakaraText>, Without<MakaraLinkText>)>
 ) {
     if !makara_theme.is_changed() {
         return;

@@ -10,6 +10,10 @@ use super::*;
 #[derive(Component)]
 pub struct MakaraLink;
 
+/// Marker component for `link` text.
+#[derive(Component)]
+pub struct MakaraLinkText;
+
 /// A struct used to mutate components attached to `link` widget.
 pub struct LinkWidget<'a> {
     pub class: &'a mut Class,
@@ -154,7 +158,10 @@ impl Widget for LinkBundle {
             MakaraLink,
             MakaraWidget,
             WidgetFocus(false),
-            children![self.text_bundle, self.tooltip_bundle.build()],
+            children![
+                (self.text_bundle, MakaraText, MakaraLinkText),
+                self.tooltip_bundle.build()
+            ],
             observe(on_link_click),
             observe(on_link_mouse_over),
             observe(on_mouse_out)

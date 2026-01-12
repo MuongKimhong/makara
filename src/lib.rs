@@ -48,18 +48,33 @@ pub mod prelude {
         AtUpdate
     }
 
+    /// Resource use to keep track of custom font.
+    #[derive(Resource, Default)]
+    pub struct CustomFont {
+        pub font_path: String,
+        pub font_handle: Option<Handle<Font>>
+    }
+
     /// Plugin for all makara.
     #[derive(Default)]
     pub struct MakaraPlugin {
-        pub run_schedule: RunSchedule
+        pub run_schedule: RunSchedule,
+        pub font_path: String
     }
 
     impl MakaraPlugin {
         /// Set running schedule for makara widgets.
         pub fn run_at(run_schedule: RunSchedule) -> Self {
             Self {
-                run_schedule
+                run_schedule,
+                ..default()
             }
+        }
+
+        /// Set custom font.
+        pub fn set_font(mut self, font_path: &str) -> Self {
+            self.font_path = font_path.to_string();
+            self
         }
     }
 
@@ -80,6 +95,10 @@ pub mod prelude {
             app.insert_resource(DropdownOverlayAndTextAdded::default());
             app.insert_resource(CanBeScrolled::default());
             app.insert_resource(ImageHandleMap::default());
+            app.insert_resource(CustomFont {
+                font_path: self.font_path.clone(),
+                font_handle: None
+            });
 
             let systems = (
                 // btn
@@ -204,14 +223,37 @@ pub mod prelude {
                 detect_link_built
             );
 
-            app.add_systems(Startup, |mut commands: Commands| {
-                commands.spawn(Camera2d);
-            });
+            app.add_systems(Startup, setup);
+            app.add_systems(Update, detect_makara_text_added);
 
             match self.run_schedule {
                 RunSchedule::AtUpdate => { app.add_systems(Update, systems); },
                 RunSchedule::AtPreUpdate => { app.add_systems(PreUpdate, systems); },
                 RunSchedule::AtPostUpdate => { app.add_systems(PostUpdate, systems); },
+            }
+        }
+    }
+
+    fn setup(
+        mut commands: Commands,
+        mut custom_font: ResMut<CustomFont>,
+        asset_server: Res<AssetServer>
+    ) {
+        commands.spawn(Camera2d);
+
+        if !custom_font.font_path.is_empty() {
+            let handle: Handle<Font> = asset_server.load(&custom_font.font_path);
+            custom_font.font_handle = Some(handle);
+        }
+    }
+
+    fn detect_makara_text_added(
+        mut texts: Query<&mut TextFont, Added<MakaraText>>,
+        custom_font: Res<CustomFont>
+    ) {
+        for mut text_font in texts.iter_mut() {
+            if let Some(handle) = &custom_font.font_handle {
+                text_font.font = handle.clone();
             }
         }
     }
