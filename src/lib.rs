@@ -32,6 +32,7 @@ pub mod prelude {
     use bevy::prelude::*;
     use bevy::asset::embedded_asset;
     use bevy::asset::io::web::WebAssetPlugin;
+    use std::collections::HashSet;
 
     pub use crate::widgets::*;
     pub use crate::consts::*;
@@ -224,7 +225,7 @@ pub mod prelude {
             );
 
             app.add_systems(Startup, setup);
-            app.add_systems(Update, detect_makara_text_added);
+            app.add_systems(Update, (detect_makara_text_added, check_unique_id));
 
             match self.run_schedule {
                 RunSchedule::AtUpdate => { app.add_systems(Update, systems); },
@@ -254,6 +255,27 @@ pub mod prelude {
         for mut text_font in texts.iter_mut() {
             if let Some(handle) = &custom_font.font_handle {
                 text_font.font = handle.clone();
+            }
+        }
+    }
+
+    fn check_unique_id(
+        all_ids: Query<&Id>,
+        new_ids: Query<Entity, Added<Id>>
+    ) {
+        if new_ids.is_empty() {
+            return;
+        }
+
+        let mut seen = HashSet::new();
+
+        for id in all_ids.iter() {
+            if id.0.is_empty() {
+                continue;
+            }
+
+            if !seen.insert(&id.0) {
+                panic!("Duplicate ID: '{}'. ID must be unique!", id.0);
             }
         }
     }
