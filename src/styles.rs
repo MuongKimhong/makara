@@ -40,9 +40,12 @@ pub struct Style {
     pub font_size: Option<f32>,
     pub layout: Option<TextLayout>,
 
-    // specifically for circular and progress bar
+    // specifically for circular
     pub spin_color: Option<Color>,
-    pub arc_color: Option<Color>
+    pub arc_color: Option<Color>,
+
+    // specifically for progress bar
+    pub progress_color: Option<Color>
 }
 
 impl Style {
@@ -217,6 +220,11 @@ impl Style {
 
     pub fn arc_color(mut self, value: Color) -> Self {
         self.arc_color = Some(value);
+        self
+    }
+
+    pub fn progress_color(mut self, value: Color) -> Self {
+        self.progress_color = Some(value);
         self
     }
 }
@@ -443,6 +451,73 @@ pub(crate) fn apply_custom_style_to_circular(
     }
 }
 
+pub(crate) fn apply_custom_style_to_progress_bar(
+    mut progress_q: ProgressBarQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut progress) = progress_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut progress.style, style);
+
+                if let Some(color) = style.progress_color {
+                    progress.color.0 = color;
+                }
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let entities = progress_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut progress) = progress_q.find_by_entity(entity) {
+                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                    set_style(&mut progress.style, style);
+
+                    if let Some(color) = style.progress_color {
+                        progress.color.0 = color;
+                    }
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_root(
+    mut root_q: RootQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut root) = root_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut root.style, style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let entities = root_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut root) = root_q.find_by_entity(entity) {
+                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                    set_style(&mut root.style, style);
+                }
+            }
+        }
+    }
+}
+
+
 pub(crate) fn apply_custom_style_to_column(
     mut column_q: ColumnQuery,
     custom_style: Res<CustomStyle>
@@ -547,6 +622,50 @@ pub(crate) fn apply_custom_style_to_dropdown(
     }
 }
 
+pub(crate) fn apply_custom_style_to_scroll(
+    mut scroll_q: ScrollQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut scroll) = scroll_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut scroll.style, style);
+            }
+
+            let bar_id = format!("{}::scroll-bar", changed_id);
+
+            if let Some(bar_style) = custom_style.id_maps.get(&bar_id) {
+                set_style(&mut scroll.bar_style, bar_style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let style = custom_style.class_maps.get(changed_class);
+
+        let bar_class = format!("{}::scroll-bar", changed_class);
+        let bar_style = custom_style.class_maps.get(&bar_class);
+
+        let entities = scroll_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut scroll) = scroll_q.find_by_entity(entity) {
+                if let Some(style) = style {
+                    set_style(&mut scroll.style, style);
+                }
+
+                if let Some(bar_style) = bar_style {
+                    set_style(&mut scroll.bar_style, bar_style);
+                }
+            }
+        }
+    }
+}
+
 pub(crate) fn apply_custom_style_to_image(
     mut image_q: ImageQuery,
     custom_style: Res<CustomStyle>
@@ -601,6 +720,48 @@ pub(crate) fn apply_custom_style_to_link(
                 if let Some(mut link) = link_q.find_by_entity(entity) {
                     set_style(&mut link.style, style);
                     set_text_style(&mut link.text, style);
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_modal(
+    mut modal_q: ModalQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut modal) = modal_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut modal.style, style);
+            }
+
+            let backdrop_id = format!("{}::backdrop", changed_id);
+
+            if let Some(backdrop_style) = custom_style.id_maps.get(&backdrop_id) {
+                set_style(&mut modal.backdrop_style, backdrop_style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        if let Some(style) = custom_style.class_maps.get(changed_class) {
+            let backdrop_class = format!("{}::backdrop", changed_class);
+            let backdrop_style = custom_style.class_maps.get(&backdrop_class);
+
+            let entities = modal_q.find_by_class(changed_class);
+
+            for entity in entities.into_iter() {
+                if let Some(mut modal) = modal_q.find_by_entity(entity) {
+                    set_style(&mut modal.style, style);
+
+                    if let Some(backdrop_style) = backdrop_style {
+                        set_style(&mut modal.backdrop_style, backdrop_style);
+                    }
                 }
             }
         }

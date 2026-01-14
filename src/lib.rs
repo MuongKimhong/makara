@@ -241,6 +241,10 @@ pub mod prelude {
                     apply_custom_style_to_dropdown,
                     apply_custom_style_to_image,
                     apply_custom_style_to_link,
+                    apply_custom_style_to_modal,
+                    apply_custom_style_to_progress_bar,
+                    apply_custom_style_to_root,
+                    apply_custom_style_to_scroll,
 
                     set_style_unchanged
                         .after(apply_custom_style_to_button)
@@ -251,6 +255,10 @@ pub mod prelude {
                         .after(apply_custom_style_to_dropdown)
                         .after(apply_custom_style_to_image)
                         .after(apply_custom_style_to_link)
+                        .after(apply_custom_style_to_modal)
+                        .after(apply_custom_style_to_progress_bar)
+                        .after(apply_custom_style_to_root)
+                        .after(apply_custom_style_to_scroll)
                 )
             );
 
