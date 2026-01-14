@@ -38,7 +38,11 @@ pub struct Style {
     pub shadow: Option<BoxShadow>,
     pub color: Option<TextColor>,
     pub font_size: Option<f32>,
-    pub layout: Option<TextLayout>
+    pub layout: Option<TextLayout>,
+
+    // specifically for circular and progress bar
+    pub spin_color: Option<Color>,
+    pub arc_color: Option<Color>
 }
 
 impl Style {
@@ -203,6 +207,16 @@ impl Style {
 
     pub fn layout(mut self, value: TextLayout) -> Self {
         self.layout = Some(value);
+        self
+    }
+
+    pub fn spin_color(mut self, value: Color) -> Self {
+        self.spin_color = Some(value);
+        self
+    }
+
+    pub fn arc_color(mut self, value: Color) -> Self {
+        self.arc_color = Some(value);
         self
     }
 }
@@ -378,6 +392,215 @@ pub(crate) fn apply_custom_style_to_checkbox(
                     if let Some(active_color) = btn_style.active_color {
                         checkbox.button_active_color.0 = active_color;
                     }
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_circular(
+    mut circular_q: CircularQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut circular) = circular_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut circular.style, style);
+
+                if let Some(color) = style.spin_color {
+                    circular.spin_color.0 = color;
+                }
+
+                if let Some(color) = style.arc_color {
+                    circular.arc_color.0 = color;
+                }
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let entities = circular_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut circular) = circular_q.find_by_entity(entity) {
+                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                    set_style(&mut circular.style, style);
+
+                    if let Some(color) = style.spin_color {
+                        circular.spin_color.0 = color;
+                    }
+
+                    if let Some(color) = style.arc_color {
+                        circular.arc_color.0 = color;
+                    }
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_column(
+    mut column_q: ColumnQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut column) = column_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut column.style, style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let entities = column_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut column) = column_q.find_by_entity(entity) {
+                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                    set_style(&mut column.style, style);
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_row(
+    mut row_q: RowQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut row) = row_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut row.style, style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let entities = row_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut row) = row_q.find_by_entity(entity) {
+                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                    set_style(&mut row.style, style);
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_dropdown(
+    mut dropdown_q: DropdownQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut dropdown) = dropdown_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut dropdown.style, style);
+                set_text_style(&mut dropdown.text, style);
+            }
+
+            let overlay_id = format!("{}::overlay", changed_id);
+
+            if let Some(overlay_style) = custom_style.id_maps.get(&overlay_id) {
+                set_style(&mut dropdown.overlay_style, overlay_style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let style = custom_style.class_maps.get(changed_class);
+
+        let overlay_class = format!("{}::overlay", changed_class);
+        let overlay_style = custom_style.class_maps.get(&overlay_class);
+
+        let entities = dropdown_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut dropdown) = dropdown_q.find_by_entity(entity) {
+                if let Some(style) = style {
+                    set_style(&mut dropdown.style, style);
+                    set_text_style(&mut dropdown.text, style);
+                }
+
+                if let Some(overlay_style) = overlay_style {
+                    set_style(&mut dropdown.overlay_style, overlay_style);
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_image(
+    mut image_q: ImageQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut row) = image_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut row.style, style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let entities = image_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut image) = image_q.find_by_entity(entity) {
+                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                    set_style(&mut image.style, style);
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_link(
+    mut link_q: LinkQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut link) = link_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut link.style, style);
+                set_text_style(&mut link.text, style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        if let Some(style) = custom_style.class_maps.get(changed_class) {
+            let entities = link_q.find_by_class(changed_class);
+
+            for entity in entities.into_iter() {
+                if let Some(mut link) = link_q.find_by_entity(entity) {
+                    set_style(&mut link.style, style);
+                    set_text_style(&mut link.text, style);
                 }
             }
         }

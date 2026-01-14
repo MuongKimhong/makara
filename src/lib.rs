@@ -235,10 +235,22 @@ pub mod prelude {
                     check_unique_id,
                     apply_custom_style_to_button,
                     apply_custom_style_to_checkbox,
+                    apply_custom_style_to_circular,
+                    apply_custom_style_to_row,
+                    apply_custom_style_to_column,
+                    apply_custom_style_to_dropdown,
+                    apply_custom_style_to_image,
+                    apply_custom_style_to_link,
 
                     set_style_unchanged
                         .after(apply_custom_style_to_button)
                         .after(apply_custom_style_to_checkbox)
+                        .after(apply_custom_style_to_circular)
+                        .after(apply_custom_style_to_column)
+                        .after(apply_custom_style_to_row)
+                        .after(apply_custom_style_to_dropdown)
+                        .after(apply_custom_style_to_image)
+                        .after(apply_custom_style_to_link)
                 )
             );
 
