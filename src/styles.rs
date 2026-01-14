@@ -406,6 +406,97 @@ pub(crate) fn apply_custom_style_to_checkbox(
     }
 }
 
+pub(crate) fn apply_custom_style_to_radio(
+    mut radio_q: RadioQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut radio) = radio_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut radio.style, style);
+                set_text_style(&mut radio.text, style);
+            }
+
+            let btn_id = format!("{}::radio-button", changed_id);
+
+            if let Some(btn_style) = custom_style.id_maps.get(&btn_id) {
+                set_style(&mut radio.button_style, btn_style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let style = custom_style.class_maps.get(changed_class);
+
+        let btn_class = format!("{}::radio-button", changed_class);
+        let btn_style = custom_style.class_maps.get(&btn_class);
+
+        let entities = radio_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut radio) = radio_q.find_by_entity(entity) {
+                if let Some(style) = style {
+                    set_style(&mut radio.style, style);
+                    set_text_style(&mut radio.text, style);
+                }
+
+                if let Some(btn_style) = btn_style {
+                    set_style(&mut radio.button_style, btn_style);
+                }
+            }
+        }
+    }
+}
+
+
+pub(crate) fn apply_custom_style_to_slider(
+    mut slider_q: SliderQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut slider) = slider_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut slider.style, style);
+            }
+
+            let thumb_id = format!("{}::thumb", changed_id);
+
+            if let Some(thumb_style) = custom_style.id_maps.get(&thumb_id) {
+                set_style(&mut slider.thumb_style, thumb_style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let style = custom_style.class_maps.get(changed_class);
+
+        let thumb_class = format!("{}::thumb", changed_class);
+        let thumb_style = custom_style.class_maps.get(&thumb_class);
+
+        let entities = slider_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut slider) = slider_q.find_by_entity(entity) {
+                if let Some(style) = style {
+                    set_style(&mut slider.style, style);
+                }
+
+                if let Some(thumb_style) = thumb_style {
+                    set_style(&mut slider.thumb_style, thumb_style);
+                }
+            }
+        }
+    }
+}
+
 pub(crate) fn apply_custom_style_to_circular(
     mut circular_q: CircularQuery,
     custom_style: Res<CustomStyle>
@@ -576,6 +667,35 @@ pub(crate) fn apply_custom_style_to_row(
     }
 }
 
+pub(crate) fn apply_custom_style_to_radio_group(
+    mut radio_group_q: RadioGroupQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut rg) = radio_group_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut rg.style, style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let entities = radio_group_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut rg) = radio_group_q.find_by_entity(entity) {
+                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                    set_style(&mut rg.style, style);
+                }
+            }
+        }
+    }
+}
+
 pub(crate) fn apply_custom_style_to_dropdown(
     mut dropdown_q: DropdownQuery,
     custom_style: Res<CustomStyle>
@@ -720,6 +840,37 @@ pub(crate) fn apply_custom_style_to_link(
                 if let Some(mut link) = link_q.find_by_entity(entity) {
                     set_style(&mut link.style, style);
                     set_text_style(&mut link.text, style);
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_text(
+    mut text_q: TextQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut text) = text_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut text.style, style);
+                set_text_style(&mut text.text, style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        if let Some(style) = custom_style.class_maps.get(changed_class) {
+            let entities = text_q.find_by_class(changed_class);
+
+            for entity in entities.into_iter() {
+                if let Some(mut text) = text_q.find_by_entity(entity) {
+                    set_style(&mut text.style, style);
+                    set_text_style(&mut text.text, style);
                 }
             }
         }

@@ -245,6 +245,10 @@ pub mod prelude {
                     apply_custom_style_to_progress_bar,
                     apply_custom_style_to_root,
                     apply_custom_style_to_scroll,
+                    apply_custom_style_to_text,
+                    apply_custom_style_to_slider,
+                    apply_custom_style_to_radio,
+                    apply_custom_style_to_radio_group,
 
                     set_style_unchanged
                         .after(apply_custom_style_to_button)
@@ -259,6 +263,10 @@ pub mod prelude {
                         .after(apply_custom_style_to_progress_bar)
                         .after(apply_custom_style_to_root)
                         .after(apply_custom_style_to_scroll)
+                        .after(apply_custom_style_to_text)
+                        .after(apply_custom_style_to_slider)
+                        .after(apply_custom_style_to_radio)
+                        .after(apply_custom_style_to_radio_group)
                 )
             );
 
