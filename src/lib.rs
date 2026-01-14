@@ -228,11 +228,13 @@ pub mod prelude {
             );
 
             app.add_systems(Startup, setup);
+            app.add_systems(Update, (
+                detect_makara_text_added,
+                check_unique_id
+            ));
             app.add_systems(
                 Update,
                 (
-                    detect_makara_text_added,
-                    check_unique_id,
                     apply_custom_style_to_button,
                     apply_custom_style_to_checkbox,
                     apply_custom_style_to_circular,
@@ -249,6 +251,8 @@ pub mod prelude {
                     apply_custom_style_to_slider,
                     apply_custom_style_to_radio,
                     apply_custom_style_to_radio_group,
+                    apply_custom_style_to_select,
+                    apply_custom_style_to_text_input,
 
                     set_style_unchanged
                         .after(apply_custom_style_to_button)
@@ -267,6 +271,8 @@ pub mod prelude {
                         .after(apply_custom_style_to_slider)
                         .after(apply_custom_style_to_radio)
                         .after(apply_custom_style_to_radio_group)
+                        .after(apply_custom_style_to_select)
+                        .after(apply_custom_style_to_text_input)
                 )
             );
 

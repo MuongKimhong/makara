@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use cosmic_text::Edit;
 use std::collections::{HashMap, HashSet};
 
 use super::*;
@@ -45,7 +46,11 @@ pub struct Style {
     pub arc_color: Option<Color>,
 
     // specifically for progress bar
-    pub progress_color: Option<Color>
+    pub progress_color: Option<Color>,
+
+    // sepcifically for text input
+    pub selection_color: Option<Color>,
+    pub placeholder_color: Option<Color>
 }
 
 impl Style {
@@ -225,6 +230,16 @@ impl Style {
 
     pub fn progress_color(mut self, value: Color) -> Self {
         self.progress_color = Some(value);
+        self
+    }
+
+    pub fn placeholder_color(mut self, value: Color) -> Self {
+        self.placeholder_color = Some(value);
+        self
+    }
+
+    pub fn selection_color(mut self, value: Color) -> Self {
+        self.selection_color = Some(value);
         self
     }
 }
@@ -736,6 +751,141 @@ pub(crate) fn apply_custom_style_to_dropdown(
 
                 if let Some(overlay_style) = overlay_style {
                     set_style(&mut dropdown.overlay_style, overlay_style);
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_select(
+    mut select_q: SelectQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut select) = select_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut select.style, style);
+                set_text_style(&mut select.placeholder, style);
+            }
+
+            let overlay_id = format!("{}::overlay", changed_id);
+            let arrow_id = format!("{}::arrow", changed_id);
+
+            if let Some(overlay_style) = custom_style.id_maps.get(&overlay_id) {
+                set_style(&mut select.overlay_style, overlay_style);
+            }
+
+            if let Some(arrow_style) = custom_style.id_maps.get(&arrow_id) {
+                set_text_style(&mut select.arrow, arrow_style);
+            }
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let style = custom_style.class_maps.get(changed_class);
+
+        let overlay_class = format!("{}::overlay", changed_class);
+        let overlay_style = custom_style.class_maps.get(&overlay_class);
+
+        let arrow_class = format!("{}::arrow", changed_class);
+        let arrow_style = custom_style.class_maps.get(&arrow_class);
+
+        let entities = select_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut select) = select_q.find_by_entity(entity) {
+                if let Some(style) = style {
+                    set_style(&mut select.style, style);
+                    set_text_style(&mut select.placeholder, style);
+                }
+
+                if let Some(overlay_style) = overlay_style {
+                    set_style(&mut select.overlay_style, overlay_style);
+                }
+
+                if let Some(arrow_style) = arrow_style {
+                    set_text_style(&mut select.arrow, arrow_style);
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn apply_custom_style_to_text_input(
+    mut input_q: TextInputQuery,
+    custom_style: Res<CustomStyle>
+) {
+    if !custom_style.has_changed {
+        return;
+    }
+
+    for changed_id in custom_style.id_changed.iter() {
+        if let Some(mut input) = input_q.find_by_id(changed_id) {
+            if let Some(style) = custom_style.id_maps.get(changed_id) {
+                set_style(&mut input.style, style);
+
+                if let Some(font_size) = style.font_size {
+                    input.editor_style.font_size = font_size;
+                }
+
+                if let Some(color) = style.color {
+                    input.editor_style.text_color = color.0;
+                }
+
+                if let Some(color) = style.selection_color {
+                    input.editor_style.selection_color = color;
+                }
+
+                if let Some(color) = style.placeholder_color {
+                    input.editor_style.placeholder_color = color;
+                }
+            }
+
+            let caret_id = format!("{}::caret", changed_id);
+            if let Some(caret_style) = custom_style.id_maps.get(&caret_id) {
+                set_style(&mut input.caret_style, caret_style);
+            }
+            input.editor.editor.set_redraw(true);
+        }
+    }
+
+    for changed_class in custom_style.class_changed.iter() {
+        let style = custom_style.class_maps.get(changed_class);
+
+        let caret_class = format!("{}::caret", changed_class);
+        let caret_style = custom_style.class_maps.get(&caret_class);
+
+        let entities = input_q.find_by_class(changed_class);
+
+        for entity in entities.into_iter() {
+            if let Some(mut input) = input_q.find_by_entity(entity) {
+                if let Some(style) = style {
+                    set_style(&mut input.style, style);
+
+                    if let Some(font_size) = style.font_size {
+                        input.editor_style.font_size = font_size;
+                    }
+
+                    if let Some(color) = style.color {
+                        input.editor_style.text_color = color.0;
+                    }
+
+                    if let Some(color) = style.selection_color {
+                        input.editor_style.selection_color = color;
+                    }
+
+                    if let Some(color) = style.placeholder_color {
+                        input.editor_style.placeholder_color = color;
+                    }
+                    input.editor.editor.set_redraw(true);
+                }
+
+                if let Some(caret_style) = caret_style {
+                    set_style(&mut input.caret_style, caret_style);
                 }
             }
         }
