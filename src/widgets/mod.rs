@@ -226,7 +226,7 @@ pub struct Id(pub String);
 #[derive(Component, Debug, Default, PartialEq, Eq, Clone)]
 pub struct Class(pub String);
 
-#[derive(Bundle, Clone, Default)]
+#[derive(Bundle, Clone, Default, Debug)]
 pub struct IdAndClass {
     pub id: Id,
     pub class: Class

@@ -764,7 +764,6 @@ pub(crate) fn apply_custom_style_to_select(
     if !custom_style.has_changed {
         return;
     }
-
     for changed_id in custom_style.id_changed.iter() {
         if let Some(mut select) = select_q.find_by_id(changed_id) {
             if let Some(style) = custom_style.id_maps.get(changed_id) {

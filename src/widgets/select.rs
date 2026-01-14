@@ -80,7 +80,7 @@ impl<'a, 'w, 's> SelectWidget<'a, 'w, 's> {
 pub struct SelectQuery<'w, 's> {
     pub select_related: Query<
         'w, 's,
-        (Entity, &'static Id, &'static mut Class, &'static SelectPlaceholderTextEntity),
+        (Entity, &'static Id, &'static mut Class, &'static Children),
         With<MakaraSelect>
     >,
     pub style: StyleQuery<'w, 's, With<MakaraSelect>>,
@@ -92,6 +92,7 @@ pub struct SelectQuery<'w, 's> {
     pub placeholder_text: TextQueryAsChild<'w, 's,
         (With<SelectPlaceholder>, Without<SelectArrow>)
     >,
+    pub placeholder_node: Query<'w, 's, &'static SelectPlaceholderNodeResized>,
     pub commands: Commands<'w, 's>
 }
 
@@ -101,17 +102,32 @@ impl<'w, 's> WidgetQuery<'w, 's> for SelectQuery<'w, 's> {
     fn get_components<'a>(&'a mut self, entity: Entity) -> Option<Self::WidgetView<'a>> {
         let SelectQuery {
             select_related, style, overlay_style, children, commands,
-            arrow_text, placeholder_text
+            arrow_text, placeholder_text, placeholder_node
         } = self;
 
         let select_related_bundle = select_related.get_mut(entity).ok()?;
-        let (entity, _, class, placeholder_entity) = select_related_bundle;
+        let (entity, _, class, select_children) = select_related_bundle;
+
+
+        let mut pl_text_entity = None;
+
+        for child in select_children {
+            if let Ok(_) = placeholder_node.get(*child) {
+                let placeholder_node_children = children.get(*child).ok()?;
+                for sub_child in placeholder_node_children {
+                    if let Ok(_) = placeholder_text.query.get(*sub_child) {
+                        pl_text_entity = Some(*sub_child);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
 
         let mut overlay_entity = None;
         let mut arrow_entity = None;
 
         let children_list = children.get(entity).ok()?;
-
         for child in children_list {
             if overlay_entity.is_none() && overlay_style.query.get(*child).is_ok() {
                 overlay_entity = Some(*child);
@@ -123,13 +139,13 @@ impl<'w, 's> WidgetQuery<'w, 's> for SelectQuery<'w, 's> {
         }
 
         // 2. BORROW PHASE: Now that the loop is over, we borrow specifically what we need.
-        if let (Some(overlay_entity), Some(arrow_entity)) = (overlay_entity, arrow_entity) {
+        if let (Some(overlay_entity), Some(arrow_entity), Some(pl_entity)) = (overlay_entity, arrow_entity, pl_text_entity) {
             let style_bundle = style.query.get_mut(entity).ok()?;
             let (node, bg, border, radius, shadow, z) = style_bundle;
 
             let overlay_components = overlay_style.query.get_mut(overlay_entity).ok()?;
             let arrow_components = arrow_text.query.get_mut(arrow_entity).ok()?;
-            let placeholder_components = placeholder_text.query.get_mut(placeholder_entity.0).ok()?;
+            let placeholder_components = placeholder_text.query.get_mut(pl_entity).ok()?;
 
             return Some(SelectWidget {
                 entity,
@@ -171,7 +187,9 @@ impl<'w, 's> WidgetQuery<'w, 's> for SelectQuery<'w, 's> {
 
     fn find_by_id<'a>(&'a mut self, target_id: &str) -> Option<Self::WidgetView<'a>> {
         let entity = self.select_related.iter()
-            .find(|(_, id, _, _)| id.0 == target_id)
+            .find(|(_, id, _, _)| {
+                id.0 == target_id
+            })
             .map(|(e, _, _, _)| e)?;
 
         self.get_components(entity)
@@ -463,14 +481,11 @@ pub(crate) fn detect_select_placeholder_added(
         With<SelectPlaceholderNodeResized>
     >,
     mut commands: Commands,
+    selects: Query<(&SelectPlaceholderTextEntity, &Id, &Class), With<MakaraSelect>>,
     text: Query<Entity, With<MakaraText>>
 ) {
     for (pl_entity, mut node, mut resized, computed, children, parent) in placeholder.iter_mut() {
-        if !resized.0 && computed.size.x > 0.0 {
-            node.width = px(computed.size.x * computed.inverse_scale_factor());
-            node.overflow = Overflow::hidden_x();
-            resized.0 = true;
-
+        if selects.get(parent.0).is_err() {
             for child in children {
                 if let Ok(entity) = text.get(*child) {
                     commands.entity(pl_entity).insert(SelectPlaceholderTextEntity(entity));
@@ -478,6 +493,12 @@ pub(crate) fn detect_select_placeholder_added(
                     break;
                 }
             }
+        }
+
+        if !resized.0 && computed.size.x > 0.0 {
+            node.width = px(computed.size.x * computed.inverse_scale_factor());
+            node.overflow = Overflow::hidden_x();
+            resized.0 = true;
         }
     }
 }
