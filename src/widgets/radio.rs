@@ -75,7 +75,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for RadioQuery<'w, 's> {
         if let (Some(t_ent), Some(b_ent)) = (text_entity, btn_entity) {
             // Fetch the parent styles
             let style_bundle = style.query.get_mut(entity).ok()?;
-            let (node, bg, border, radius, shadow, z) = style_bundle;
+            let (node, bg, border, shadow, z) = style_bundle;
 
             // Fetch the children components mutably (only happens once!)
             let t_components = text.query.get_mut(t_ent).ok()?;
@@ -88,7 +88,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for RadioQuery<'w, 's> {
                     node: node.into_inner(),
                     background_color: bg.into_inner(),
                     border_color: border.into_inner(),
-                    border_radius: radius.into_inner(),
                     shadow: shadow.into_inner(),
                     z_index: z.into_inner(),
                 },
@@ -96,9 +95,8 @@ impl<'w, 's> WidgetQuery<'w, 's> for RadioQuery<'w, 's> {
                     node: b_style_components.0.into_inner(),
                     background_color: b_style_components.1.into_inner(),
                     border_color: b_style_components.2.into_inner(),
-                    border_radius: b_style_components.3.into_inner(),
-                    shadow: b_style_components.4.into_inner(),
-                    z_index: b_style_components.5.into_inner(),
+                    shadow: b_style_components.3.into_inner(),
+                    z_index: b_style_components.4.into_inner(),
                 },
                 text: ChildText {
                     value: t_components.0.into_inner(),
@@ -168,10 +166,10 @@ impl Default for RadioBundle {
                 border: UiRect::all(px(2)),
                 display: Display::Flex,
                 margin: UiRect::top(px(1.5)),
+                border_radius: BorderRadius::MAX,
                 ..default()
             },
             border_color: BorderColor::all(LIGHT_THEME_TEXT_COLOR),
-            border_radius: BorderRadius::MAX,
             background_color: BackgroundColor(RADIO_UNCHECKED_COLOR),
             shadow: BoxShadow::default(),
             ..default()
@@ -485,7 +483,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for RadioGroupQuery<'w, 's> {
         }
 
         let style_bundle = style.query.get_mut(entity).ok()?;
-        let (node, bg, border, radius, shadow, z) = style_bundle;
+        let (node, bg, border, shadow, z) = style_bundle;
 
         return Some(RadioGroupWidget {
             entity,
@@ -494,7 +492,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for RadioGroupQuery<'w, 's> {
                 node: node.into_inner(),
                 background_color: bg.into_inner(),
                 border_color: border.into_inner(),
-                border_radius: radius.into_inner(),
                 shadow: shadow.into_inner(),
                 z_index: z.into_inner(),
             },

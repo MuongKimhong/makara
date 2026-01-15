@@ -289,9 +289,6 @@ fn set_style(widget_style: &mut WidgetStyle, custom_style: &Style) {
     if let Some(bc) = custom_style.border_color {
         *widget_style.border_color = bc;
     }
-    if let Some(br) = custom_style.border_radius {
-        *widget_style.border_radius = br;
-    }
     if let Some(zi) = custom_style.z_index {
         *widget_style.z_index = zi;
     }
@@ -306,6 +303,7 @@ fn set_style(widget_style: &mut WidgetStyle, custom_style: &Style) {
     if let Some(v) = custom_style.height { node.height = v; }
     if let Some(v) = custom_style.display { node.display = v; }
     if let Some(v) = custom_style.overflow { node.overflow = v; }
+    if let Some(v) = custom_style.border_radius { node.border_radius= v; }
 
     // Positioning
     if let Some(v) = custom_style.left { node.left = v; }

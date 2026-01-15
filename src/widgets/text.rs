@@ -76,7 +76,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for TextQuery<'w, 's> {
     fn get_components<'a>(&'a mut self, entity: Entity) -> Option<Self::WidgetView<'a>> {
         let TextQuery { id: _, class, style, text_related } = self;
         let style_bundle = style.query.get_mut(entity).ok()?;
-        let (node, bg, border_color, border_radius, shadow, z_index) = style_bundle;
+        let (node, bg, border_color, shadow, z_index) = style_bundle;
         let (text, color, font, layout) = text_related.get_mut(entity).ok()?;
 
         return Some(TextWidget {
@@ -91,7 +91,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for TextQuery<'w, 's> {
                 node: node.into_inner(),
                 background_color: bg.into_inner(),
                 border_color: border_color.into_inner(),
-                border_radius: border_radius.into_inner(),
                 shadow: shadow.into_inner(),
                 z_index: z_index.into_inner(),
             },

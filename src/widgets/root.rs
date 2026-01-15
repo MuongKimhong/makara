@@ -72,7 +72,7 @@ impl<'a, 'w, 's> WidgetChildren for RootWidget<'a, 'w, 's> {
 
     fn remove_at(&mut self, index: usize) {
         if let Some(entity) = self.child_entities.get(index) {
-            self.commands.entity(self.entity).remove_child(*entity);
+            self.commands.entity(self.entity).detach_child(*entity);
             self.commands.entity(*entity).despawn();
         }
     }
@@ -101,7 +101,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for RootQuery<'w, 's> {
             .collect::<Vec<Entity>>();
 
         let style_bundle = style.query.get_mut(entity).ok()?;
-        let (node, bg, border_color, border_radius, shadow, z_index) = style_bundle;
+        let (node, bg, border_color, shadow, z_index) = style_bundle;
 
         return Some(RootWidget {
             entity,
@@ -110,7 +110,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for RootQuery<'w, 's> {
                 node: node.into_inner(),
                 background_color: bg.into_inner(),
                 border_color: border_color.into_inner(),
-                border_radius: border_radius.into_inner(),
                 shadow: shadow.into_inner(),
                 z_index: z_index.into_inner(),
             },

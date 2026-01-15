@@ -172,10 +172,10 @@ impl<'w, 's> WidgetQuery<'w, 's> for ModalQuery<'w, 's> {
         let (_, id, parent, class, animation_speed, has_animation) = modal_related_bundle;
 
         let backdrop_bundle = backdrop_style.query.get_mut(parent.0).ok()?;
-        let (b_node, b_bg, b_border, b_radius, b_shadow, b_z) = backdrop_bundle;
+        let (b_node, b_bg, b_border, b_shadow, b_z) = backdrop_bundle;
 
         let style_bundle = style.query.get_mut(entity).ok()?;
-        let (node, bg, border, radius, shadow, z) = style_bundle;
+        let (node, bg, border, shadow, z) = style_bundle;
 
         return Some(ModalWidget {
             id: id,
@@ -184,7 +184,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for ModalQuery<'w, 's> {
                 node: node.into_inner(),
                 background_color: bg.into_inner(),
                 border_color: border.into_inner(),
-                border_radius: radius.into_inner(),
                 shadow: shadow.into_inner(),
                 z_index: z.into_inner(),
             },
@@ -192,7 +191,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for ModalQuery<'w, 's> {
                 node: b_node.into_inner(),
                 background_color: b_bg.into_inner(),
                 border_color: b_border.into_inner(),
-                border_radius: b_radius.into_inner(),
                 shadow: b_shadow.into_inner(),
                 z_index: b_z.into_inner(),
             },

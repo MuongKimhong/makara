@@ -141,7 +141,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for SelectQuery<'w, 's> {
         // 2. BORROW PHASE: Now that the loop is over, we borrow specifically what we need.
         if let (Some(overlay_entity), Some(arrow_entity), Some(pl_entity)) = (overlay_entity, arrow_entity, pl_text_entity) {
             let style_bundle = style.query.get_mut(entity).ok()?;
-            let (node, bg, border, radius, shadow, z) = style_bundle;
+            let (node, bg, border, shadow, z) = style_bundle;
 
             let overlay_components = overlay_style.query.get_mut(overlay_entity).ok()?;
             let arrow_components = arrow_text.query.get_mut(arrow_entity).ok()?;
@@ -154,7 +154,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for SelectQuery<'w, 's> {
                     node: node.into_inner(),
                     background_color: bg.into_inner(),
                     border_color: border.into_inner(),
-                    border_radius: radius.into_inner(),
                     shadow: shadow.into_inner(),
                     z_index: z.into_inner(),
                 },
@@ -162,9 +161,8 @@ impl<'w, 's> WidgetQuery<'w, 's> for SelectQuery<'w, 's> {
                     node: overlay_components.0.into_inner(),
                     background_color: overlay_components.1.into_inner(),
                     border_color: overlay_components.2.into_inner(),
-                    border_radius: overlay_components.3.into_inner(),
-                    shadow: overlay_components.4.into_inner(),
-                    z_index: overlay_components.5.into_inner(),
+                    shadow: overlay_components.3.into_inner(),
+                    z_index: overlay_components.4.into_inner(),
                 },
                 placeholder: ChildText {
                     value: placeholder_components.0.into_inner(),
@@ -230,10 +228,10 @@ impl Default for SelectBundle {
                 padding: UiRect::axes(px(8), px(5)),
                 justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Center,
+                border_radius: DEFAULT_BUTTON_BORDER_RADIUS,
                 ..default()
             },
             background_color: BackgroundColor(LIGHT_BUTTON_BG_COLOR),
-            border_radius: DEFAULT_BUTTON_BORDER_RADIUS,
             ..default()
         };
 
@@ -246,10 +244,10 @@ impl Default for SelectBundle {
                 flex_direction: FlexDirection::Column,
                 align_items: AlignItems::Stretch,
                 display: Display::None,
+                border_radius: DEFAULT_BUTTON_BORDER_RADIUS,
                 ..default()
             },
             background_color: BackgroundColor(LIGHT_BUTTON_BG_COLOR),
-            border_radius: DEFAULT_BUTTON_BORDER_RADIUS,
             ..default()
         };
 

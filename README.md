@@ -1,6 +1,6 @@
-![Static Badge](https://img.shields.io/badge/Version-0.1.5-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.2.0-blue)
 ![Static Badge](https://img.shields.io/badge/OS-Mac%20Linux%20Window-orange)
-[![static Badge](https://img.shields.io/badge/crate.io-0.1.5-green)](https://crates.io/crates/makara)
+[![static Badge](https://img.shields.io/badge/crate.io-0.2.0-green)](https://crates.io/crates/makara)
 
 <p align="center">
   <img width="200" src="assets/logo.png">
@@ -52,6 +52,12 @@ Makara needs your contributions. Please see [contributing](https://github.com/Mu
 
 ## Versions
 Currently, it supports only bevy 0.17.x onward.
+
+| Bevy     | Makara  |
+| -------- | ------- |
+| 0.18.x   | 0.2.x   |
+| 0.17.x   | 0.1.x   |
+
 
 ## License
 Makara is released under the [MIT License](https://opensource.org/licenses/MIT).

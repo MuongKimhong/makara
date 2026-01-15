@@ -121,7 +121,7 @@ impl<'a, 'w, 's> WidgetChildren for ScrollWidget<'a, 'w, 's> {
 
     fn remove_at(&mut self, index: usize) {
         if let Some(entity) = self.child_entities.get(index) {
-            self.commands.entity(self.panel_entity).remove_child(*entity);
+            self.commands.entity(self.panel_entity).detach_child(*entity);
             self.commands.entity(*entity).despawn();
         }
     }
@@ -167,10 +167,10 @@ impl<'w, 's> WidgetQuery<'w, 's> for ScrollQuery<'w, 's> {
         let (_, _, class, bar_entity, panel_entity) = scroll_related.get_mut(entity).ok()?;
 
         let bar_bundle = bar_style.query.get_mut(bar_entity.0).ok()?;
-        let (b_node, b_bg, b_border_color, b_border_radius, b_shadow, b_z) = bar_bundle;
+        let (b_node, b_bg, b_border_color, b_shadow, b_z) = bar_bundle;
 
         let style_bundle = style.query.get_mut(entity).ok()?;
-        let (node, bg, border_color, border_radius, shadow, z_index) = style_bundle;
+        let (node, bg, border_color, shadow, z_index) = style_bundle;
 
         let mut entities: Vec<Entity> = Vec::new();
         {
@@ -188,7 +188,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for ScrollQuery<'w, 's> {
                 node: node.into_inner(),
                 background_color: bg.into_inner(),
                 border_color: border_color.into_inner(),
-                border_radius: border_radius.into_inner(),
                 shadow: shadow.into_inner(),
                 z_index: z_index.into_inner(),
             },
@@ -196,7 +195,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for ScrollQuery<'w, 's> {
                 node: b_node.into_inner(),
                 background_color: b_bg.into_inner(),
                 border_color: b_border_color.into_inner(),
-                border_radius: b_border_radius.into_inner(),
                 shadow: b_shadow.into_inner(),
                 z_index: b_z.into_inner(),
             },
@@ -281,10 +279,10 @@ impl Default for ScrollBundle {
                 position_type: PositionType::Absolute,
                 right: px(0),
                 top: px(0),
+                border_radius: BorderRadius::all(px(8)),
                 // display: Display::None,
                 ..default()
             },
-            border_radius: BorderRadius::all(px(8)),
             background_color: BackgroundColor(Color::srgba(0.2, 0.2, 0.2, 0.8)),
             shadow: BoxShadow::default(),
             ..default()

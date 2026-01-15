@@ -165,10 +165,10 @@ impl<'w, 's> WidgetQuery<'w, 's> for TextInputQuery<'w, 's> {
         let input_related_bundle = input_related.get_mut(entity).ok()?;
         let (_, computed, cursor_entity, editor_entity) = input_related_bundle;
 
-        let (node, bg, border, radius, shadow, z) = style.query.get_mut(entity).ok()?;
+        let (node, bg, border, shadow, z) = style.query.get_mut(entity).ok()?;
 
         let caret_bundle = caret_style.query.get_mut(cursor_entity.0).ok()?;
-        let (ca_node, ca_bg, ca_border, ca_radius, ca_shadow, ca_z) = caret_bundle;
+        let (ca_node, ca_bg, ca_border, ca_shadow, ca_z) = caret_bundle;
 
         let editor_bundle = editor.get_mut(editor_entity.0).ok()?;
         let (input_editor_style, input_editor, input_value) = editor_bundle;
@@ -180,17 +180,15 @@ impl<'w, 's> WidgetQuery<'w, 's> for TextInputQuery<'w, 's> {
                 node: node.into_inner(),
                 background_color: bg.into_inner(),
                 border_color: border.into_inner(),
-                border_radius: radius.into_inner(),
                 shadow: shadow.into_inner(),
                 z_index: z.into_inner(),
             },
             caret_style: WidgetStyle {
-                    node: ca_node.into_inner(),
-                    background_color: ca_bg.into_inner(),
-                    border_color: ca_border.into_inner(),
-                    border_radius: ca_radius.into_inner(),
-                    shadow: ca_shadow.into_inner(),
-                    z_index: ca_z.into_inner(),
+                node: ca_node.into_inner(),
+                background_color: ca_bg.into_inner(),
+                border_color: ca_border.into_inner(),
+                shadow: ca_shadow.into_inner(),
+                z_index: ca_z.into_inner()
             },
             value: input_value.into_inner(),
             editor: input_editor.into_inner(),
@@ -239,10 +237,10 @@ impl Default for TextInputBundle {
                 width: px(100.0),
                 height: auto(),
                 padding: UiRect::all(px(4.0)),
+                border_radius: DEFAULT_INPUT_BORDER_RADIUS,
                 ..default()
             },
             background_color: BackgroundColor(LIGHT_INPUT_BG_COLOR),
-            border_radius: DEFAULT_INPUT_BORDER_RADIUS,
             ..default()
         };
 

@@ -98,7 +98,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for CircularQuery<'w, 's> {
         let CircularQuery { id: _, class, style, custom_style, commands } = self;
 
         let style_bundle = style.query.get_mut(entity).ok()?;
-        let (node, bg, border_color, border_radius, shadow, z_index) = style_bundle;
+        let (node, bg, border_color, shadow, z_index) = style_bundle;
 
         let custom_style = custom_style.get_mut(entity).ok()?;
         let (cir_color, cir_bg_color) = custom_style;
@@ -110,7 +110,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for CircularQuery<'w, 's> {
                 node: node.into_inner(),
                 background_color: bg.into_inner(),
                 border_color: border_color.into_inner(),
-                border_radius: border_radius.into_inner(),
                 shadow: shadow.into_inner(),
                 z_index: z_index.into_inner(),
             },

@@ -84,7 +84,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for DropdownQuery<'w, 's> {
         if let (Some(t_ent), Some(o_ent)) = (text_entity, overlay_entity) {
             // Fetch the parent styles
             let style_bundle = style.query.get_mut(entity).ok()?;
-            let (node, bg, border, radius, shadow, z) = style_bundle;
+            let (node, bg, border, shadow, z) = style_bundle;
 
             // Fetch the children components mutably (only happens once!)
             let t_components = text.query.get_mut(t_ent).ok()?;
@@ -96,7 +96,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for DropdownQuery<'w, 's> {
                     node: node.into_inner(),
                     background_color: bg.into_inner(),
                     border_color: border.into_inner(),
-                    border_radius: radius.into_inner(),
                     shadow: shadow.into_inner(),
                     z_index: z.into_inner(),
                 },
@@ -104,9 +103,8 @@ impl<'w, 's> WidgetQuery<'w, 's> for DropdownQuery<'w, 's> {
                     node: o_style_components.0.into_inner(),
                     background_color: o_style_components.1.into_inner(),
                     border_color: o_style_components.2.into_inner(),
-                    border_radius: o_style_components.3.into_inner(),
-                    shadow: o_style_components.4.into_inner(),
-                    z_index: o_style_components.5.into_inner(),
+                    shadow: o_style_components.3.into_inner(),
+                    z_index: o_style_components.4.into_inner(),
                 },
                 text: ChildText {
                     value: t_components.0.into_inner(),
@@ -160,10 +158,10 @@ impl Default for DropdownBundle {
                 padding: UiRect::axes(px(8), px(5)),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
+                border_radius: DEFAULT_BUTTON_BORDER_RADIUS,
                 ..default()
             },
             background_color: BackgroundColor(LIGHT_BUTTON_BG_COLOR),
-            border_radius: DEFAULT_BUTTON_BORDER_RADIUS,
             ..default()
         };
 
@@ -176,10 +174,10 @@ impl Default for DropdownBundle {
                 flex_direction: FlexDirection::Column,
                 align_items: AlignItems::Stretch,
                 display: Display::None,
+                border_radius: DEFAULT_BUTTON_BORDER_RADIUS,
                 ..default()
             },
             background_color: BackgroundColor(LIGHT_BUTTON_BG_COLOR),
-            border_radius: DEFAULT_BUTTON_BORDER_RADIUS,
             ..default()
         };
 

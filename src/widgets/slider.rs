@@ -76,7 +76,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for SliderQuery<'w, 's> {
         if let Some(thumb_entity) = thumb_entity {
             // Fetch the parent styles
             let style_bundle = style.query.get_mut(entity).ok()?;
-            let (node, bg, border, radius, shadow, z) = style_bundle;
+            let (node, bg, border, shadow, z) = style_bundle;
 
             // Fetch the children components mutably (only happens once!)
             let thumb_components = thumb_style.query.get_mut(thumb_entity).ok()?;
@@ -88,7 +88,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for SliderQuery<'w, 's> {
                     node: node.into_inner(),
                     background_color: bg.into_inner(),
                     border_color: border.into_inner(),
-                    border_radius: radius.into_inner(),
                     shadow: shadow.into_inner(),
                     z_index: z.into_inner(),
                 },
@@ -96,9 +95,8 @@ impl<'w, 's> WidgetQuery<'w, 's> for SliderQuery<'w, 's> {
                     node: thumb_components.0.into_inner(),
                     background_color: thumb_components.1.into_inner(),
                     border_color: thumb_components.2.into_inner(),
-                    border_radius: thumb_components.3.into_inner(),
-                    shadow: thumb_components.4.into_inner(),
-                    z_index: thumb_components.5.into_inner(),
+                    shadow: thumb_components.3.into_inner(),
+                    z_index: thumb_components.4.into_inner(),
                 },
                 commands: commands
             });
@@ -146,10 +144,10 @@ impl Default for SliderBundle {
                 position_type: PositionType::Relative,
                 flex_shrink: 0.0,
                 flex_grow: 0.0,
+                border_radius: BorderRadius::MAX,
                 ..default()
             },
             background_color: BackgroundColor(LIGHT_SLIDER_BG_COLOR),
-            border_radius: BorderRadius::MAX,
             shadow: BoxShadow::default(),
             ..default()
         };
@@ -161,10 +159,10 @@ impl Default for SliderBundle {
                 position_type: PositionType::Absolute,
                 left: percent(0),
                 top: px(0),
+                border_radius: BorderRadius::MAX,
                 ..default()
             },
             background_color: BackgroundColor(SLIDER_THUMB_COLOR),
-            border_radius: BorderRadius::MAX,
             shadow: BoxShadow::default(),
             ..default()
         };

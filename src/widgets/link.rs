@@ -46,7 +46,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for LinkQuery<'w, 's> {
             let (text, text_font, text_layout, text_color) = text_comp;
 
             let style_bundle = style.query.get_mut(entity).ok()?;
-            let (node, bg, border_color, border_radius, shadow, z_index) = style_bundle;
+            let (node, bg, border_color, shadow, z_index) = style_bundle;
 
             return Some(LinkWidget {
                 class: class.get_mut(entity).ok()?.1.into_inner(),
@@ -54,7 +54,6 @@ impl<'w, 's> WidgetQuery<'w, 's> for LinkQuery<'w, 's> {
                     node: node.into_inner(),
                     background_color: bg.into_inner(),
                     border_color: border_color.into_inner(),
-                    border_radius: border_radius.into_inner(),
                     shadow: shadow.into_inner(),
                     z_index: z_index.into_inner(),
                 },

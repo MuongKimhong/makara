@@ -193,7 +193,7 @@ pub trait SetContainerStyle: Sized {
     }
 
     fn border_radius(mut self, radius: BorderRadius) -> Self{
-        self.container_style().border_radius = radius;
+        self.container_style().node.border_radius = radius;
         self
     }
 
@@ -239,7 +239,6 @@ pub struct StyleQuery<'w, 's, F: QueryFilter + 'static = ()> {
         &'static mut Node,
         &'static mut BackgroundColor,
         &'static mut BorderColor,
-        &'static mut BorderRadius,
         &'static mut BoxShadow,
         &'static mut ZIndex,
     ), F>,
@@ -259,7 +258,6 @@ pub struct WidgetStyle<'a> {
     pub node: &'a mut Node,
     pub background_color: &'a mut BackgroundColor,
     pub border_color: &'a mut BorderColor,
-    pub border_radius: &'a mut BorderRadius,
     pub z_index: &'a mut ZIndex,
     pub shadow: &'a mut BoxShadow
 }
@@ -329,7 +327,6 @@ pub struct ContainerStyle {
     pub node: Node,
     pub background_color: BackgroundColor,
     pub border_color: BorderColor,
-    pub border_radius: BorderRadius,
     pub shadow: BoxShadow,
     pub z_index: ZIndex,
 }
@@ -340,7 +337,6 @@ impl Default for ContainerStyle {
             node: Node::default(),
             background_color: BackgroundColor::default(),
             border_color: BorderColor::default(),
-            border_radius: BorderRadius::default(),
             z_index: ZIndex::default(),
             shadow: BoxShadow::new(
                 Color::BLACK.with_alpha(0.8),

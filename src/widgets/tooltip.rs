@@ -45,10 +45,10 @@ impl Default for TooltipBundle {
                 align_items: AlignItems::Center,
                 position_type: PositionType::Absolute,
                 display: Display::None,
+                border_radius: DEFAULT_TOOLTIP_BORDER_RADIUS,
                 ..default()
             },
             background_color: BackgroundColor(LIGHT_TOOLTIP_BG_COLOR),
-            border_radius: DEFAULT_TOOLTIP_BORDER_RADIUS,
             ..default()
         };
 
