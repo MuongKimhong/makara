@@ -18,9 +18,9 @@ pub struct TextStyle {
 
 impl TextStyle {
     /// Create text style from provided color with other default options.
-    pub fn from_color(color: Color) -> Self {
+    pub fn from_color(color: impl IntoColor) -> Self {
         Self {
-            color: TextColor(color),
+            color: TextColor(color.into_color()),
             ..default()
         }
     }

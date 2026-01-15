@@ -45,7 +45,7 @@ use bevy::window::{CursorIcon, SystemCursorIcon};
 use bevy::ecs::query::QueryFilter;
 use bevy::ecs::system::SystemParam;
 use cosmic_text::{FontSystem, SwashCache, Attrs};
-use crate::events::*;
+use crate::{events::*, colors::IntoColor};
 
 pub trait Widget {
     fn build(self) -> impl Bundle;
@@ -187,8 +187,8 @@ pub trait SetContainerStyle: Sized {
         self
     }
 
-    fn background_color(mut self, color: Color) -> Self {
-        self.container_style().background_color.0 = color;
+    fn background_color(mut self, color: impl IntoColor) -> Self {
+        self.container_style().background_color.0 = color.into_color();
         self
     }
 
