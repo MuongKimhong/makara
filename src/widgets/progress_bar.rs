@@ -153,6 +153,7 @@ impl Default for ProgressBarBundle {
                 width: px(100),
                 height: px(10),
                 padding: UiRect::all(px(0)),
+                border: UiRect::all(px(0)),
                 border_radius: BorderRadius::MAX,
                 ..default()
             },

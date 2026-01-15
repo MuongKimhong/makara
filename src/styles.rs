@@ -43,7 +43,6 @@ pub struct Style {
 
     // specifically for circular
     pub spin_color: Option<Color>,
-    pub arc_color: Option<Color>,
 
     // specifically for progress bar
     pub progress_color: Option<Color>,
@@ -223,11 +222,6 @@ impl Style {
         self
     }
 
-    pub fn arc_color(mut self, value: Color) -> Self {
-        self.arc_color = Some(value);
-        self
-    }
-
     pub fn progress_color(mut self, value: Color) -> Self {
         self.progress_color = Some(value);
         self
@@ -272,12 +266,24 @@ impl CustomStyle {
         self.id_maps.insert(key.to_string(), style);
         self.id_changed.insert(key.to_string());
         self.has_changed = true;
+
+        if let Some(base_id) = key.split("::").next() {
+            if base_id != key {
+                self.id_changed.insert(base_id.to_string());
+            }
+        }
     }
 
     pub fn bind_class(&mut self, key: &str, style: Style) {
         self.class_maps.insert(key.to_string(), style);
         self.class_changed.insert(key.to_string());
         self.has_changed = true;
+
+        if let Some(base_class) = key.split("::").next() {
+            if base_class != key {
+                self.class_changed.insert(base_class.to_string());
+            }
+        }
     }
 }
 
@@ -489,12 +495,12 @@ pub(crate) fn apply_custom_style_to_slider(
     }
 
     for changed_id in custom_style.id_changed.iter() {
+        let thumb_id = format!("{}::thumb", changed_id);
+
         if let Some(mut slider) = slider_q.find_by_id(changed_id) {
             if let Some(style) = custom_style.id_maps.get(changed_id) {
                 set_style(&mut slider.style, style);
             }
-
-            let thumb_id = format!("{}::thumb", changed_id);
 
             if let Some(thumb_style) = custom_style.id_maps.get(&thumb_id) {
                 set_style(&mut slider.thumb_style, thumb_style);
@@ -540,10 +546,6 @@ pub(crate) fn apply_custom_style_to_circular(
                 if let Some(color) = style.spin_color {
                     circular.spin_color.0 = color;
                 }
-
-                if let Some(color) = style.arc_color {
-                    circular.arc_color.0 = color;
-                }
             }
         }
     }
@@ -553,15 +555,11 @@ pub(crate) fn apply_custom_style_to_circular(
 
         for entity in entities.into_iter() {
             if let Some(mut circular) = circular_q.find_by_entity(entity) {
-                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                if let Some(style) = custom_style.class_maps.get(changed_class) {
                     set_style(&mut circular.style, style);
 
                     if let Some(color) = style.spin_color {
                         circular.spin_color.0 = color;
-                    }
-
-                    if let Some(color) = style.arc_color {
-                        circular.arc_color.0 = color;
                     }
                 }
             }
@@ -594,7 +592,7 @@ pub(crate) fn apply_custom_style_to_progress_bar(
 
         for entity in entities.into_iter() {
             if let Some(mut progress) = progress_q.find_by_entity(entity) {
-                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                if let Some(style) = custom_style.class_maps.get(changed_class) {
                     set_style(&mut progress.style, style);
 
                     if let Some(color) = style.progress_color {
@@ -627,7 +625,7 @@ pub(crate) fn apply_custom_style_to_root(
 
         for entity in entities.into_iter() {
             if let Some(mut root) = root_q.find_by_entity(entity) {
-                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                if let Some(style) = custom_style.class_maps.get(changed_class) {
                     set_style(&mut root.style, style);
                 }
             }
@@ -657,7 +655,7 @@ pub(crate) fn apply_custom_style_to_column(
 
         for entity in entities.into_iter() {
             if let Some(mut column) = column_q.find_by_entity(entity) {
-                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                if let Some(style) = custom_style.class_maps.get(changed_class) {
                     set_style(&mut column.style, style);
                 }
             }
@@ -686,7 +684,7 @@ pub(crate) fn apply_custom_style_to_row(
 
         for entity in entities.into_iter() {
             if let Some(mut row) = row_q.find_by_entity(entity) {
-                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                if let Some(style) = custom_style.class_maps.get(changed_class) {
                     set_style(&mut row.style, style);
                 }
             }
@@ -715,7 +713,7 @@ pub(crate) fn apply_custom_style_to_radio_group(
 
         for entity in entities.into_iter() {
             if let Some(mut rg) = radio_group_q.find_by_entity(entity) {
-                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                if let Some(style) = custom_style.class_maps.get(changed_class) {
                     set_style(&mut rg.style, style);
                 }
             }
@@ -851,12 +849,10 @@ pub(crate) fn apply_custom_style_to_text_input(
         if !input_q.id_match(changed_id) {
             continue;
         }
-        println!("id match");
 
         if let Some(mut input) = input_q.find_by_id(changed_id) {
             if let Some(style) = custom_style.id_maps.get(changed_id) {
                 set_style(&mut input.style, style);
-                println!("set style");
 
                 if let Some(font_size) = style.font_size {
                     input.editor_style.font_size = font_size;
@@ -927,7 +923,6 @@ pub(crate) fn apply_custom_style_to_text_input(
 
     if let Some(flag) = should_set_unchanged {
         custom_style.can_set_unchanged = flag;
-        println!("flag {:?}", flag);
     }
 }
 
@@ -996,7 +991,7 @@ pub(crate) fn apply_custom_style_to_image(
 
         for entity in entities.into_iter() {
             if let Some(mut image) = image_q.find_by_entity(entity) {
-                if let Some(style) = custom_style.id_maps.get(changed_class) {
+                if let Some(style) = custom_style.class_maps.get(changed_class) {
                     set_style(&mut image.style, style);
                 }
             }
@@ -1116,7 +1111,6 @@ pub(crate) fn apply_custom_style_to_text(
 
 pub(crate) fn set_style_unchanged(mut custom_style: ResMut<CustomStyle>) {
     if custom_style.has_changed && custom_style.can_set_unchanged {
-        println!("can set unchange");
         custom_style.has_changed = false;
         custom_style.can_set_unchanged = true;
         custom_style.id_changed.clear();
