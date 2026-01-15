@@ -1,6 +1,6 @@
-![Static Badge](https://img.shields.io/badge/Version-0.1.4-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.1.5-blue)
 ![Static Badge](https://img.shields.io/badge/OS-Mac%20Linux%20Window-orange)
-[![static Badge](https://img.shields.io/badge/crate.io-0.1.4-green)](https://crates.io/crates/makara)
+[![static Badge](https://img.shields.io/badge/crate.io-0.1.5-green)](https://crates.io/crates/makara)
 
 <p align="center">
   <img width="200" src="assets/logo.png">
