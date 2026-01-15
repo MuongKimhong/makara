@@ -177,18 +177,18 @@ impl Style {
         self
     }
 
-    pub fn active_color(mut self, value: Color) -> Self {
-        self.active_color = Some(value);
+    pub fn active_color(mut self, value: impl IntoColor) -> Self {
+        self.active_color = Some(value.into_color());
         self
     }
 
-    pub fn background_color(mut self, value: Color) -> Self {
-        self.background_color = Some(BackgroundColor(value));
+    pub fn background_color(mut self, value: impl IntoColor) -> Self {
+        self.background_color = Some(BackgroundColor(value.into_color()));
         self
     }
 
-    pub fn border_color(mut self, value: Color) -> Self {
-        self.border_color = Some(BorderColor::all(value));
+    pub fn border_color(mut self, value: impl IntoColor) -> Self {
+        self.border_color = Some(BorderColor::all(value.into_color()));
         self
     }
 
@@ -202,8 +202,8 @@ impl Style {
         self
     }
 
-    pub fn color(mut self, value: Color) -> Self {
-        self.color = Some(TextColor(value));
+    pub fn color(mut self, value: impl IntoColor) -> Self {
+        self.color = Some(TextColor(value.into_color()));
         self
     }
 
@@ -217,23 +217,23 @@ impl Style {
         self
     }
 
-    pub fn spin_color(mut self, value: Color) -> Self {
-        self.spin_color = Some(value);
+    pub fn spin_color(mut self, value: impl IntoColor) -> Self {
+        self.spin_color = Some(value.into_color());
         self
     }
 
-    pub fn progress_color(mut self, value: Color) -> Self {
-        self.progress_color = Some(value);
+    pub fn progress_color(mut self, value: impl IntoColor) -> Self {
+        self.progress_color = Some(value.into_color());
         self
     }
 
-    pub fn placeholder_color(mut self, value: Color) -> Self {
-        self.placeholder_color = Some(value);
+    pub fn placeholder_color(mut self, value: impl IntoColor) -> Self {
+        self.placeholder_color = Some(value.into_color());
         self
     }
 
-    pub fn selection_color(mut self, value: Color) -> Self {
-        self.selection_color = Some(value);
+    pub fn selection_color(mut self, value: impl IntoColor) -> Self {
+        self.selection_color = Some(value.into_color());
         self
     }
 }
@@ -361,8 +361,6 @@ pub(crate) fn apply_custom_style_to_button(
     if !custom_style.has_changed {
         return;
     }
-    let now = std::time::Instant::now();
-    println!("running button {:?}", now);
 
     for changed_id in custom_style.id_changed.iter() {
         if let Some(mut btn) = button_q.find_by_id(changed_id) {
@@ -394,8 +392,6 @@ pub(crate) fn apply_custom_style_to_checkbox(
     if !custom_style.has_changed {
         return;
     }
-    let now = std::time::Instant::now();
-    println!("running checkbox {:?}", now);
 
     for changed_id in custom_style.id_changed.iter() {
         if let Some(mut checkbox) = checkbox_q.find_by_id(changed_id) {

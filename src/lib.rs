@@ -28,6 +28,7 @@ pub mod consts;
 pub mod events;
 pub mod utils;
 pub mod styles;
+pub mod colors;
 
 pub mod prelude {
     use bevy::prelude::*;
@@ -39,6 +40,7 @@ pub mod prelude {
     pub use crate::consts::*;
     pub use crate::events::*;
     pub use crate::styles::*;
+    pub use crate::colors::*;
     pub use bevy::ui_widgets::observe;
 
     /// Schedule for this plugin to run at.
