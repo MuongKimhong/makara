@@ -156,6 +156,12 @@ pub struct ModalQuery<'w, 's> {
     pub modal_state: ResMut<'w, MakaraModalState>
 }
 
+impl<'w, 's> ModalQuery<'w, 's> {
+    pub fn id_match(&self, target_id: &str) -> bool {
+        self.modal_related.iter().any(|(_, id, _, _, _, _)| id.0 == target_id)
+    }
+}
+
 impl<'w, 's> WidgetQuery<'w, 's> for ModalQuery<'w, 's> {
      type WidgetView<'a> = ModalWidget<'a> where Self: 'a;
 

@@ -54,6 +54,12 @@ pub struct DropdownQuery<'w, 's> {
     pub children: Query<'w, 's, &'static Children>
 }
 
+impl<'w, 's> DropdownQuery<'w, 's> {
+    pub fn id_match(&self, target_id: &str) -> bool {
+        self.id.iter().any(|(_, id)| id.0 == target_id)
+    }
+}
+
 impl<'w, 's> WidgetQuery<'w, 's> for DropdownQuery<'w, 's> {
      type WidgetView<'a> = DropdownWidget<'a> where Self: 'a;
 
@@ -75,14 +81,14 @@ impl<'w, 's> WidgetQuery<'w, 's> for DropdownQuery<'w, 's> {
             }
         }
 
-        if let (Some(t_ent), Some(b_ent)) = (text_entity, overlay_entity) {
+        if let (Some(t_ent), Some(o_ent)) = (text_entity, overlay_entity) {
             // Fetch the parent styles
             let style_bundle = style.query.get_mut(entity).ok()?;
             let (node, bg, border, radius, shadow, z) = style_bundle;
 
             // Fetch the children components mutably (only happens once!)
             let t_components = text.query.get_mut(t_ent).ok()?;
-            let o_style_components = overlay_style.query.get_mut(b_ent).ok()?;
+            let o_style_components = overlay_style.query.get_mut(o_ent).ok()?;
 
             return Some(DropdownWidget {
                 class: class.get_mut(entity).ok()?.1.into_inner(),
@@ -364,6 +370,7 @@ pub(crate) fn detect_user_provided_children_system(
                 .entity(child)
                 .insert(MakaraDropdownItem)
                 .insert(BoxShadow::default())
+                .insert(BackgroundColor(Color::NONE))
                 .observe(move |
                     mut click: On<Pointer<Click>>,
                     mut dropdown: Query<&mut MakaraDropdownState>,

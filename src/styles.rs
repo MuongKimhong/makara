@@ -244,13 +244,27 @@ impl Style {
     }
 }
 
-#[derive(Resource, Default)]
+#[derive(Resource)]
 pub struct CustomStyle {
     pub id_maps: HashMap<String, Style>,
     pub class_maps: HashMap<String, Style>,
     pub(crate) id_changed: HashSet<String>,
     pub(crate) class_changed: HashSet<String>,
-    pub(crate) has_changed: bool
+    pub(crate) has_changed: bool,
+    pub(crate) can_set_unchanged: bool
+}
+
+impl Default for CustomStyle {
+    fn default() -> Self {
+        Self {
+            id_maps: HashMap::new(),
+            class_maps: HashMap::new(),
+            id_changed: HashSet::new(),
+            class_changed: HashSet::new(),
+            has_changed: false,
+            can_set_unchanged: true,
+        }
+    }
 }
 
 impl CustomStyle {
@@ -713,13 +727,18 @@ pub(crate) fn apply_custom_style_to_radio_group(
 
 pub(crate) fn apply_custom_style_to_dropdown(
     mut dropdown_q: DropdownQuery,
-    custom_style: Res<CustomStyle>
+    mut custom_style: ResMut<CustomStyle>
 ) {
     if !custom_style.has_changed {
         return;
     }
+    let mut should_set_unchanged = true;
 
     for changed_id in custom_style.id_changed.iter() {
+        if !dropdown_q.id_match(changed_id) {
+            continue;
+        }
+
         if let Some(mut dropdown) = dropdown_q.find_by_id(changed_id) {
             if let Some(style) = custom_style.id_maps.get(changed_id) {
                 set_style(&mut dropdown.style, style);
@@ -731,6 +750,10 @@ pub(crate) fn apply_custom_style_to_dropdown(
             if let Some(overlay_style) = custom_style.id_maps.get(&overlay_id) {
                 set_style(&mut dropdown.overlay_style, overlay_style);
             }
+            should_set_unchanged = true;
+        }
+        else {
+            should_set_unchanged = false;
         }
     }
 
@@ -755,6 +778,8 @@ pub(crate) fn apply_custom_style_to_dropdown(
             }
         }
     }
+
+    custom_style.can_set_unchanged = should_set_unchanged;
 }
 
 pub(crate) fn apply_custom_style_to_select(
@@ -816,16 +841,24 @@ pub(crate) fn apply_custom_style_to_select(
 
 pub(crate) fn apply_custom_style_to_text_input(
     mut input_q: TextInputQuery,
-    custom_style: Res<CustomStyle>
+    mut custom_style: ResMut<CustomStyle>
 ) {
     if !custom_style.has_changed {
         return;
     }
 
+    let mut should_set_unchanged = None;
+
     for changed_id in custom_style.id_changed.iter() {
+        if !input_q.id_match(changed_id) {
+            continue;
+        }
+        println!("id match");
+
         if let Some(mut input) = input_q.find_by_id(changed_id) {
             if let Some(style) = custom_style.id_maps.get(changed_id) {
                 set_style(&mut input.style, style);
+                println!("set style");
 
                 if let Some(font_size) = style.font_size {
                     input.editor_style.font_size = font_size;
@@ -849,6 +882,10 @@ pub(crate) fn apply_custom_style_to_text_input(
                 set_style(&mut input.caret_style, caret_style);
             }
             input.editor.editor.set_redraw(true);
+            should_set_unchanged = Some(true);
+        }
+        else {
+            should_set_unchanged = Some(false);
         }
     }
 
@@ -888,6 +925,11 @@ pub(crate) fn apply_custom_style_to_text_input(
                 }
             }
         }
+    }
+
+    if let Some(flag) = should_set_unchanged {
+        custom_style.can_set_unchanged = flag;
+        println!("flag {:?}", flag);
     }
 }
 
@@ -1026,51 +1068,59 @@ pub(crate) fn apply_custom_style_to_text(
     }
 }
 
-pub(crate) fn apply_custom_style_to_modal(
-    mut modal_q: ModalQuery,
-    custom_style: Res<CustomStyle>
-) {
-    if !custom_style.has_changed {
-        return;
-    }
+// pub(crate) fn apply_custom_style_to_modal(
+//     mut modal_q: ModalQuery,
+//     custom_style: Res<CustomStyle>
+// ) {
+//     if !custom_style.has_changed {
+//         return;
+//     }
 
-    for changed_id in custom_style.id_changed.iter() {
-        if let Some(mut modal) = modal_q.find_by_id(changed_id) {
-            if let Some(style) = custom_style.id_maps.get(changed_id) {
-                set_style(&mut modal.style, style);
-            }
+//     for changed_id in custom_style.id_changed.iter() {
+//         if !modal_q.id_match(changed_id) {
+//             continue;
+//         }
 
-            let backdrop_id = format!("{}::backdrop", changed_id);
+//         if let Some(mut modal) = modal_q.find_by_id(changed_id) {
+//             if let Some(style) = custom_style.id_maps.get(changed_id) {
+//                 set_style(&mut modal.style, style);
+//             }
 
-            if let Some(backdrop_style) = custom_style.id_maps.get(&backdrop_id) {
-                set_style(&mut modal.backdrop_style, backdrop_style);
-            }
-        }
-    }
+//             let backdrop_id = format!("{}::backdrop", changed_id);
 
-    for changed_class in custom_style.class_changed.iter() {
-        if let Some(style) = custom_style.class_maps.get(changed_class) {
-            let backdrop_class = format!("{}::backdrop", changed_class);
-            let backdrop_style = custom_style.class_maps.get(&backdrop_class);
+//             if let Some(backdrop_style) = custom_style.id_maps.get(&backdrop_id) {
+//                 set_style(&mut modal.backdrop_style, backdrop_style);
+//             }
+//         }
+//         else {
+//         }
+//     }
 
-            let entities = modal_q.find_by_class(changed_class);
+//     for changed_class in custom_style.class_changed.iter() {
+//         if let Some(style) = custom_style.class_maps.get(changed_class) {
+//             let backdrop_class = format!("{}::backdrop", changed_class);
+//             let backdrop_style = custom_style.class_maps.get(&backdrop_class);
 
-            for entity in entities.into_iter() {
-                if let Some(mut modal) = modal_q.find_by_entity(entity) {
-                    set_style(&mut modal.style, style);
+//             let entities = modal_q.find_by_class(changed_class);
 
-                    if let Some(backdrop_style) = backdrop_style {
-                        set_style(&mut modal.backdrop_style, backdrop_style);
-                    }
-                }
-            }
-        }
-    }
-}
+//             for entity in entities.into_iter() {
+//                 if let Some(mut modal) = modal_q.find_by_entity(entity) {
+//                     set_style(&mut modal.style, style);
+
+//                     if let Some(backdrop_style) = backdrop_style {
+//                         set_style(&mut modal.backdrop_style, backdrop_style);
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
 pub(crate) fn set_style_unchanged(mut custom_style: ResMut<CustomStyle>) {
-    if custom_style.has_changed {
+    if custom_style.has_changed && custom_style.can_set_unchanged {
+        println!("can set unchange");
         custom_style.has_changed = false;
+        custom_style.can_set_unchanged = true;
         custom_style.id_changed.clear();
         custom_style.class_changed.clear();
     }

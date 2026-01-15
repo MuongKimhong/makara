@@ -4,7 +4,7 @@ use bevy::prelude::*;
 fn main() {
     App::new()
         .add_plugins(MakaraPlugin::default())
-        .add_systems(Startup, setup)
+        .add_systems(Startup, (setup, setup_style).chain())
         .run();
 }
 
@@ -18,8 +18,7 @@ fn setup(mut commands: Commands) {
 
         children![
             (
-                dropdown("Background color options").margin_top(px(10)).build(),
-
+                dropdown("Background color options").id("hello").margin_top(px(10)).build(),
                 children![
                     (
                         button("Red").build(),
@@ -39,4 +38,18 @@ fn setup(mut commands: Commands) {
             )
         ]
     ));
+}
+
+fn setup_style(mut custom_style: ResMut<CustomStyle>) {
+    custom_style.bind_id(
+        "hello",
+        Style::new()
+            .background_color(Color::srgb(1.0, 0.0, 0.0))
+    );
+
+    custom_style.bind_id(
+        "hello::overlay",
+        Style::new()
+            .background_color(Color::srgb(0.0, 1.0, 0.0))
+    );
 }

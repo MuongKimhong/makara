@@ -121,10 +121,9 @@ impl<'a, 'w, 's> TextInputWidget<'a, 'w, 's> {
 /// `text_input` system param.
 #[derive(SystemParam)]
 pub struct TextInputQuery<'w, 's> {
+    pub id_class: Query<'w, 's, (Entity, &'static Id, &'static mut Class), With<MakaraTextInput>>,
     pub input_related: Query<'w, 's,  (
         Entity,
-        &'static Id,
-        &'static mut Class,
         &'static mut ComputedNode,
         &'static TextInputCursorEntity,
         &'static TextInputEditorEntity
@@ -141,11 +140,18 @@ pub struct TextInputQuery<'w, 's> {
     pub commands: Commands<'w, 's>
 }
 
+impl<'w, 's> TextInputQuery<'w, 's> {
+    pub fn id_match(&mut self, target_id: &str) -> bool {
+        self.id_class.iter().any(|(_, id, _)| id.0 == target_id)
+    }
+}
+
 impl<'w, 's> WidgetQuery<'w, 's> for TextInputQuery<'w, 's> {
      type WidgetView<'a> = TextInputWidget<'a, 'w, 's> where Self: 'a;
 
      fn get_components<'a>(&'a mut self, entity: Entity) -> Option<Self::WidgetView<'a>> {
         let TextInputQuery {
+            id_class,
             input_related,
             style,
             caret_style,
@@ -154,8 +160,10 @@ impl<'w, 's> WidgetQuery<'w, 's> for TextInputQuery<'w, 's> {
             commands
         } = self;
 
+        let (_, _, class) = id_class.get_mut(entity).ok()?;
+
         let input_related_bundle = input_related.get_mut(entity).ok()?;
-        let (_, _, class, computed, cursor_entity, editor_entity) = input_related_bundle;
+        let (_, computed, cursor_entity, editor_entity) = input_related_bundle;
 
         let (node, bg, border, radius, shadow, z) = style.query.get_mut(entity).ok()?;
 
@@ -194,9 +202,9 @@ impl<'w, 's> WidgetQuery<'w, 's> for TextInputQuery<'w, 's> {
     }
 
     fn find_by_id<'a>(&'a mut self, target_id: &str) -> Option<Self::WidgetView<'a>> {
-        let entity = self.input_related.iter()
-            .find(|(_, id, _, _, _, _)| id.0 == target_id)
-            .map(|(e, _, _, _, _, _)| e)?;
+        let entity = self.id_class.iter()
+            .find(|(_, id, _)| id.0 == target_id)
+            .map(|(e, _, _)| e)?;
 
         self.get_components(entity)
     }
@@ -206,9 +214,9 @@ impl<'w, 's> WidgetQuery<'w, 's> for TextInputQuery<'w, 's> {
     }
 
     fn find_by_class(&self, target_class: &str) -> Vec<Entity> {
-        self.input_related.iter()
-            .filter(|(_, _, class, _, _, _)| class.0.split(" ").any(|word| word == target_class))
-            .map(|(e, _, _, _, _, _)| e)
+        self.id_class.iter()
+            .filter(|(_, _, class)| class.0.split(" ").any(|word| word == target_class))
+            .map(|(e, _, _)| e)
             .collect()
     }
 }
