@@ -20,6 +20,9 @@ pub struct MakaraCheckboxState(pub bool);
 pub struct MakaraCheckboxButton;
 
 #[derive(Component)]
+pub struct MakaraCheckboxText;
+
+#[derive(Component)]
 pub struct CheckboxButtonActiveColor(pub Color);
 
 /// A struct used to mutate components attached to `checkbox` widget.
@@ -51,17 +54,82 @@ impl<'a, 'w, 's> CheckboxWidget<'a, 'w, 's> {
     }
 }
 
+type IsCheckboxOnly = (
+    (
+        With<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraCircular>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
+type IsCheckboxButtonOnly = (
+    (
+        With<MakaraCheckboxButton>,
+        Without<MakaraCheckbox>,
+        Without<MakaraButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraCircular>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
+type IsCheckboxTextOnly = (
+    With<MakaraCheckboxText>,
+    Without<MakaraButtonText>
+);
+
 /// `checkbox` system param.
 #[derive(SystemParam)]
 pub struct CheckboxQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraCheckbox>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraCheckbox>>,
-    pub style: StyleQuery<'w, 's, With<MakaraCheckbox>>,
-    pub button_style: StyleQuery<'w, 's,
-        (With<MakaraCheckboxButton>, Without<MakaraCheckbox>)
-    >,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsCheckboxOnly>,
+    pub style: StyleQuery<'w, 's, IsCheckboxOnly>,
+    pub button_style: StyleQuery<'w, 's, IsCheckboxButtonOnly>,
     pub button_active_color: Query<'w, 's, &'static mut CheckboxButtonActiveColor>,
-    pub text: TextQueryAsChild<'w, 's>,
+    pub text: TextQueryAsChild<'w, 's, IsCheckboxTextOnly>,
     pub children: Query<'w, 's, &'static Children>,
     pub commands: Commands<'w, 's>
 }
@@ -268,7 +336,7 @@ impl Widget for CheckboxBundle {
                     self.button_active_color,
                     MakaraCheckboxButton
                 ),
-                (self.text_bundle, MakaraText),
+                (self.text_bundle, MakaraText, MakaraCheckboxText),
                 self.tooltip_bundle.build()
             ],
             observe(on_checkbox_mouse_over),

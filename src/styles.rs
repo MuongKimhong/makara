@@ -361,6 +361,8 @@ pub(crate) fn apply_custom_style_to_button(
     if !custom_style.has_changed {
         return;
     }
+    let now = std::time::Instant::now();
+    println!("running button {:?}", now);
 
     for changed_id in custom_style.id_changed.iter() {
         if let Some(mut btn) = button_q.find_by_id(changed_id) {
@@ -392,6 +394,8 @@ pub(crate) fn apply_custom_style_to_checkbox(
     if !custom_style.has_changed {
         return;
     }
+    let now = std::time::Instant::now();
+    println!("running checkbox {:?}", now);
 
     for changed_id in custom_style.id_changed.iter() {
         if let Some(mut checkbox) = checkbox_q.find_by_id(changed_id) {

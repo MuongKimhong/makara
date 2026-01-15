@@ -18,12 +18,43 @@ pub struct ColumnWidget<'a, 'w, 's> {
     pub(crate) child_entities: Vec<Entity>
 }
 
+type IsColumnOnly = (
+    (
+        With<MakaraColumn>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraCircular>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraButton>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
 /// `column` system param.
 #[derive(SystemParam)]
 pub struct ColumnQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraColumn>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraColumn>>,
-    pub style: StyleQuery<'w, 's, With<MakaraColumn>>,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsColumnOnly>,
+    pub style: StyleQuery<'w, 's, IsColumnOnly>,
     pub children: Query<'w, 's, &'static Children, With<MakaraColumn>>,
     pub commands: Commands<'w, 's>
 }

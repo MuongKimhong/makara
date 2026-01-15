@@ -10,6 +10,9 @@ use super::*;
 #[derive(Component)]
 pub struct MakaraButton;
 
+#[derive(Component)]
+pub struct MakaraButtonText;
+
 /// A struct used to mutate components attached to `button` widget.
 pub struct ButtonWidget<'a> {
     pub class: &'a mut Class,
@@ -17,13 +20,49 @@ pub struct ButtonWidget<'a> {
     pub text: ChildText<'a>
 }
 
+type IsButtonOnly = (
+    (
+        With<MakaraButton>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraCircular>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
+type IsButtonTextOnly = (
+    With<MakaraButtonText>,
+    Without<MakaraCheckboxText>,
+);
+
 /// `button` system param.
 #[derive(SystemParam)]
 pub struct ButtonQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraButton>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraButton>>,
-    pub style: StyleQuery<'w, 's, With<MakaraButton>>,
-    pub text: TextQueryAsChild<'w, 's>,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsButtonOnly>,
+    pub style: StyleQuery<'w, 's, IsButtonOnly>,
+    pub text: TextQueryAsChild<'w, 's, IsButtonTextOnly>,
     pub children: Query<'w, 's, &'static Children>
 }
 
@@ -143,7 +182,7 @@ impl Widget for ButtonBundle {
             self.id_class,
             self.style,
             children![
-                (self.text_bundle, MakaraText),
+                (self.text_bundle, MakaraText, MakaraButtonText),
                 self.tooltip_bundle.build()
             ],
             WidgetFocus(false),

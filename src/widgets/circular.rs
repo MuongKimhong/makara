@@ -78,12 +78,43 @@ impl<'a, 'w, 's> CircularWidget<'a, 'w, 's> {
     }
 }
 
+type IsCircularOnly = (
+    (
+        With<MakaraCircular>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraButton>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
 /// `circular` system param.
 #[derive(SystemParam)]
 pub struct CircularQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraCircular>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraCircular>>,
-    pub style: StyleQuery<'w, 's, With<MakaraCircular>>,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsCircularOnly>,
+    pub style: StyleQuery<'w, 's, IsCircularOnly>,
     pub custom_style: Query<
         'w, 's,
         (&'static mut CircularColor, &'static mut CircularBackgroundColor)

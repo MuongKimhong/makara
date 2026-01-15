@@ -78,12 +78,43 @@ impl<'a, 'w, 's> WidgetChildren for RowWidget<'a, 'w, 's> {
     }
 }
 
+type IsRowOnly = (
+    (
+        With<MakaraRow>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraCircular>,
+        Without<MakaraColumn>,
+        Without<MakaraRoot>,
+        Without<MakaraButton>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
 /// `row` system param.
 #[derive(SystemParam)]
 pub struct RowQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraRow>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraRow>>,
-    pub style: StyleQuery<'w, 's, With<MakaraRow>>,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsRowOnly>,
+    pub style: StyleQuery<'w, 's, IsRowOnly>,
     pub children: Query<'w, 's, &'static Children, With<MakaraRow>>,
     pub commands: Commands<'w, 's>
 }

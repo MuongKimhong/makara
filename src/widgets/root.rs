@@ -19,12 +19,43 @@ pub struct RootWidget<'a, 'w, 's> {
     pub(crate) child_entities: Vec<Entity>
 }
 
+type IsRootOnly = (
+    (
+        With<MakaraRoot>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraCircular>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraButton>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
 /// `root` system param.
 #[derive(SystemParam)]
 pub struct RootQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraRoot>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraRoot>>,
-    pub style: StyleQuery<'w, 's, With<MakaraRoot>>,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsRootOnly>,
+    pub style: StyleQuery<'w, 's, IsRootOnly>,
     pub children: Query<'w, 's, &'static Children, With<MakaraRoot>>,
     pub commands: Commands<'w, 's>
 }
