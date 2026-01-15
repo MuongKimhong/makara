@@ -21,13 +21,50 @@ pub struct LinkWidget<'a> {
     pub text: ChildText<'a>
 }
 
+type IsLinkOnly = (
+    (
+        With<MakaraLink>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraButton>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraCircular>,
+        Without<MakaraImage>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
+type IsLinkTextOnly = (
+    With<MakaraLinkText>,
+    Without<MakaraCheckboxText>,
+    Without<MakaraButtonText>
+);
+
 /// `link` system param.
 #[derive(SystemParam)]
 pub struct LinkQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraLink>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraLink>>,
-    pub style: StyleQuery<'w, 's, With<MakaraLink>>,
-    pub text: TextQueryAsChild<'w, 's>,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsLinkOnly>,
+    pub style: StyleQuery<'w, 's, IsLinkOnly>,
+    pub text: TextQueryAsChild<'w, 's, IsLinkTextOnly>,
     pub children: Query<'w, 's, &'static Children>
 }
 

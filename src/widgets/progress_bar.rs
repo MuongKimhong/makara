@@ -73,12 +73,43 @@ impl<'a, 'w, 's> ProgressBarWidget<'a, 'w, 's> {
     }
 }
 
+type IsProgressBarOnly = (
+    (
+        With<MakaraProgressBar>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraButton>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraCircular>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
 /// `progress_bar` system param.
 #[derive(SystemParam)]
 pub struct ProgressBarQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraProgressBar>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraProgressBar>>,
-    pub style: StyleQuery<'w, 's, With<MakaraProgressBar>>,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsProgressBarOnly>,
+    pub style: StyleQuery<'w, 's, IsProgressBarOnly>,
     pub value_color: Query<'w, 's, &'static mut ProgressValueColor>,
     pub children: Query<'w, 's, &'static Children>,
     pub commands: Commands<'w, 's>

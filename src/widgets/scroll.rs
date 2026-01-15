@@ -138,6 +138,68 @@ impl<'a, 'w, 's> WidgetChildren for ScrollWidget<'a, 'w, 's> {
     }
 }
 
+type IsScrollOnly = (
+    (
+        With<MakaraScroll>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraCircular>,
+        Without<MakaraColumn>,
+        Without<MakaraRoot>,
+        Without<MakaraButton>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraRow>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
+type IsScrollBarOnly = (
+    (
+        With<MakaraScrollbar>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraCircular>,
+        Without<MakaraColumn>,
+        Without<MakaraRoot>,
+        Without<MakaraButton>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraRow>,
+        Without<MakaraScroll>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
 /// `scroll` system param.
 #[derive(SystemParam)]
 pub struct ScrollQuery<'w, 's> {
@@ -148,12 +210,11 @@ pub struct ScrollQuery<'w, 's> {
             &'static mut Class,
             &'static ScrollBarEntity,
             &'static ScrollMovePanelEntity
-        )
+        ),
+        IsScrollOnly
     >,
-    pub style: StyleQuery<'w, 's, With<MakaraScroll>>,
-    pub bar_style: StyleQuery<'w, 's,
-        (With<MakaraScrollbar>, Without<MakaraScroll>)
-    >,
+    pub style: StyleQuery<'w, 's, IsScrollOnly>,
+    pub bar_style: StyleQuery<'w, 's, IsScrollBarOnly>,
     pub children: Query<'w, 's, Option<&'static Children>, With<MakaraScrollMovePanel>>,
     pub commands: Commands<'w, 's>
 }

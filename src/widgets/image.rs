@@ -56,6 +56,37 @@ impl<'a, 'w, 's> ImageWidget<'a, 'w, 's> {
     }
 }
 
+type IsImageOnly = (
+    (
+        With<MakaraImage>,
+        Without<MakaraCheckbox>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraButton>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraCircular>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
 /// `image` system param.
 #[derive(SystemParam)]
 pub struct ImageQuery<'w, 's> {
@@ -69,9 +100,9 @@ pub struct ImageQuery<'w, 's> {
             &'static mut ImagePath,
             &'static mut ImageLoadStateNeedsCheck
         ),
-        With<MakaraImage>
+        IsImageOnly
     >,
-    pub style: StyleQuery<'w, 's, With<MakaraImage>>,
+    pub style: StyleQuery<'w, 's, IsImageOnly>,
     pub asset_server: Res<'w, AssetServer>,
     pub(crate) handle_maps: ResMut<'w, ImageHandleMap>,
     pub commands: Commands<'w, 's>

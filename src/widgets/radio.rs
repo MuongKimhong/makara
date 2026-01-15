@@ -26,6 +26,9 @@ pub struct MakaraRadioSelected(pub String);
 #[derive(Component)]
 pub struct MakaraRadioButton;
 
+#[derive(Component)]
+pub struct MakaraRadioText;
+
 /// A struct used to mutate components attached to `radio` widget.
 pub struct RadioWidget<'a, 'w, 's> {
     pub entity: Entity,
@@ -36,16 +39,82 @@ pub struct RadioWidget<'a, 'w, 's> {
     pub commands: &'a mut Commands<'w, 's>
 }
 
+type IsRadioOnly = (
+    (
+        With<MakaraRadio>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraCircular>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraCheckbox>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
+type IsRadioButtonOnly = (
+    (
+        With<MakaraRadioButton>,
+        Without<MakaraCheckbox>,
+        Without<MakaraButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraCircular>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraRadio>,
+        Without<MakaraRadioGroup>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
+type IsRadioTextOnly = (
+    With<MakaraRadioText>,
+    Without<MakaraCheckboxText>,
+    Without<MakaraButtonText>
+);
+
 /// `radio` system param.
 #[derive(SystemParam)]
 pub struct RadioQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraRadio>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraRadio>>,
-    pub style: StyleQuery<'w, 's, With<MakaraRadio>>,
-    pub button_style: StyleQuery<'w, 's,
-        (With<MakaraRadioButton>, Without<MakaraRadio>)
-    >,
-    pub text: TextQueryAsChild<'w, 's>,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsRadioOnly>,
+    pub style: StyleQuery<'w, 's, IsRadioOnly>,
+    pub button_style: StyleQuery<'w, 's, IsRadioButtonOnly>,
+    pub text: TextQueryAsChild<'w, 's, IsRadioTextOnly>,
     pub children: Query<'w, 's, &'static Children>,
     pub commands: Commands<'w, 's>
 }
@@ -237,7 +306,7 @@ impl Widget for RadioBundle {
             WidgetFocus(false),
             children![
                 (self.button_style, MakaraRadioButton),
-                (self.text_bundle, MakaraText),
+                (self.text_bundle, MakaraText, MakaraRadioText),
                 self.tooltip_bundle.build()
             ],
             observe(on_radio_mouse_over),
@@ -449,12 +518,44 @@ impl<'a,'w, 's> RadioGroupWidget<'a, 'w, 's> {
     }
 }
 
+type IsRadioGroupOnly = (
+    (
+        With<MakaraRadioGroup>,
+        Without<MakaraCheckboxButton>,
+        Without<MakaraButton>,
+        Without<MakaraColumn>,
+        Without<MakaraRow>,
+        Without<MakaraRoot>,
+        Without<MakaraCircular>,
+        Without<MakaraDropdown>,
+        Without<MakaraDropdownOverlay>,
+        Without<MakaraImage>,
+        Without<MakaraLink>,
+        Without<MakaraModal>,
+        Without<MakaraModalBackdrop>,
+    ),
+    (
+        Without<MakaraProgressBar>,
+        Without<MakaraCheckbox>,
+        Without<MakaraRadio>,
+        Without<MakaraScroll>,
+        Without<MakaraScrollbar>,
+        Without<MakaraTextInput>,
+        Without<MakaraTextInputCursor>,
+        Without<MakaraSlider>,
+        Without<MakaraSliderThumb>,
+        Without<MakaraSelect>,
+        Without<MakaraSelectOverlay>,
+    )
+);
+
+
 /// `radio_group` system param.
 #[derive(SystemParam)]
 pub struct RadioGroupQuery<'w, 's> {
     pub id: Query<'w, 's, (Entity, &'static Id), With<MakaraRadioGroup>>,
-    pub class: Query<'w, 's, (Entity, &'static mut Class), With<MakaraRadioGroup>>,
-    pub style: StyleQuery<'w, 's, With<MakaraRadioGroup>>,
+    pub class: Query<'w, 's, (Entity, &'static mut Class), IsRadioGroupOnly>,
+    pub style: StyleQuery<'w, 's, IsRadioGroupOnly>,
     pub radios: Query<'w, 's, &'static Children, With<MakaraRadio>>,
     pub texts: Query<'w, 's, &'static Text>,
     pub children: Query<'w, 's, &'static Children>,
