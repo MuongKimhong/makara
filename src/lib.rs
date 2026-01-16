@@ -97,8 +97,8 @@ pub mod prelude {
             app.add_plugins(UiMaterialPlugin::<CircularMaterial>::default());
 
             app.insert_resource(MakaraTheme::default());
-            app.insert_resource(MakaraTextEditContext::default());
             app.insert_resource(MakaraModalState::default());
+            app.insert_resource(MakaraTextEditContext::default());
             app.insert_resource(DropdownOverlayAndTextAdded::default());
             app.insert_resource(CanBeScrolled::default());
             app.insert_resource(ImageHandleMap::default());
@@ -108,6 +108,12 @@ pub mod prelude {
                 font_path: self.font_path.clone(),
                 font_handle: None
             });
+
+            #[cfg(target_arch = "wasm32")]
+            {
+                let (tx, rx) = crossbeam_channel::bounded::<WasmPaste>(1);
+                app.insert_resource(WasmPasteAsyncChannel { tx, rx });
+            }
 
             let systems = (
                 // btn
@@ -202,7 +208,12 @@ pub mod prelude {
                     detect_new_text_input_added,
                     update_text_input_render,
                     handle_text_input_typing,
-                    handle_cursor_blink
+                    handle_cursor_blink,
+
+                    #[cfg(target_arch = "wasm32")]
+                    {
+                        on_wasm_paste
+                    }
                 )
                 .run_if(can_run_text_input_systems),
 

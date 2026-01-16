@@ -240,7 +240,7 @@ fn on_link_click(
     for children in links.iter() {
         for child in children {
             if let Ok(text) = link_texts.get(*child) {
-                let _ = open::that(&text.0);
+                let _ = webbrowser::open(&text.0);
                 break;
             }
         }

@@ -14,6 +14,40 @@ use std::sync::Arc;
 use crate::{consts::*, events::*, utils::*, on_mouse_out};
 use super::*;
 
+#[cfg(target_arch = "wasm32")]
+use js_sys::Promise;
+
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::wasm_bindgen;
+
+#[cfg(target_arch = "wasm32")]
+pub struct WasmPaste {
+    pub text: String,
+    pub entity: Entity,
+}
+
+/// Async channel for receiving from the clipboard in Wasm
+#[cfg(target_arch = "wasm32")]
+#[derive(Resource, Clone)]
+pub struct WasmPasteAsyncChannel {
+    pub tx: crossbeam_channel::Sender<WasmPaste>,
+    pub rx: crossbeam_channel::Receiver<WasmPaste>,
+}
+
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+pub fn write_clipboard_wasm(text: &str) {
+    let clipboard = web_sys::window().unwrap().navigator().clipboard();
+    let _result = clipboard.write_text(text);
+}
+
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+pub fn read_clipboard_wasm() -> Promise {
+    let clipboard = web_sys::window().unwrap().navigator().clipboard();
+    clipboard.read_text()
+}
+
 /// Marker component for `text_input`.
 #[derive(Component)]
 pub struct MakaraTextInput;
@@ -782,7 +816,8 @@ pub(crate) fn handle_text_input_typing(
         &ComputedNode
     )>,
     inputs: Query<(Entity, &WidgetFocus, &TextInputEditorEntity), With<MakaraTextInput>>,
-    keys: Res<ButtonInput<KeyCode>>
+    keys: Res<ButtonInput<KeyCode>>,
+    #[cfg(target_arch = "wasm32")] wasm_channel: Option<Res<WasmPasteAsyncChannel>>,
 ) {
     for (input_entity, w_focus, editor_entity) in inputs.iter() {
         if !w_focus.0 {
@@ -806,14 +841,25 @@ pub(crate) fn handle_text_input_typing(
                     continue;
                 }
                 else if is_ctrl_v_pressed(&keys, ev.key_code) {
-                    input_edit.paste_text(&mut ctx, &mut value.0);
+                    #[cfg(not(target_arch = "wasm32"))]
+                    {
+                        input_edit.paste_text(&mut ctx, &mut value.0);
 
-                    if old_value != value.0 {
-                        commands.trigger(Change {
-                            entity: input_entity,
-                            data: value.0.clone()
-                        });
+                        if old_value != value.0 {
+                            commands.trigger(Change {
+                                entity: input_entity,
+                                data: value.0.clone()
+                            });
+                        }
                     }
+
+                    #[cfg(target_arch = "wasm32")]
+                    {
+                        if let Some(channel) = wasm_channel.as_deref() {
+                            input_edit.paste_text_wasm(input_entity, channel);
+                        }
+                    }
+
                     continue;
                 }
 
@@ -835,6 +881,54 @@ pub(crate) fn handle_text_input_typing(
                 }
             }
         }
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+pub(crate) fn on_wasm_paste(
+    channel: Res<WasmPasteAsyncChannel>,
+    inputs: Query<(Entity, &WidgetFocus, &TextInputEditorEntity), With<MakaraTextInput>>,
+    mut ctx: ResMut<MakaraTextEditContext>,
+    mut editors: Query<(&mut TextEditor, &mut TextInputValue)>,
+    mut commands: Commands
+) {
+    let inlet = channel.rx.try_recv();
+
+    match inlet {
+        Ok(inlet) => {
+            for (input_entity, w_focus, editor_entity) in inputs.iter() {
+                if !w_focus.0 {
+                    continue;
+                }
+
+                if let Ok((mut input_edit, mut value)) = editors.get_mut(editor_entity.0) {
+                    let old_value = value.0.clone();
+
+                    if value.0.is_empty() {
+                        input_edit.clear_text_editor(&mut ctx);
+                    }
+                    input_edit.editor.insert_string(&inlet.text, None);
+                    input_edit.editor.with_buffer(|buffer| {
+                        let full_text: String = buffer
+                            .lines
+                            .iter()
+                            .map(|line| line.text())
+                            .collect::<Vec<_>>()
+                            .join("\n");
+
+                        value.0 = full_text;
+                    });
+
+                    if old_value != value.0 {
+                        commands.trigger(Change {
+                            entity: input_entity,
+                            data: value.0.clone()
+                        });
+                    }
+                }
+            }
+        }
+        Err(_) => {}
     }
 }
 

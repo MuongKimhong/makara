@@ -147,6 +147,8 @@ pub struct Loaded {
     pub entity: Entity
 }
 
+/// This event fires when a page is loaded.
+/// Used by `root` widget.
 #[derive(EntityEvent, Debug)]
 pub struct PageLoaded {
     pub entity: Entity,

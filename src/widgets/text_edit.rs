@@ -10,8 +10,23 @@ use smol_str::SmolStr;
 #[cfg(not(target_arch = "wasm32"))]
 use arboard::Clipboard;
 
+#[cfg(target_arch = "wasm32")]
+use crate::widgets::text_input::{
+    write_clipboard_wasm, read_clipboard_wasm,
+    WasmPaste, WasmPasteAsyncChannel
+};
+
 #[cfg(all(not(target_arch = "wasm32"), target_os = "linux"))]
 use arboard::{SetExtLinux, LinuxClipboardKind};
+
+#[cfg(target_arch = "wasm32")]
+use bevy::tasks::AsyncComputeTaskPool;
+#[cfg(target_arch = "wasm32")]
+use js_sys::Promise;
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen_futures::JsFuture;
 
 use crate::MakaraTextEditContext;
 
@@ -301,48 +316,77 @@ impl TextEditor {
     }
 
     pub fn copy_text(&mut self, value: &String) {
+        if self.selected_text.trim().is_empty() {
+            return;
+        }
+
+        if value.is_empty() {
+            return;
+        }
+
         #[cfg(not(target_arch = "wasm32"))]
         {
-            if self.selected_text.trim().is_empty() {
-                return;
-            }
-
-            if value.is_empty() {
-                return;
-            }
-
             let mut ctx = Clipboard::new().unwrap();
             #[cfg(target_os = "linux")]
             ctx.set().clipboard(LinuxClipboardKind::Clipboard).text(self.selected_text.clone()).unwrap();
             #[cfg(not(target_os = "linux"))]
             ctx.set_text(self.selected_text.clone()).unwrap();
         }
+
+        #[cfg(target_arch = "wasm32")]
+        {
+            write_clipboard_wasm(&self.selected_text);
+        }
     }
 
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn paste_text(
         &mut self,
         ctx: &mut MakaraTextEditContext,
-        value: &mut String
+        value: &mut String,
     ) {
-        let mut clipboard_ctx = Clipboard::new().unwrap();
-        let copied_text = clipboard_ctx.get_text().ok();
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let mut clipboard_ctx = Clipboard::new().unwrap();
+            let copied_text = clipboard_ctx.get_text().ok();
 
-        if let Some(text) = copied_text {
-            if value.is_empty() {
-                self.clear_text_editor(ctx);
+            if let Some(text) = copied_text {
+                if value.is_empty() {
+                    self.clear_text_editor(ctx);
+                }
+                self.editor.insert_string(&text, None);
             }
-            self.editor.insert_string(&text, None);
+
+            self.editor.with_buffer(|buffer| {
+                let full_text: String = buffer
+                    .lines
+                    .iter()
+                    .map(|line| line.text())
+                    .collect::<Vec<_>>()
+                    .join("\n");
+
+                *value = full_text;
+            });
         }
+    }
 
-        self.editor.with_buffer(|buffer| {
-            let full_text: String = buffer
-                .lines
-                .iter()
-                .map(|line| line.text())
-                .collect::<Vec<_>>()
-                .join("\n");
+    #[cfg(target_arch = "wasm32")]
+    pub fn paste_text_wasm(
+        &mut self,
+        entity: Entity,
+        wasm_channel: &WasmPasteAsyncChannel
+    ) {
+        let tx = wasm_channel.tx.clone();
+        let _task = AsyncComputeTaskPool::get().spawn(async move {
+            let promise = read_clipboard_wasm();
 
-            *value = full_text;
+            let result = JsFuture::from(promise).await;
+
+            if let Ok(js_text) = result {
+                if let Some(text) = js_text.as_string() {
+                    let _ = tx.try_send(WasmPaste { text, entity });
+                }
+            }
         });
     }
 }
