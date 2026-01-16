@@ -41,13 +41,13 @@ pub struct Style {
     pub font_size: Option<f32>,
     pub layout: Option<TextLayout>,
 
-    // specifically for circular
+    /// Circular spinning color.
     pub spin_color: Option<Color>,
 
-    // specifically for progress bar
+    /// Progress bar value color.
     pub progress_color: Option<Color>,
 
-    // sepcifically for text input
+    /// Text input's selection and placeholder color.
     pub selection_color: Option<Color>,
     pub placeholder_color: Option<Color>
 }

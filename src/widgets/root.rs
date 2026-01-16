@@ -10,6 +10,9 @@ use super::*;
 #[derive(Component)]
 pub struct MakaraRoot;
 
+#[derive(Component, Default)]
+pub struct RouteName(pub String);
+
 /// A struct used to mutate components attached to `root` widget.
 pub struct RootWidget<'a, 'w, 's> {
     pub entity: Entity,
@@ -19,7 +22,7 @@ pub struct RootWidget<'a, 'w, 's> {
     pub(crate) child_entities: Vec<Entity>
 }
 
-type IsRootOnly = (
+pub type IsRootOnly = (
     (
         With<MakaraRoot>,
         Without<MakaraCheckbox>,
@@ -173,7 +176,8 @@ impl<'w, 's> WidgetQuery<'w, 's> for RootQuery<'w, 's> {
 #[derive(Bundle)]
 pub struct RootBundle {
     pub id_class: IdAndClass,
-    pub style: ContainerStyle
+    pub style: ContainerStyle,
+    pub route: RouteName
 }
 
 impl Default for RootBundle {
@@ -192,8 +196,16 @@ impl Default for RootBundle {
             shadow: BoxShadow::default(),
             ..default()
         };
+        let route = RouteName::default();
 
-        Self { style, id_class: IdAndClass::default() }
+        Self { style, id_class: IdAndClass::default(), route }
+    }
+}
+
+impl RootBundle {
+    pub fn route(mut self, name: &str) -> Self {
+        self.route.0 = name.to_string();
+        self
     }
 }
 
@@ -202,6 +214,7 @@ impl Widget for RootBundle {
         (
             self.id_class,
             self.style,
+            self.route,
             MakaraRoot
         )
     }

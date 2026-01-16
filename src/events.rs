@@ -1,6 +1,7 @@
 //! Collection of events used by Makara's widgets.
 
 use bevy::prelude::*;
+use crate::routers::*;
 
 /// This event fires when a widget is active.
 /// This event is used by `checkbox`, `modal`, `dropdown`, `select`, `radio`.
@@ -144,4 +145,11 @@ pub struct Loading {
 #[derive(EntityEvent, Debug)]
 pub struct Loaded {
     pub entity: Entity
+}
+
+#[derive(EntityEvent, Debug)]
+pub struct PageLoaded {
+    pub entity: Entity,
+    pub name: String,
+    pub param: Param
 }

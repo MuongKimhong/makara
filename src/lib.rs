@@ -29,6 +29,7 @@ pub mod events;
 pub mod utils;
 pub mod styles;
 pub mod colors;
+pub mod routers;
 
 pub mod prelude {
     use bevy::prelude::*;
@@ -41,6 +42,7 @@ pub mod prelude {
     pub use crate::events::*;
     pub use crate::styles::*;
     pub use crate::colors::*;
+    pub use crate::routers::*;
     pub use bevy::ui_widgets::observe;
 
     /// Schedule for this plugin to run at.
@@ -101,6 +103,7 @@ pub mod prelude {
             app.insert_resource(CanBeScrolled::default());
             app.insert_resource(ImageHandleMap::default());
             app.insert_resource(CustomStyle::default());
+            app.insert_resource(Router::default());
             app.insert_resource(CustomFont {
                 font_path: self.font_path.clone(),
                 font_handle: None
@@ -232,7 +235,8 @@ pub mod prelude {
             app.add_systems(Startup, setup);
             app.add_systems(Update, (
                 detect_makara_text_added,
-                check_unique_id
+                check_unique_id,
+                handle_match_route_to_root
             ));
             app.add_systems(
                 Update,
