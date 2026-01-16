@@ -9,10 +9,10 @@ repository = "https://github.com/MuongKimhong/makara"
 license = "MIT"
 
 [dependencies]
-open = "5.3.3"
 cosmic-text = "0.15.0"
+webbrowser = "1.0.6"
 smol_str = "0.2.2"
-arboard = "3.6.1"
+crossbeam-channel = "0.5.15"
 bevy = { version="0.18.0", features=[
     "debug",
     "default_font",
@@ -21,6 +21,20 @@ bevy = { version="0.18.0", features=[
     "webp",
     "https",
     "experimental_bevy_ui_widgets"
+]}
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+arboard = "3.6.1"
+os = "0.1.0"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+js-sys = "0.3.85"
+wasm-bindgen = "0.2.108"
+wasm-bindgen-futures = "0.4.50"
+web-sys = { version = "0.3.77", features = [
+  "Clipboard",
+  "Navigator",
+  "Window",
 ]}
 
 [lib]
