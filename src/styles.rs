@@ -127,18 +127,118 @@ impl Style {
         self
     }
 
-    pub fn margin(mut self, value: UiRect) -> Self {
-        self.margin = Some(value);
+    pub fn margin(mut self, value: Val) -> Self {
+        self.margin = Some(UiRect::all(value));
         self
     }
 
-    pub fn padding(mut self, value: UiRect) -> Self {
-        self.padding = Some(value);
+    pub fn margin_x(mut self, value: Val) -> Self {
+        let m = self.margin.get_or_insert_with(UiRect::default);
+        m.left = value;
+        m.right = value;
         self
     }
 
-    pub fn border(mut self, value: UiRect) -> Self {
-        self.border = Some(value);
+    pub fn margin_y(mut self, value: Val) -> Self {
+        let m = self.margin.get_or_insert_with(UiRect::default);
+        m.top = value;
+        m.bottom = value;
+        self
+    }
+
+    pub fn margin_top(mut self, value: Val) -> Self {
+        let m = self.margin.get_or_insert_with(UiRect::default);
+        m.top = value;
+        self
+    }
+
+    pub fn margin_bottom(mut self, value: Val) -> Self {
+        let m = self.margin.get_or_insert_with(UiRect::default);
+        m.bottom = value;
+        self
+    }
+
+    pub fn margin_left(mut self, value: Val) -> Self {
+        let m = self.margin.get_or_insert_with(UiRect::default);
+        m.left = value;
+        self
+    }
+
+    pub fn margin_right(mut self, value: Val) -> Self {
+        let m = self.margin.get_or_insert_with(UiRect::default);
+        m.right = value;
+        self
+    }
+
+    pub fn padding(mut self, value: Val) -> Self {
+        self.padding = Some(UiRect::all(value));
+        self
+    }
+
+    pub fn padding_x(mut self, value: Val) -> Self {
+        let p = self.padding.get_or_insert_with(UiRect::default);
+        p.left = value;
+        p.right = value;
+        self
+    }
+
+    pub fn padding_y(mut self, value: Val) -> Self {
+        let p = self.padding.get_or_insert_with(UiRect::default);
+        p.top = value;
+        p.bottom = value;
+        self
+    }
+
+    pub fn padding_top(mut self, value: Val) -> Self {
+        let p = self.padding.get_or_insert_with(UiRect::default);
+        p.top = value;
+        self
+    }
+
+    pub fn padding_bottom(mut self, value: Val) -> Self {
+        let p = self.padding.get_or_insert_with(UiRect::default);
+        p.bottom = value;
+        self
+    }
+
+    pub fn padding_left(mut self, value: Val) -> Self {
+        let p = self.padding.get_or_insert_with(UiRect::default);
+        p.left = value;
+        self
+    }
+
+    pub fn padding_right(mut self, value: Val) -> Self {
+        let p = self.padding.get_or_insert_with(UiRect::default);
+        p.right = value;
+        self
+    }
+
+    pub fn border(mut self, value: Val) -> Self {
+        self.border = Some(UiRect::all(value));
+        self
+    }
+
+    pub fn border_top(mut self, value: Val) -> Self {
+        let b = self.border.get_or_insert_with(UiRect::default);
+        b.top = value;
+        self
+    }
+
+    pub fn border_bottom(mut self, value: Val) -> Self {
+        let b = self.border.get_or_insert_with(UiRect::default);
+        b.bottom = value;
+        self
+    }
+
+    pub fn border_left(mut self, value: Val) -> Self {
+        let b = self.border.get_or_insert_with(UiRect::default);
+        b.left = value;
+        self
+    }
+
+    pub fn border_right(mut self, value: Val) -> Self {
+        let b = self.border.get_or_insert_with(UiRect::default);
+        b.right = value;
         self
     }
 
@@ -189,6 +289,30 @@ impl Style {
 
     pub fn border_color(mut self, value: impl IntoColor) -> Self {
         self.border_color = Some(BorderColor::all(value.into_color()));
+        self
+    }
+
+    pub fn border_top_color(mut self, value: impl IntoColor) -> Self {
+        let bc = self.border_color.get_or_insert_with(BorderColor::default);
+        bc.top = value.into_color();
+        self
+    }
+
+    pub fn border_bottom_color(mut self, value: impl IntoColor) -> Self {
+        let bc = self.border_color.get_or_insert_with(BorderColor::default);
+        bc.bottom = value.into_color();
+        self
+    }
+
+    pub fn border_left_color(mut self, value: impl IntoColor) -> Self {
+        let bc = self.border_color.get_or_insert_with(BorderColor::default);
+        bc.left = value.into_color();
+        self
+    }
+
+    pub fn border_right_color(mut self, value: impl IntoColor) -> Self {
+        let bc = self.border_color.get_or_insert_with(BorderColor::default);
+        bc.right = value.into_color();
         self
     }
 

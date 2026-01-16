@@ -142,6 +142,18 @@ pub trait SetContainerStyle: Sized {
         self
     }
 
+    fn margin_x(mut self, value: Val) -> Self {
+        self.container_style().node.margin.left = value;
+        self.container_style().node.margin.right = value;
+        self
+    }
+
+    fn margin_y(mut self, value: Val) -> Self {
+        self.container_style().node.margin.top = value;
+        self.container_style().node.margin.bottom = value;
+        self
+    }
+
     fn margin_top(mut self, value: Val) -> Self {
         self.container_style().node.margin.top = value;
         self
@@ -167,6 +179,18 @@ pub trait SetContainerStyle: Sized {
         self
     }
 
+    fn padding_x(mut self, value: Val) -> Self {
+        self.container_style().node.padding.left = value;
+        self.container_style().node.padding.right = value;
+        self
+    }
+
+    fn padding_y(mut self, value: Val) -> Self {
+        self.container_style().node.padding.top = value;
+        self.container_style().node.padding.bottom = value;
+        self
+    }
+
     fn padding_top(mut self, value: Val) -> Self {
         self.container_style().node.padding.top = value;
         self
@@ -187,6 +211,31 @@ pub trait SetContainerStyle: Sized {
         self
     }
 
+    fn border(mut self, value: Val) -> Self {
+        self.container_style().node.border = UiRect::all(value);
+        self
+    }
+
+    fn border_top(mut self, value: Val) -> Self {
+        self.container_style().node.border.top = value;
+        self
+    }
+
+    fn border_bottom(mut self, value: Val) -> Self {
+        self.container_style().node.border.bottom = value;
+        self
+    }
+
+    fn border_left(mut self, value: Val) -> Self {
+        self.container_style().node.border.left = value;
+        self
+    }
+
+    fn border_right(mut self, value: Val) -> Self {
+        self.container_style().node.border.right = value;
+        self
+    }
+
     fn background_color(mut self, color: impl IntoColor) -> Self {
         self.container_style().background_color.0 = color.into_color();
         self
@@ -197,8 +246,28 @@ pub trait SetContainerStyle: Sized {
         self
     }
 
-    fn border_color(mut self, color: BorderColor) -> Self {
-        self.container_style().border_color = color;
+    fn border_color(mut self, color: impl IntoColor) -> Self {
+        self.container_style().border_color = BorderColor::all(color.into_color());
+        self
+    }
+
+    fn border_top_color(mut self, color: impl IntoColor) -> Self {
+        self.container_style().border_color.top = color.into_color();
+        self
+    }
+
+    fn border_bottom_color(mut self, color: impl IntoColor) -> Self {
+        self.container_style().border_color.bottom = color.into_color();
+        self
+    }
+
+    fn border_left_color(mut self, color: impl IntoColor) -> Self {
+        self.container_style().border_color.left = color.into_color();
+        self
+    }
+
+    fn border_right_color(mut self, color: impl IntoColor) -> Self {
+        self.container_style().border_color.right = color.into_color();
         self
     }
 
