@@ -2,11 +2,10 @@ Each widget type has its own query and blueprint.
 Once widgets are built, you can query any widgets within systems using 
 its corresponding query struct.
 
-For example, let's say we a text and a button. Once the button is clicked,
+For example, let's say we have a text and a button. Once the button is clicked,
 we want to update the text.
 
 ```rust
-
 (
     text("Hello world").id("my-text").build(),
     (

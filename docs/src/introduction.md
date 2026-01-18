@@ -4,7 +4,7 @@
 
 ### What is Makara? and Why Makara?
 
-Makara is Bevy's UI simplifier. That's it.
+Makara is a UI Library built on top of Bevy engine.
 
 [Bevy](https://bevy.org/) is a game engine written in Rust, based on 
 [ECS](https://bevy.org/learn/quick-start/getting-started/ecs/) architecture. 
@@ -58,7 +58,7 @@ fn setup(mut commands: Commands) {
     commands.spawn((
         button("Click me")
             .padding(px(10))
-            .background_color(Color::srgb(1.0, 1.0, 1.0))
+            .background_color("white")
             .build(),
         
         observe(on_button_click)
@@ -86,7 +86,10 @@ That means you can render any kind of heavy graphic within your application with
 ### Core Features
 - Built-in widgets including **button, modal, text input** and more.
 - Leverages Bevy’s **massive parallelism** for smooth and efficient rendering.
+- Routing systems.
+- Custom styling with ID & Classes similar to HTML/CSS.
 - High level API and flexible.
+
 
 ## Installation
 ```

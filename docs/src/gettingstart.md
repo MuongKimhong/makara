@@ -50,8 +50,8 @@ of **Makara** or **Bevy**, component is just a rust struct or enum.
   ```rust
   // create button with background color of red and border color of blue
   button("Click me")
-    .background_color(Color::RED)
-    .border_color(COLOR::BLUE)
+    .background_color("red")
+    .border_color("blue")
     .build();
   ```
 
@@ -62,8 +62,8 @@ of **Makara** or **Bevy**, component is just a rust struct or enum.
 
   ```rust
   (
-      BackgroundColor(Color::RED),
-      BorderColor(Color::BLUE),
+      BackgroundColor(Color::srgb(1.0, 0.0, 0.0)),
+      BorderColor(Color::srgb(0.0, 1.0, 0.0)),
       // other components
   )
   ```
@@ -71,7 +71,7 @@ of **Makara** or **Bevy**, component is just a rust struct or enum.
   It's then up to the **Bevy** engine to translate it to shading language and render it on your GPU.
 
 - **System**: systems are just rust functions that take specific arguments and run at specific schedule. `Startup` schedule means the
-functions run only 1 time at the beginning. `Update` schedule means the functions run every single frame. And 
+functions run only once at the beginning. `Update` schedule means the functions run every single frame. And 
 of course, there are more schedules than just that.
 
   ```rust
