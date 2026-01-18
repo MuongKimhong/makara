@@ -22,6 +22,10 @@ impl Param {
         self.maps.insert(key.to_string(), value.to_string());
         self
     }
+
+    pub fn get(&self, key: &str) -> Option<&str> {
+        self.maps.get(key).map(|s| s.as_str())
+    }
 }
 
 impl From<()> for Param {
