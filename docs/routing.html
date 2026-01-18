@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Getting Start - Makara Book</title>
+        <title>Routing - Makara Book</title>
 
 
         <!-- Custom HTML head -->
@@ -174,155 +174,170 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h4 id="important"><a class="header" href="#important">IMPORTANT</a></h4>
-<p>Makara relies entire on <a href="https://bevyengine.org/">Bevy</a>’s UI system and ECS. When you use <strong>Makara</strong>,
-you’re actually using the <strong>Bevy engine</strong>, with <strong>Makara</strong> providing an abstraction for its UI system
-to help you build GUI applications with ease.</p>
-<p>A solid understanding of <strong>Bevy’s ECS</strong> is required. If you’re new to <strong>Bevy</strong>,
-I recommend checking out <a href="https://bevyengine.org/learn/quick-start/introduction/">Bevy’s quick start guide</a>.</p>
-<h3 id="getting-start"><a class="header" href="#getting-start">Getting Start</a></h3>
-<pre class="playground"><code class="language-rust">use makara::prelude::*;
-use bevy::prelude::*;
-
-fn main() {
+                        <h2 id="routing"><a class="header" href="#routing">Routing</a></h2>
+<p>Routing in Makara is really easy. There are only 3 steps.</p>
+<ol>
+<li>Specifying route name on <code>root</code> widget.</li>
+<li>Register route.</li>
+<li>Navigating.</li>
+</ol>
+<h3 id="specifying-route"><a class="header" href="#specifying-route">Specifying route</a></h3>
+<p>Just like I mentioned in previous chapter about <a href="gettingstart.html#understand-makara-hierarchy">hierarchy</a>,
+we need to use <code>root</code> widget as a starting point for UI hierarchy.</p>
+<p>If you want to have multiple pages or views, you need to create multiple starting points. In other words,
+each <code>root</code> defines one page or view.</p>
+<p>For example, let’s say you want to have <strong>Home</strong> view and <strong>About Us</strong> view.</p>
+<pre class="playground"><code class="language-rust">fn main() {
     App::new()
         .add_plugins(MakaraPlugin::default())
-        .add_systems(Startup, setup)
+        .add_systems(Startup, (setup_home_view, setup_about_us_view))
         .run();
 }
 
-fn setup(mut commands: Commands) {
+fn setup_home_view(mut commands: Commands) {
     commands.spawn((
         root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
+            .route("home") // specifying route name
             .build(),
-
+        
         children![
-            text("Hello world").font_size(20.0).build()
+            text("This is Home view").build()
+        ]
+    ));
+}
+
+fn setup_about_us_view(mut commands: Commands) {
+    commands.spawn((
+        root()
+            .route("about-us") // specifying route name
+            .build(),
+        
+        children![
+            text("This is About Us view").build()
         ]
     ));
 }</code></pre>
-<h3 id="an-overview-of-ecs"><a class="header" href="#an-overview-of-ecs">An overview of ECS</a></h3>
-<p>Because this library is powered by a game engine which is based on ECS architecture, it’s a must to understand how ECS works.</p>
-<p>ECS stands for <strong>Entity-Component-System</strong>.</p>
-<ul>
-<li>
-<p><strong>Entity</strong>: entities are objects you see when you run your application. A button widget is an entity,
-a text widget is an entity, the list goes on. Each entity consists of one or multiple <strong>components</strong>.</p>
-</li>
-<li>
-<p><strong>Component</strong>: think of component as a tag. It’s used to identify different kind of data. In the context
-of <strong>Makara</strong> or <strong>Bevy</strong>, component is just a rust struct or enum.</p>
-<p>For example, you create a button with background color of red and border color of blue in <strong>Makara</strong>.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// create button with background color of red and border color of blue
-button("Click me")
-  .background_color("red")
-  .border_color("blue")
-  .build();
-<span class="boring">}</span></code></pre>
-<p>Under the hood, the button is just an entity that contains these
-2 components, <a href="https://docs.rs/bevy/latest/bevy/prelude/struct.BackgroundColor.html"><code>BackgroundColor</code></a>
-and <a href="https://docs.rs/bevy/latest/bevy/prelude/struct.BorderColor.html"><code>BorderColor</code></a> which looks
-something like this.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>(
-    BackgroundColor(Color::srgb(1.0, 0.0, 0.0)),
-    BorderColor(Color::srgb(0.0, 1.0, 0.0)),
-    // other components
-)
-<span class="boring">}</span></code></pre>
-<p>It’s then up to the <strong>Bevy</strong> engine to translate it to shading language and render it on your GPU.</p>
-</li>
-<li>
-<p><strong>System</strong>: systems are just rust functions that take specific arguments and run at specific schedule. <code>Startup</code> schedule means the
-functions run only once at the beginning. <code>Update</code> schedule means the functions run every single frame. And
-of course, there are more schedules than just that.</p>
+<p>We can specify route name for each view by calling <code>route</code> method.</p>
+<h3 id="registering-routes"><a class="header" href="#registering-routes">Registering Routes</a></h3>
+<p>After we defined route on each view, we need to register those routes.
+We can do so by using <code>Router</code> resource.</p>
 <pre class="playground"><code class="language-rust">fn main() {
-  App::new()
-      .add_plugins(MakaraPlugin::default())
-      .add_systems(Startup, setup)
-      .run();
+    App::new()
+        .add_plugins(MakaraPlugin::default())
+        .add_systems(Startup, (
+            setup_home_view, 
+            setup_about_us_view, 
+            setup_routes // add here
+        ))
+        .run();
 }
 
-fn setup(mut commands: Commands) {
-    // do something
-}</code></pre>
-<p>Here, <code>setup</code> function is a system that take a special argument, in this case <code>Commands</code>. It’s being registered
-to run at <code>Startup</code> schedule which means it only do something once and that’s it.</p>
-</li>
-</ul>
-<h3 id="understand-makara-hierarchy"><a class="header" href="#understand-makara-hierarchy">Understand Makara hierarchy</a></h3>
-<p>Just like any other UI frameworks, you need a starting point for your application.
-In <strong>Makara</strong>, you start by spawning a single <strong>root</strong> widget and add other widgets
-as children of <strong>root</strong> except <strong>modal</strong>.</p>
-<p>In above example, when you run the application with <code>cargo run</code> you will see the text
-“Hello world” appears at the center of the screen.</p>
-<p>You can make a widget becomes a child of another widget by using <code>children</code> macro provided by Bevy.</p>
-<p>A widget is an entity. An <strong>entity</strong> is a set of <strong>components</strong>. If you have more than one component for
-an entity, you will need to wrap it inside a <code>tuple</code>. For example,</p>
+fn setup_routes(mut router: ResMut&lt;Router&gt;) {
+    router.register_routes(["home", "about-us"]);
+    
+    // define which route you want to see when the application started
+    router.default_route("home", ());
+}
+
+// setup view systems..</code></pre>
+<p>You may also want to set the default route. If you don’t, the first route in the list
+will be set to default route automatically.</p>
+<h3 id="route-navigation"><a class="header" href="#route-navigation">Route Navigation</a></h3>
+<p>Let’s update the above examples to demonstrate how to nagivate to specific route.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>#[derive(Component)]
-pub struct HelloWorldComponent;
+</span>fn setup_home_view(mut commands: Commands) {
+    commands.spawn((
+        root()
+            .route("home")
+            .build(),
+        
+        children![
+            text("This is Home view").build(),
+            (
+                button("Go to About Us view").build(),
+                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+                    router.nagivate("about-us", ());
+                })
+            )
+        ]
+    ));
+}
 
-#[derive(Component)]
-pub struct HelloMomComponent;
-
-// spawn an entity with just one component
-commands.spawn(HelloWorldComponent);
-
-// spawn an entity with 2 components
-commands.spawn((HelloWorldComponent, HelloMomComponent));
+fn setup_about_us_view(mut commands: Commands) {
+    commands.spawn((
+        root()
+            .route("about-us")
+            .build(),
+        
+        children![
+            text("This is About Us view").build(),
+            (
+                button("Go to Home view").build(),
+                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+                    router.nagivate("home", ());
+                })
+            )
+        ]
+    ));
+}
 <span class="boring">}</span></code></pre>
-<p>This also applies to <strong>Makara</strong>’s widgets.</p>
+<p>We can navigate to any route by calling <code>navigate</code> method.</p>
+<h3 id="route-params"><a class="header" href="#route-params">Route Params</a></h3>
+<p>Of course, each route can have one or multiple params.</p>
+<p>For example, let’s say we have a view called <strong>product-detail</strong>, but this view is dynamic based
+on product id or name.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>// no need tuple here, because text doesn't need other components
-children![
-    text("Hello world").font_size(20.0).build()
-]
+</span>fn setup_home_view(mut commands: Commands) {
+    commands.spawn((
+        root().route("home").build(),
+        
+        children![
+            text("This is Home view").build(),
+            (
+                button("See product").build(),
+                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+                    router.nagivate(
+                        "product-detail", 
+                        Param::new()
+                            .value("id", "1234") // just random product id
+                            .value("name", "Iphone 17 256GB") // product name
+                    );
+                })
+            )
+        ]
+    ));
+}
 
-// wrap button inside a tuple because it needs to observe Clicked event.
-children![
-    (
-        button("Click me").build(),
-        observe(|_clicked: On&lt;Clicked&gt;| {
-            // do something
+fn setup_product_detail_view(mut commands: Commands) {
+    commands.spawn((
+        root().route("product-detail").build(),
+        
+        children![
+            text("Product name: Unknown").id("product-name").build()
+        ],
+        
+        observe(|page_loaded: On&lt;PageLoaded&gt;, mut text_q: TextQuery| {
+            if let Some(text) = text_q.find_by_id("product-name") {
+                if let Some(name) = page_loaded.param.get("name") { 
+                    text.text.value.0 = name.clone();
+                } 
+            }
         })
-    )
-]
-<span class="boring">}</span></code></pre>
-<h3 id="the-build-method"><a class="header" href="#the-build-method">The <strong><code>build</code></strong> method</a></h3>
-<p>You propaly notice that every time a widget is called, they will ended with <code>.build()</code>. To simplify UI
-creation, we use a Builder Pattern that abstracts the complexity of Bevy’s ECS.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// This gives us a blueprint of the button.
-// We then can customise this blueprint with what we want.
-button("Click me");
-
-// Example, changing background color or attaching an ID.
-button("Click").id("my-btn").background_color(Color::BLACK);
-
-// Finally, call .build() method to flatten the blueprint,
-// attaches internal identifying tags and finally register
-// event listeners and emitters.
-button("Click").id("my-btn").background_color(Color::BLACK).build();
+    ));
+}
 <span class="boring">}</span></code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="styling.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="widgets.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="organization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -332,11 +347,11 @@ button("Click").id("my-btn").background_color(Color::BLACK).build();
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="styling.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="widgets.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="organization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

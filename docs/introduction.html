@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7a6d093f.js";
+            window.path_to_searchindex_js = "searchindex-7efd30e5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-c5cefba3.js"></script>
+        <script src="toc-8607d2e3.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -179,7 +179,7 @@
 </h3>
 
 <h3 id="what-is-makara-and-why-makara"><a class="header" href="#what-is-makara-and-why-makara">What is Makara? and Why Makara?</a></h3>
-<p>Makara is Bevy’s UI simplifier. That’s it.</p>
+<p>Makara is a UI Library built on top of Bevy engine.</p>
 <p><a href="https://bevy.org/">Bevy</a> is a game engine written in Rust, based on
 <a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a> architecture.
 It’s capable of rendering 2D and 3D graphics.</p>
@@ -227,7 +227,7 @@ that most rust devs familiar with, to make it easy to write and maintain the cod
     commands.spawn((
         button("Click me")
             .padding(px(10))
-            .background_color(Color::srgb(1.0, 1.0, 1.0))
+            .background_color("white")
             .build(),
         
         observe(on_button_click)
@@ -253,6 +253,8 @@ while maintaining a highly responsive, independent UI.</p>
 <ul>
 <li>Built-in widgets including <strong>button, modal, text input</strong> and more.</li>
 <li>Leverages Bevy’s <strong>massive parallelism</strong> for smooth and efficient rendering.</li>
+<li>Routing systems.</li>
+<li>Custom styling with ID &amp; Classes similar to HTML/CSS.</li>
 <li>High level API and flexible.</li>
 </ul>
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>

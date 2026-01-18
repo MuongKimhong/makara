@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7a6d093f.js";
+            window.path_to_searchindex_js = "searchindex-7efd30e5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-c5cefba3.js"></script>
+        <script src="toc-8607d2e3.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -181,7 +181,7 @@
 </h3>
 
 <h3 id="what-is-makara-and-why-makara"><a class="header" href="#what-is-makara-and-why-makara">What is Makara? and Why Makara?</a></h3>
-<p>Makara is Bevy’s UI simplifier. That’s it.</p>
+<p>Makara is a UI Library built on top of Bevy engine.</p>
 <p><a href="https://bevy.org/">Bevy</a> is a game engine written in Rust, based on
 <a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a> architecture.
 It’s capable of rendering 2D and 3D graphics.</p>
@@ -229,7 +229,7 @@ that most rust devs familiar with, to make it easy to write and maintain the cod
     commands.spawn((
         button("Click me")
             .padding(px(10))
-            .background_color(Color::srgb(1.0, 1.0, 1.0))
+            .background_color("white")
             .build(),
         
         observe(on_button_click)
@@ -255,6 +255,8 @@ while maintaining a highly responsive, independent UI.</p>
 <ul>
 <li>Built-in widgets including <strong>button, modal, text input</strong> and more.</li>
 <li>Leverages Bevy’s <strong>massive parallelism</strong> for smooth and efficient rendering.</li>
+<li>Routing systems.</li>
+<li>Custom styling with ID &amp; Classes similar to HTML/CSS.</li>
 <li>High level API and flexible.</li>
 </ul>
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
@@ -307,8 +309,8 @@ of <strong>Makara</strong> or <strong>Bevy</strong>, component is just a rust st
 </span><span class="boring">fn main() {
 </span>// create button with background color of red and border color of blue
 button("Click me")
-  .background_color(Color::RED)
-  .border_color(COLOR::BLUE)
+  .background_color("red")
+  .border_color("blue")
   .build();
 <span class="boring">}</span></code></pre>
 <p>Under the hood, the button is just an entity that contains these
@@ -318,8 +320,8 @@ something like this.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>(
-    BackgroundColor(Color::RED),
-    BorderColor(Color::BLUE),
+    BackgroundColor(Color::srgb(1.0, 0.0, 0.0)),
+    BorderColor(Color::srgb(0.0, 1.0, 0.0)),
     // other components
 )
 <span class="boring">}</span></code></pre>
@@ -327,7 +329,7 @@ something like this.</p>
 </li>
 <li>
 <p><strong>System</strong>: systems are just rust functions that take specific arguments and run at specific schedule. <code>Startup</code> schedule means the
-functions run only 1 time at the beginning. <code>Update</code> schedule means the functions run every single frame. And
+functions run only once at the beginning. <code>Update</code> schedule means the functions run every single frame. And
 of course, there are more schedules than just that.</p>
 <pre class="playground"><code class="language-rust">fn main() {
   App::new()
@@ -834,12 +836,11 @@ slider(0.0, 100.0).build()
 <p>Each widget type has its own query and blueprint.
 Once widgets are built, you can query any widgets within systems using
 its corresponding query struct.</p>
-<p>For example, let’s say we a text and a button. Once the button is clicked,
+<p>For example, let’s say we have a text and a button. Once the button is clicked,
 we want to update the text.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>
-(
+</span>(
     text("Hello world").id("my-text").build(),
     (
         button("Click me").build(),
@@ -884,6 +885,243 @@ you to write extra code.</p>
 )
 <span class="boring">}</span></code></pre>
 <p>For more information about widget query and its blueprint, see <a href="#widgets">widgets</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="styling"><a href="#styling" class="header">Styling</a></h1>
+<h2 id="styling-in-makara"><a class="header" href="#styling-in-makara">Styling in Makara</a></h2>
+<p>There are 2 ways to provide custom styles to widgets.</p>
+<ol>
+<li>Style on widgets directly.</li>
+<li>Attach an <code>ID</code> or <code>Classes</code> and provide styles via <code>ID</code> or <code>Classes</code>.</li>
+</ol>
+<h3 id="direct-styling"><a class="header" href="#direct-styling">Direct styling</a></h3>
+<pre class="playground"><code class="language-rust">fn main() {
+    App::new()
+        .add_plugins(MakaraPlugin::default())
+        .add_systems(Startup, setup)
+        .run();
+}
+
+fn setup(mut commands: Commands) {
+    commands.spawn((
+        root()
+            .align_items(AlignItems::Center) // direct styling
+            .justify_content(JustifyContent::Center) // direct styling
+            .build(),
+
+        children![
+            // direct styling for font size
+            text("Hello world").font_size(20.0).build()
+        ]
+    ));
+}</code></pre>
+<h3 id="with-id-and-classes"><a class="header" href="#with-id-and-classes">With ID and Classes</a></h3>
+<pre class="playground"><code class="language-rust">fn main() {
+    App::new()
+        .add_plugins(MakaraPlugin::default())
+        .add_systems(Startup, (setup, setup_styles)) // add this
+        .run();
+}
+
+fn setup(mut commands: Commands) {
+    commands.spawn((
+        root().id("root").build(),
+
+        children![
+            text("Hello world").id("text-one").class("text").build(),
+            text("Hello mom").class("text").build(),
+            text("Hello friend").class("text hello-friend").build(),
+            text("Hello stranger").class("text").build()
+        ]
+    ));
+}
+
+fn setup_styles(mut style: ResMut&lt;CustomStyle&gt;) {
+    // via id
+    style.bind_id(
+        "root",
+        Style::new()
+            .align_items(AlignItems::Center)
+            .justify_content(JustifyContent::Center)
+    );
+    
+    // via id
+    style.bind_id("text-one", Style::new().color("red"));
+    
+    // via class
+    style.bind_class(
+        "text",
+        Style::new().font_size(20.0)
+    );
+    
+    // via class
+    style.bind_class(
+        "hello-friend",
+        Style::new().color("blue")
+    );
+}</code></pre>
+<p>When you run the application:</p>
+<ul>
+<li><code>root</code> will get <code>AlignItems</code> and <code>JustifyContent</code> styles.</li>
+<li>all <code>texts</code> will have <code>font_size</code> of <code>20.0</code>.</li>
+<li>only one <code>text</code> with id <code>text-one</code> will have <code>color</code> of <code>red</code>.</li>
+<li>only one <code>text</code> with class <code>hello-friend</code> will have <code>color</code> of <code>blue</code>.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="routing-1"><a href="#routing-1" class="header">Routing</a></h1>
+<h2 id="routing"><a class="header" href="#routing">Routing</a></h2>
+<p>Routing in Makara is really easy. There are only 3 steps.</p>
+<ol>
+<li>Specifying route name on <code>root</code> widget.</li>
+<li>Register route.</li>
+<li>Navigating.</li>
+</ol>
+<h3 id="specifying-route"><a class="header" href="#specifying-route">Specifying route</a></h3>
+<p>Just like I mentioned in previous chapter about <a href="#understand-makara-hierarchy">hierarchy</a>,
+we need to use <code>root</code> widget as a starting point for UI hierarchy.</p>
+<p>If you want to have multiple pages or views, you need to create multiple starting points. In other words,
+each <code>root</code> defines one page or view.</p>
+<p>For example, let’s say you want to have <strong>Home</strong> view and <strong>About Us</strong> view.</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    App::new()
+        .add_plugins(MakaraPlugin::default())
+        .add_systems(Startup, (setup_home_view, setup_about_us_view))
+        .run();
+}
+
+fn setup_home_view(mut commands: Commands) {
+    commands.spawn((
+        root()
+            .route("home") // specifying route name
+            .build(),
+        
+        children![
+            text("This is Home view").build()
+        ]
+    ));
+}
+
+fn setup_about_us_view(mut commands: Commands) {
+    commands.spawn((
+        root()
+            .route("about-us") // specifying route name
+            .build(),
+        
+        children![
+            text("This is About Us view").build()
+        ]
+    ));
+}</code></pre>
+<p>We can specify route name for each view by calling <code>route</code> method.</p>
+<h3 id="registering-routes"><a class="header" href="#registering-routes">Registering Routes</a></h3>
+<p>After we defined route on each view, we need to register those routes.
+We can do so by using <code>Router</code> resource.</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    App::new()
+        .add_plugins(MakaraPlugin::default())
+        .add_systems(Startup, (
+            setup_home_view, 
+            setup_about_us_view, 
+            setup_routes // add here
+        ))
+        .run();
+}
+
+fn setup_routes(mut router: ResMut&lt;Router&gt;) {
+    router.register_routes(["home", "about-us"]);
+    
+    // define which route you want to see when the application started
+    router.default_route("home", ());
+}
+
+// setup view systems..</code></pre>
+<p>You may also want to set the default route. If you don’t, the first route in the list
+will be set to default route automatically.</p>
+<h3 id="route-navigation"><a class="header" href="#route-navigation">Route Navigation</a></h3>
+<p>Let’s update the above examples to demonstrate how to nagivate to specific route.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn setup_home_view(mut commands: Commands) {
+    commands.spawn((
+        root()
+            .route("home")
+            .build(),
+        
+        children![
+            text("This is Home view").build(),
+            (
+                button("Go to About Us view").build(),
+                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+                    router.nagivate("about-us", ());
+                })
+            )
+        ]
+    ));
+}
+
+fn setup_about_us_view(mut commands: Commands) {
+    commands.spawn((
+        root()
+            .route("about-us")
+            .build(),
+        
+        children![
+            text("This is About Us view").build(),
+            (
+                button("Go to Home view").build(),
+                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+                    router.nagivate("home", ());
+                })
+            )
+        ]
+    ));
+}
+<span class="boring">}</span></code></pre>
+<p>We can navigate to any route by calling <code>navigate</code> method.</p>
+<h3 id="route-params"><a class="header" href="#route-params">Route Params</a></h3>
+<p>Of course, each route can have one or multiple params.</p>
+<p>For example, let’s say we have a view called <strong>product-detail</strong>, but this view is dynamic based
+on product id or name.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn setup_home_view(mut commands: Commands) {
+    commands.spawn((
+        root().route("home").build(),
+        
+        children![
+            text("This is Home view").build(),
+            (
+                button("See product").build(),
+                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+                    router.nagivate(
+                        "product-detail", 
+                        Param::new()
+                            .value("id", "1234") // just random product id
+                            .value("name", "Iphone 17 256GB") // product name
+                    );
+                })
+            )
+        ]
+    ));
+}
+
+fn setup_product_detail_view(mut commands: Commands) {
+    commands.spawn((
+        root().route("product-detail").build(),
+        
+        children![
+            text("Product name: Unknown").id("product-name").build()
+        ],
+        
+        observe(|page_loaded: On&lt;PageLoaded&gt;, mut text_q: TextQuery| {
+            if let Some(text) = text_q.find_by_id("product-name") {
+                if let Some(name) = page_loaded.param.get("name") { 
+                    text.text.value.0 = name.clone();
+                } 
+            }
+        })
+    ));
+}
+<span class="boring">}</span></code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="organizing-your-project-1"><a href="#organizing-your-project-1" class="header">Organizing your project</a></h1>
 <h3 id="organizing-your-project"><a class="header" href="#organizing-your-project">Organizing your project</a></h3>
