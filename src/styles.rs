@@ -1057,13 +1057,19 @@ pub(crate) fn apply_custom_style_to_text_input(
 
 pub(crate) fn apply_custom_style_to_scroll(
     mut scroll_q: ScrollQuery,
-    custom_style: Res<CustomStyle>
+    mut custom_style: ResMut<CustomStyle>
 ) {
     if !custom_style.has_changed {
         return;
     }
 
+    let mut should_set_unchanged = None;
+
     for changed_id in custom_style.id_changed.iter() {
+        if !scroll_q.id_match(changed_id) {
+            continue;
+        }
+
         if let Some(mut scroll) = scroll_q.find_by_id(changed_id) {
             if let Some(style) = custom_style.id_maps.get(changed_id) {
                 set_style(&mut scroll.style, style);
@@ -1074,6 +1080,10 @@ pub(crate) fn apply_custom_style_to_scroll(
             if let Some(bar_style) = custom_style.id_maps.get(&bar_id) {
                 set_style(&mut scroll.bar_style, bar_style);
             }
+             should_set_unchanged = Some(true);
+        }
+        else {
+            should_set_unchanged = Some(false);
         }
     }
 
@@ -1096,6 +1106,10 @@ pub(crate) fn apply_custom_style_to_scroll(
                 }
             }
         }
+    }
+
+    if let Some(flag) = should_set_unchanged {
+        custom_style.can_set_unchanged = flag;
     }
 }
 

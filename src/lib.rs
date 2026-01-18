@@ -263,13 +263,13 @@ pub mod prelude {
                     // apply_custom_style_to_modal,
                     apply_custom_style_to_progress_bar,
                     apply_custom_style_to_root,
-                    apply_custom_style_to_scroll,
                     apply_custom_style_to_text,
                     apply_custom_style_to_slider,
                     apply_custom_style_to_radio,
                     apply_custom_style_to_radio_group,
                     apply_custom_style_to_select,
                     apply_custom_style_to_text_input.after(apply_custom_style_to_dropdown),
+                    apply_custom_style_to_scroll.after(apply_custom_style_to_text_input),
 
                     set_style_unchanged
                         .after(apply_custom_style_to_button)

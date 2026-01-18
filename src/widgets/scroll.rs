@@ -203,11 +203,13 @@ type IsScrollBarOnly = (
 /// `scroll` system param.
 #[derive(SystemParam)]
 pub struct ScrollQuery<'w, 's> {
+    pub id_class: Query<
+        'w, 's,
+        (Entity, &'static Id, &'static mut Class)
+    >,
     pub scroll_related: Query<'w, 's,
         (
             Entity,
-            &'static Id,
-            &'static mut Class,
             &'static ScrollBarEntity,
             &'static ScrollMovePanelEntity
         ),
@@ -219,13 +221,22 @@ pub struct ScrollQuery<'w, 's> {
     pub commands: Commands<'w, 's>
 }
 
+impl<'w, 's> ScrollQuery<'w, 's> {
+    pub fn id_match(&mut self, target_id: &str) -> bool {
+        self.id_class.iter().any(|(_, id, _)| id.0 == target_id)
+    }
+}
+
 impl<'w, 's> WidgetQuery<'w, 's> for ScrollQuery<'w, 's> {
     type WidgetView<'a> = ScrollWidget<'a, 'w, 's> where Self: 'a;
 
     fn get_components<'a>(&'a mut self, entity: Entity) -> Option<Self::WidgetView<'a>> {
-        let ScrollQuery { scroll_related, style, bar_style, children, commands } = self;
+        let ScrollQuery {
+            id_class, scroll_related, style, bar_style, children, commands
+        } = self;
 
-        let (_, _, class, bar_entity, panel_entity) = scroll_related.get_mut(entity).ok()?;
+        let (_, _, class) = id_class.get_mut(entity).ok()?;
+        let (_, bar_entity, panel_entity) = scroll_related.get_mut(entity).ok()?;
 
         let bar_bundle = bar_style.query.get_mut(bar_entity.0).ok()?;
         let (b_node, b_bg, b_border_color, b_shadow, b_z) = bar_bundle;
@@ -265,9 +276,9 @@ impl<'w, 's> WidgetQuery<'w, 's> for ScrollQuery<'w, 's> {
     }
 
     fn find_by_id<'a>(&'a mut self, target_id: &str) -> Option<Self::WidgetView<'a>> {
-        let entity = self.scroll_related.iter()
-            .find(|(_, id, _, _, _)| id.0 == target_id)
-            .map(|(e, _, _, _, _)| e)?;
+        let entity = self.id_class.iter()
+            .find(|(_, id, _)| id.0 == target_id)
+            .map(|(e, _, _)| e)?;
 
         self.get_components(entity)
     }
@@ -277,9 +288,9 @@ impl<'w, 's> WidgetQuery<'w, 's> for ScrollQuery<'w, 's> {
     }
 
     fn find_by_class(&self, target_class: &str) -> Vec<Entity> {
-        self.scroll_related.iter()
-            .filter(|(_, _, class, _, _)| class.0.split(" ").any(|word| word == target_class))
-            .map(|(e, _, _, _, _)| e)
+        self.id_class.iter()
+            .filter(|(_, _, class)| class.0.split(" ").any(|word| word == target_class))
+            .map(|(e, _, _)| e)
             .collect()
     }
 }
