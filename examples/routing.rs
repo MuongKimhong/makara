@@ -43,21 +43,21 @@ fn navigation_buttons() -> impl Bundle {
             (
                 button("Home").class("nav_button").build(),
                 observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.nagivate("home", ());
+                    router.navigate("home", ());
                 })
             ),
             text(" / ").class("nav_button").build(),
             (
                 button("Sale").class("nav_button").build(),
                 observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.nagivate("sale", ());
+                    router.navigate("sale", ());
                 })
             ),
             text(" / ").class("nav_button").build(),
             (
                 button("Company").class("nav_button").build(),
                 observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.nagivate("company", ());
+                    router.navigate("company", ());
                 })
             ),
         ]

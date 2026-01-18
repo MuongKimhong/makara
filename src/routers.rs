@@ -68,7 +68,7 @@ impl Router {
     }
 
     /// Navigate to provided route with/without param.
-    pub fn nagivate(&mut self, name: &str, param: impl Into<Param>) {
+    pub fn navigate(&mut self, name: &str, param: impl Into<Param>) {
         self.default_route(name, param.into());
     }
 

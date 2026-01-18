@@ -20,7 +20,7 @@ pub fn setup_item_detail_page(mut commands: Commands) {
                     (
                         button("Back").build(),
                         observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                            router.nagivate("home", ());
+                            router.navigate("home", ());
                         })
                     )
                 ]

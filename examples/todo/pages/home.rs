@@ -26,7 +26,7 @@ pub fn setup_home_page(
             .spawn((
                 button(&item.title).build(),
                 observe(move |_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.nagivate("item-detail", Param::new().value("title", &title.clone()));
+                    router.navigate("item-detail", Param::new().value("title", &title.clone()));
                 })
             ))
             .id();

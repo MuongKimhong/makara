@@ -7,12 +7,16 @@ use bevy::prelude::*;
 
 #[derive(Debug)]
 pub struct TodoItem {
-    pub title: String
+    pub title: String,
+    pub completed: bool
 }
 
 impl TodoItem {
     pub fn new(title: &str) -> Self {
-        Self { title: title.to_string() }
+        Self {
+            title: title.to_string(),
+            completed: false
+        }
     }
 }
 
