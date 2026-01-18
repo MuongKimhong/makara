@@ -326,6 +326,11 @@ impl Style {
         self
     }
 
+    pub fn no_shadow(mut self) -> Self {
+        self.shadow = Some(BoxShadow::default());
+        self
+    }
+
     pub fn color(mut self, value: impl IntoColor) -> Self {
         self.color = Some(TextColor(value.into_color()));
         self
