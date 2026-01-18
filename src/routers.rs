@@ -4,6 +4,7 @@ use super::*;
 
 use std::collections::HashMap;
 
+/// Router param.
 #[derive(Debug, Default, Clone)]
 pub struct Param {
     pub maps: HashMap<String, String>
@@ -34,6 +35,7 @@ impl From<()> for Param {
     }
 }
 
+/// Rosource used to manage routing.
 #[derive(Resource, Debug, Default)]
 pub struct Router {
     pub route_names: HashMap<String, Param>,
@@ -65,10 +67,12 @@ impl Router {
         }
     }
 
+    /// Navigate to provided route with/without param.
     pub fn nagivate(&mut self, name: &str, param: impl Into<Param>) {
         self.default_route(name, param.into());
     }
 
+    /// Get current route and its param.
     pub fn get_current_route(&self) -> Option<(String, Param)> {
         self.current_route.clone()
     }
