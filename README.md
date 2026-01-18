@@ -6,6 +6,8 @@
   <img width="200" src="assets/logo.png">
 </p>
 
+<h2 align="center">Built GUI application with rust and power of game engine (Bevy).</h2>
+
 ## Getting start
 ```rust
 fn on_button_click(click: On<Clicked>, mut text_q: TextQuery) {
