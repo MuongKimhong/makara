@@ -165,3 +165,6 @@ fn setup_product_detail_view(mut commands: Commands) {
     ));
 }
 ```
+
+See [Router](https://docs.rs/makara/latest/makara/routers/struct.Router.html) and 
+[Param](https://docs.rs/makara/latest/makara/routers/struct.Param.html) for more info.

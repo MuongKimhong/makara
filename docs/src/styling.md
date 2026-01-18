@@ -82,3 +82,5 @@ When you run the application:
 - all `texts` will have `font_size` of `20.0`.
 - only one `text` with id `text-one` will have `color` of `red`.
 - only one `text` with class `hello-friend` will have `color` of `blue`.
+
+See [Style](https://docs.rs/makara/latest/makara/styles/struct.Style.html) API for more info.
