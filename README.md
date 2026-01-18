@@ -30,6 +30,8 @@ fn setup(mut commands: Commands) {
 
 ## Features
 - Built-in widgets including button, modal, text input and more.
+- Routing systems.
+- Custom styling with ID & Classes similar to HTML/CSS.
 - Leverages Bevy’s massive parallelism for smooth and efficient rendering.
 - High level API and flexible.
 
