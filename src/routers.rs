@@ -64,6 +64,10 @@ impl Router {
     pub fn nagivate(&mut self, name: &str, param: impl Into<Param>) {
         self.default_route(name, param.into());
     }
+
+    pub fn get_current_route(&self) -> Option<(String, Param)> {
+        self.current_route.clone()
+    }
 }
 
 pub(crate) fn handle_match_route_to_root(
@@ -83,6 +87,11 @@ pub(crate) fn handle_match_route_to_root(
                 commands.trigger(PageLoaded {
                     entity,
                     name: page.0.clone(),
+                    param: current_page.1.clone()
+                });
+
+                commands.trigger(RouteChanged {
+                    route: current_page.0.clone(),
                     param: current_page.1.clone()
                 });
             }

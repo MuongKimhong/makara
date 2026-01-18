@@ -26,6 +26,7 @@ impl IntoColor for &str {
             "red"            => Color::srgb(1.0, 0.0, 0.0),
             "lime"           => Color::srgb(0.0, 1.0, 0.0),
             "blue"           => Color::srgb(0.0, 0.0, 1.0),
+            "green"          => Color::srgb(0.0, 1.0, 0.0),
             "yellow"         => Color::srgb(1.0, 1.0, 0.0),
             "cyan" | "aqua"  => Color::srgb(0.0, 1.0, 1.0),
             "magenta" | "fuchsia" => Color::srgb(1.0, 0.0, 1.0),

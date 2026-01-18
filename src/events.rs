@@ -155,3 +155,10 @@ pub struct PageLoaded {
     pub name: String,
     pub param: Param
 }
+
+/// This event fires when current route is changed
+#[derive(Event, Debug)]
+pub struct RouteChanged {
+    pub route: String,
+    pub param: Param
+}

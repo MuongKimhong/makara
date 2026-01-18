@@ -321,8 +321,8 @@ impl Style {
         self
     }
 
-    pub fn shadow(mut self, value: ShadowStyle) -> Self {
-        self.shadow = Some(BoxShadow(vec![value]));
+    pub fn shadow(mut self, value: BoxShadow) -> Self {
+        self.shadow = Some(value);
         self
     }
 
