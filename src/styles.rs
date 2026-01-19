@@ -483,6 +483,28 @@ fn set_text_style(text_style: &mut ChildText, custom_style: &Style) {
     }
 }
 
+pub(crate) fn detect_widget_class_change(
+    class_q: Query<&Class, Changed<Class>>,
+    mut custom_style: ResMut<CustomStyle>
+) {
+    for class_data in class_q.iter() {
+        if class_data.0.trim().is_empty() {
+            continue;
+        }
+
+        for class_name in class_data.0.split(" ").into_iter() {
+            custom_style.class_changed.insert(class_name.to_string());
+            custom_style.has_changed = true;
+
+            if let Some(base_class) = class_name.split("::").next() {
+                if base_class != class_name {
+                    custom_style.class_changed.insert(base_class.to_string());
+                }
+            }
+        }
+    }
+}
+
 pub(crate) fn apply_custom_style_to_button(
     mut button_q: ButtonQuery,
     custom_style: Res<CustomStyle>

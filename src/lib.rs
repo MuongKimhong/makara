@@ -246,6 +246,7 @@ pub mod prelude {
             app.add_systems(Startup, setup);
             app.add_systems(Update, (
                 detect_makara_text_added,
+                detect_widget_class_change,
                 check_unique_id,
                 handle_match_route_to_root
             ));

@@ -60,7 +60,8 @@ impl Router {
         }
     }
 
-    /// Set default route with provided param. If this method is not called, the first route will be used.
+    /// Set default route with provided param.
+    /// If this method is not called, the first route will be used.
     pub fn default_route(&mut self, name: &str, param: impl Into<Param>) {
         if self.route_names.contains_key(name) {
             self.current_route = Some((name.to_string(), param.into()));
@@ -70,10 +71,12 @@ impl Router {
     /// Navigate to provided route with/without param.
     pub fn navigate(&mut self, name: &str, param: impl Into<Param>) {
         self.default_route(name, param.into());
+        println!("current_route {:?}", self.current_route);
     }
 
     /// Get current route and its param.
     pub fn get_current_route(&self) -> Option<(String, Param)> {
+        println!("current_route {:?}", self.current_route);
         self.current_route.clone()
     }
 }
