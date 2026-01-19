@@ -31,6 +31,7 @@ fn main() {
         .add_plugins(MakaraPlugin::default())
         .add_systems(Startup, (
             setup_home_page,
+            setup_home_styles,
             setup_item_detail_page,
             setup_styles,
             setup_routes

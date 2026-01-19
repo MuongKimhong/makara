@@ -11,20 +11,15 @@ fn create_default_items() -> Vec<TodoItem> {
     ]
 }
 
-pub fn setup_home_page(
-    mut commands: Commands,
-    mut todo_list: ResMut<TodoList>,
-) {
-    todo_list.items = create_default_items();
-
+fn spawn_default_items(commands: &mut Commands, items: &Vec<TodoItem>) -> Vec<Entity> {
     let mut item_entities: Vec<Entity> = Vec::new();
 
-    for item in todo_list.items.iter() {
+    for item in items.iter() {
         let title = item.title.clone();
 
         let entity = commands
             .spawn((
-                button(&item.title).build(),
+                button(&item.title).class("item-btn").build(),
                 observe(move |_clicked: On<Clicked>, mut router: ResMut<Router>| {
                     router.navigate("item-detail", Param::new().value("title", &title.clone()));
                 })
@@ -33,16 +28,67 @@ pub fn setup_home_page(
 
         item_entities.push(entity);
     }
+    item_entities
+}
 
-    commands.spawn((
-        root()
-            .route("home")
-            .class("page-container")
-            .build(),
+pub fn setup_home_page(
+    mut commands: Commands,
+    mut todo_list: ResMut<TodoList>,
+) {
+    todo_list.items = create_default_items();
 
-        children![
-            text("To do").font_size(20.0).build()
-        ]
-    ))
-    .add_children(&item_entities);
+    let item_entities = spawn_default_items(&mut commands, &todo_list.items);
+
+    let items_container = commands.spawn(
+        scroll()
+            .id("items-container")
+            .build()
+    )
+    .add_children(&item_entities)
+    .id();
+
+    commands.spawn(
+        (
+            root()
+                .route("home")
+                .class("page-container")
+                .build(),
+
+            children![
+                text("To Do").font_size(25.0).build()
+            ]
+        )
+    )
+    .add_child(items_container);
+}
+
+pub fn setup_home_styles(mut style: ResMut<CustomStyle>) {
+    style.bind_id(
+        "items-container",
+        Style::new()
+            .align_items(AlignItems::Center)
+            .justify_content(JustifyContent::Center)
+            .width(px(400))
+            .height(px(400))
+            .padding(px(5))
+    );
+
+    style.bind_class(
+        "item-btn",
+        Style::new()
+            .no_shadow()
+            .border(px(2))
+            .width(percent(100))
+            .border_color("blue")
+            .background_color("transparent")
+            .padding(px(20))
+            .margin_y(px(10))
+            .font_size(16.0)
+    );
+
+    style.bind_class(
+        "completed",
+        Style::new()
+            .border_color("green")
+    );
 }
