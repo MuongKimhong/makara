@@ -205,7 +205,8 @@ type IsScrollBarOnly = (
 pub struct ScrollQuery<'w, 's> {
     pub id_class: Query<
         'w, 's,
-        (Entity, &'static Id, &'static mut Class)
+        (Entity, &'static Id, &'static mut Class),
+        IsScrollOnly
     >,
     pub scroll_related: Query<'w, 's,
         (
@@ -426,14 +427,15 @@ pub(crate) fn detect_scroll_children_added(
             new_panel_style,
             MakaraScrollMovePanel,
             MakaraScrollList::default(),
-            ScrollEntity(scroll_entity)
+            ScrollEntity(scroll_entity),
         ))
         .id();
 
         let bar_entity = commands.spawn((
             bar_style.0.clone(),
             MakaraScrollbar,
-            ScrollEntity(scroll_entity)
+            ScrollEntity(scroll_entity),
+            Visibility::Hidden
         ))
         .id();
 
@@ -452,29 +454,27 @@ pub(crate) fn detect_scroll_children_added(
 }
 
 pub(crate) fn detect_move_panel_height_change(
-    scrolls: Query<&ComputedNode, With<MakaraScroll>>,
-    panels: Query<
-        (&ComputedNode, &ScrollBarEntity, &ScrollEntity),
-        (With<MakaraScrollMovePanel>, Changed<ComputedNode>)
+    scrolls: Query<
+        (&ComputedNode, &ScrollMovePanelEntity, &ScrollBarEntity),
+        Changed<ComputedNode>
     >,
-    mut bars: Query<&mut Node, With<MakaraScrollbar>>
+    panels: Query<&ComputedNode, With<MakaraScrollMovePanel>>,
+    mut bars: Query<(&mut Visibility, &mut Node), IsScrollBarOnly>
 ) {
-    for (panel_computed, bar_entity, scroll_entity) in panels.iter() {
-        let Ok(scroll_computed) = scrolls.get(scroll_entity.0) else {
-            continue;
-        };
+    for (scroll_computed, panel_entity, bar_entity) in scrolls.iter() {
+        if let Ok(panel_computed) = panels.get(panel_entity.0) {
+            if let Ok((mut vis, mut bar_node)) = bars.get_mut(bar_entity.0) {
+                let scroll_height = scroll_computed.size().y * scroll_computed.inverse_scale_factor();
+                let panel_height = panel_computed.size().y * panel_computed.inverse_scale_factor();
 
-        if let Ok(mut bar_node) = bars.get_mut(bar_entity.0) {
-            let scroll_height = scroll_computed.size().y * scroll_computed.inverse_scale_factor();
-            let panel_height = panel_computed.size().y * panel_computed.inverse_scale_factor();
-
-            if panel_height <= scroll_height {
-                bar_node.display = Display::None;
-            }
-            else {
-                let bar_height = (scroll_height / panel_height) * scroll_height;
-                bar_node.height = px(bar_height);
-                bar_node.display = Display::default();
+                if panel_height <= scroll_height {
+                    *vis = Visibility::Hidden;
+                }
+                else {
+                    let bar_height = (scroll_height / panel_height) * scroll_height;
+                    bar_node.height = px(bar_height);
+                    *vis = Visibility::Visible;
+                }
             }
         }
     }
