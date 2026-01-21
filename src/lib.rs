@@ -31,6 +31,9 @@ pub mod styles;
 pub mod colors;
 pub mod routers;
 
+#[macro_use]
+pub mod macros;
+
 pub mod prelude {
     use bevy::prelude::*;
     use bevy::asset::embedded_asset;
@@ -44,6 +47,13 @@ pub mod prelude {
     pub use crate::colors::*;
     pub use crate::routers::*;
     pub use bevy::ui_widgets::observe;
+
+    pub use crate::scroll_;
+    pub use crate::row_;
+    pub use crate::column_;
+    pub use crate::root_;
+    pub use crate::button_;
+    pub use crate::text_;
 
     /// Schedule for this plugin to run at.
     /// Default is `AtUpdate`.

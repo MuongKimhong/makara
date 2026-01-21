@@ -297,12 +297,11 @@ impl<'w, 's> WidgetQuery<'w, 's> for ScrollQuery<'w, 's> {
 }
 
 /// Bundle for creating `scroll`.
-#[derive(Bundle)]
 pub struct ScrollBundle {
     pub id_class: IdAndClass,
     pub style: ContainerStyle,
     pub move_panel_style: ContainerStyle,
-    pub scroll_bar: ContainerStyle
+    pub scroll_bar: ContainerStyle,
 }
 
 impl Default for ScrollBundle {
