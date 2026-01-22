@@ -482,3 +482,117 @@ macro_rules! radio_group_ {
         }
     };
 }
+
+/// Macro for creating a [`TextInputBundle`].
+///
+/// # Event Handlers
+/// * `Clicked`
+/// * `MouseOver`
+/// * `MouseOut`
+/// * `Change<T>`
+///
+/// # Example
+/// ```rust
+/// text_input_!(
+///     "Enter your name";
+///
+///     on: |change: On<Change<String>>| {
+///         println!("text input value {:?}", change.data);
+///     }
+/// );
+/// ```
+#[macro_export]
+macro_rules! text_input_ {
+    ($text:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )* $(; [ $($child:expr),* $(,)? ])?) => {
+        {
+            let mut b = $crate::widgets::text_input::text_input($text);
+            $( b = b.$prop($val); )*
+            (b.build(), $( $crate::prelude::observe($handler), )* $( ::bevy::prelude::children![ $($child),* ] )?)
+        }
+    };
+}
+
+/// Macro for creating a [`SelectBundle`].
+///
+/// # Event Handlers
+/// * `Clicked`
+/// * `MouseOver`
+/// * `MouseOut`
+/// * `Change<T>`
+///
+/// # Example
+/// ```rust
+/// select_!(
+///     "Select a choice",
+///     choices: &["Choice 1", "Choice 2", "Choice 2"]
+///
+///     on: |change: On<Change<String>>| {
+///         println!("select value {:?}", change.data);
+///     }
+/// );
+/// ```
+#[macro_export]
+macro_rules! select_ {
+    // 1. Placeholder + Choices + Optional Props + Observers
+    (
+        $placeholder:expr,
+        choices: $choices:expr
+        $(, $prop:ident : $val:expr )* $(,)?
+        $( ; on: $handler:expr )* ) => {
+        {
+            let mut i = $crate::widgets::select::select($placeholder, $choices);
+            $( i = i.$prop($val); )*
+
+            (
+                i.build(),
+                $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+
+    // 2. Placeholder + Choices + Observers (Skipping props)
+    (
+        $placeholder:expr,
+        choices: $choices:expr
+        ; on: $handler:expr $( ; on: $more:expr )*
+    ) => {
+        $crate::select_!($placeholder, choices: $choices ; on: $handler $( ; on: $more )*)
+    };
+}
+
+/// Macro for creating a [`ModalBundle`]. ID is required for modal to make it works.
+///
+/// Modal need to be spawned independently, as it's not part of UI heirarchy.
+///
+/// # Event Handlers
+/// * `Active<T>`
+/// * `Inactive<T>`
+///
+/// # Example
+/// ```rust
+/// commands.spawn(modal_!(
+///     id: "my-modal"
+///
+///     on: |active: On<Active<String>>| {
+///         println!("modal with id {:?} is active", active.data);
+///     };
+///
+///     [ text_!("This is modal content") ]
+/// ));
+/// ```
+#[macro_export]
+macro_rules! modal_ {
+    ([ $($child:expr),* $(,)? ]) => {
+        $crate::modal_!(; [ $($child),* ])
+    };
+    (on: $handler:expr $(; on: $more:expr)* $(; [ $($child:expr),* $(,)? ])?) => {
+        $crate::modal_!(; on: $handler $(; on: $more)* $(; [ $($child),* ])?)
+    };
+    ($( $prop:ident : $val:expr ),* $(; on: $handler:expr )* $(; [ $($child:expr),* $(,)? ])?) => {
+        {
+            let mut s = $crate::widgets::modal::modal();
+            $( s = s.$prop($val); )*
+            (s.build(), $( $crate::prelude::observe($handler), )* $( ::bevy::prelude::children![ $($child),* ] )?)
+        }
+    };
+}

@@ -63,6 +63,9 @@ pub mod prelude {
     pub use crate::slider_;
     pub use crate::radio_;
     pub use crate::radio_group_;
+    pub use crate::text_input_;
+    pub use crate::select_;
+    pub use crate::modal_;
 
     /// Schedule for this plugin to run at.
     /// Default is `AtUpdate`.
