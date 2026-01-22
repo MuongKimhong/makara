@@ -60,6 +60,9 @@ pub mod prelude {
     pub use crate::dropdown_;
     pub use crate::image_;
     pub use crate::link_;
+    pub use crate::slider_;
+    pub use crate::radio_;
+    pub use crate::radio_group_;
 
     /// Schedule for this plugin to run at.
     /// Default is `AtUpdate`.

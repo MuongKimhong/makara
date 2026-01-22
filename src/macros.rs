@@ -18,28 +18,13 @@
 /// ```
 #[macro_export]
 macro_rules! scroll_ {
-    (
-        // Properties
-        $( $prop:ident : $val:expr ),* $(,)?
-
-        // '*' means "0 or more"
-        $( ; on: $handler:expr )*
-
-        // '?' means "0 or 1"
-        $( ; [ $($child:expr),* $(,)? ] )?
-    ) => {
+    ([ $($child:expr),* $(,)? ]) => { $crate::scroll_!(; [ $($child),* ]) };
+    (on: $handler:expr $(; on: $more:expr)* $(; [ $($child:expr),* $(,)? ])?) => { $crate::scroll_!(; on: $handler $(; on: $more)* $(; [ $($child),* ])?) };
+    ($( $prop:ident : $val:expr ),* $(; on: $handler:expr )* $(; [ $($child:expr),* $(,)? ])?) => {
         {
             let mut s = $crate::widgets::scroll::scroll();
             $( s = s.$prop($val); )*
-
-            (
-                s.build(),
-                $( $crate::prelude::observe($handler), )*
-
-                $(
-                    ::bevy::prelude::children![ $($child),* ]
-                )?
-            )
+            (s.build(), $( $crate::prelude::observe($handler), )* $( ::bevy::prelude::children![ $($child),* ] )?)
         }
     };
 }
@@ -60,22 +45,13 @@ macro_rules! scroll_ {
 /// ```
 #[macro_export]
 macro_rules! row_ {
-    (
-        $( $prop:ident : $val:expr ),* $(,)?
-
-        // Children
-        $( ; [ $($child:expr),* $(,)? ] )?
-    ) => {
+    ([ $($child:expr),* $(,)? ]) => { $crate::row_!(; [ $($child),* ]) };
+    (on: $handler:expr $(; on: $more:expr)* $(; [ $($child:expr),* $(,)? ])?) => { $crate::row_!(; on: $handler $(; on: $more)* $(; [ $($child),* ])?) };
+    ($( $prop:ident : $val:expr ),* $(; on: $handler:expr )* $(; [ $($child:expr),* $(,)? ])?) => {
         {
             let mut s = $crate::widgets::row::row();
             $( s = s.$prop($val); )*
-
-            (
-                s.build(),
-                $(
-                    bevy::prelude::children![ $($child),* ]
-                )?
-            )
+            (s.build(), $( $crate::prelude::observe($handler), )* $( ::bevy::prelude::children![ $($child),* ] )?)
         }
     };
 }
@@ -96,20 +72,13 @@ macro_rules! row_ {
 /// ```
 #[macro_export]
 macro_rules! column_ {
-    (
-        $( $prop:ident : $val:expr ),* $(,)?
-        $( ; [ $($child:expr),* $(,)? ] )?
-    ) => {
+    ([ $($child:expr),* $(,)? ]) => { $crate::column_!(; [ $($child),* ]) };
+    (on: $handler:expr $(; on: $more:expr)* $(; [ $($child:expr),* $(,)? ])?) => { $crate::column_!(; on: $handler $(; on: $more)* $(; [ $($child),* ])?) };
+    ($( $prop:ident : $val:expr ),* $(; on: $handler:expr )* $(; [ $($child:expr),* $(,)? ])?) => {
         {
             let mut s = $crate::widgets::column::column();
             $( s = s.$prop($val); )*
-
-            (
-                s.build(),
-                $(
-                    bevy::prelude::children![ $($child),* ]
-                )?
-            )
+            (s.build(), $( $crate::prelude::observe($handler), )* $( ::bevy::prelude::children![ $($child),* ] )?)
         }
     };
 }
@@ -128,20 +97,13 @@ macro_rules! column_ {
 /// ```
 #[macro_export]
 macro_rules! root_ {
-    (
-        $( $prop:ident : $val:expr ),* $(,)?
-        $( ; [ $($child:expr),* $(,)? ] )?
-    ) => {
+    ([ $($child:expr),* $(,)? ]) => { $crate::root_!(; [ $($child),* ]) };
+    (on: $handler:expr $(; on: $more:expr)* $(; [ $($child:expr),* $(,)? ])?) => { $crate::root_!(; on: $handler $(; on: $more)* $(; [ $($child),* ])?) };
+    ($( $prop:ident : $val:expr ),* $(; on: $handler:expr )* $(; [ $($child:expr),* $(,)? ])?) => {
         {
             let mut s = $crate::widgets::root::root();
             $( s = s.$prop($val); )*
-
-            (
-                s.build(),
-                $(
-                    bevy::prelude::children![ $($child),* ]
-                )?
-            )
+            (s.build(), $( $crate::prelude::observe($handler), )* $( ::bevy::prelude::children![ $($child),* ] )?)
         }
     };
 }
@@ -166,20 +128,11 @@ macro_rules! root_ {
 /// ```
 #[macro_export]
 macro_rules! button_ {
-    (
-        $text:expr
-        $(, $prop:ident : $val:expr )* $(,)?
-
-        $( ; on: $handler:expr )* $( ; [ $($child:expr),* $(,)? ] )?
-    ) => {
+    ($text:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )* $(; [ $($child:expr),* $(,)? ])?) => {
         {
             let mut b = $crate::widgets::button::button($text);
             $( b = b.$prop($val); )*
-
-            (
-                b.build(),
-                $( $crate::prelude::observe($handler), )*
-            )
+            (b.build(), $( $crate::prelude::observe($handler), )* $( ::bevy::prelude::children![ $($child),* ] )?)
         }
     };
 }
@@ -196,17 +149,11 @@ macro_rules! button_ {
 /// ```
 #[macro_export]
 macro_rules! text_ {
-    (
-        $text:expr
-        $(, $prop:ident : $val:expr )* $(,)?
-    ) => {
+    ($text:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )*) => {
         {
             let mut t = $crate::widgets::text::text($text);
             $( t = t.$prop($val); )*
-
-            (
-                t.build(),
-            )
+            (t.build(), $( $crate::prelude::observe($handler), )*)
         }
     };
 }
@@ -357,28 +304,11 @@ macro_rules! progress_bar_ {
 /// ```
 #[macro_export]
 macro_rules! dropdown_ {
-    (
-        $text:expr
-        $(, $prop:ident : $val:expr )* $(,)?
-
-        // '*' means "0 or more"
-        $( ; on: $handler:expr )*
-
-        // '?' means "0 or 1"
-        $( ; [ $($child:expr),* $(,)? ] )?
-    ) => {
+    ($text:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )* $(; [ $($child:expr),* $(,)? ])?) => {
         {
             let mut d = $crate::widgets::dropdown::dropdown($text);
             $( d = d.$prop($val); )*
-
-            (
-                d.build(),
-                $( $crate::prelude::observe($handler), )*
-
-                $(
-                    ::bevy::prelude::children![ $($child),* ]
-                )?
-            )
+            (d.build(), $( $crate::prelude::observe($handler), )* $( ::bevy::prelude::children![ $($child),* ] )?)
         }
     };
 }
@@ -402,20 +332,11 @@ macro_rules! dropdown_ {
 /// ```
 #[macro_export]
 macro_rules! image_ {
-    (
-        $path:expr
-        $(, $prop:ident : $val:expr )* $(,)?
-
-        $( ; on: $handler:expr )* $( ; [ $($child:expr),* $(,)? ] )?
-    ) => {
+    ($path:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )*) => {
         {
             let mut i = $crate::widgets::image::image($path);
             $( i = i.$prop($val); )*
-
-            (
-                i.build(),
-                $( $crate::prelude::observe($handler), )*
-            )
+            (i.build(), $( $crate::prelude::observe($handler), )*)
         }
     };
 }
@@ -437,19 +358,126 @@ macro_rules! image_ {
 /// ```
 #[macro_export]
 macro_rules! link_ {
+    ($path:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )*) => {
+        {
+            let mut i = $crate::widgets::link::link($path);
+            $( i = i.$prop($val); )*
+            (i.build(), $( $crate::prelude::observe($handler), )*)
+        }
+    };
+}
+
+/// Macro for creating a [`SliderBundle`].
+///
+/// # Event Handlers
+/// * `MouseOver`
+/// * `MouseOut`
+/// * `Change<T>
+///
+/// # Example
+/// ```rust
+/// slider_!(
+///     min: 0.0, max: 10.0;
+///
+///     on: |change: On<Change<f32>>| {
+///         println!("value {:?}", change.data);
+///     }
+/// )
+/// ```
+#[macro_export]
+macro_rules! slider_ {
+    (min: $min:expr, max: $max:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )*) => {
+        {
+            let mut i = $crate::widgets::slider::slider($min, $max);
+            $( i = i.$prop($val); )*
+            (i.build(), $( $crate::prelude::observe($handler), )*)
+        }
+    };
+}
+
+/// Macro for creating [`RadioBundle`].
+///
+/// # Event Handlers
+/// * `Clicked`
+/// * `MouseOver`
+/// * `MouseOut`
+/// * `Active<T>`
+/// * `Inactive<T>`
+///
+/// # Example
+/// ```rust
+/// radio_!(
+///     "Option 1";
+///
+///     on: |active: On<Active<String>>| {
+///         println!("Enabled!");
+///     },
+///     on: |inactive: On<Inactive<String>>| {
+///         println!("Disabled");
+///     }
+/// );
+/// ```
+#[macro_export]
+macro_rules! radio_ {
     (
-        $path:expr
+        $text:expr
         $(, $prop:ident : $val:expr )* $(,)?
 
         $( ; on: $handler:expr )* $( ; [ $($child:expr),* $(,)? ] )?
     ) => {
         {
-            let mut i = $crate::widgets::link::link($path);
-            $( i = i.$prop($val); )*
+            let mut c = $crate::widgets::radio::radio($text);
+            $( c = c.$prop($val); )*
 
             (
-                i.build(),
+                c.build(),
                 $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! radio_group_ {
+    // Only children (no semicolon, no properties)
+    // radio_group_!([ child1 ])
+    ( [ $($child:expr),* $(,)? ] ) => {
+        {
+            let s = $crate::widgets::radio::radio_group();
+            (s.build(), ::bevy::prelude::children![ $($child),* ])
+        }
+    };
+
+    // No properties, but starts with 'on:'
+    // radio_group_!(on: my_sys ; [ child1 ])
+    ( on: $handler:expr $( ; on: $more_handlers:expr )* $( ; [ $($child:expr),* $(,)? ] )? ) => {
+        {
+            let s = $crate::widgets::radio::radio_group();
+            (
+                s.build(),
+                $crate::prelude::observe($handler),
+                $( $crate::prelude::observe($more_handlers), )*
+                $( ::bevy::prelude::children![ $($child),* ] )?
+            )
+        }
+    };
+
+    // Properties, then optional observers and children
+    // radio_group_!(spacing: 10.0 ; on: my_sys ; [ child1 ])
+    (
+        $prop:ident : $val:expr $(, $rest_prop:ident : $rest_val:expr )* $(,)?
+        $( ; on: $handler:expr )*
+        $( ; [ $($child:expr),* $(,)? ] )?
+    ) => {
+        {
+            let mut s = $crate::widgets::radio::radio_group();
+            s = s.$prop($val);
+            $( s = s.$rest_prop($rest_val); )*
+
+            (
+                s.build(),
+                $( $crate::prelude::observe($handler), )*
+                $( ::bevy::prelude::children![ $($child),* ] )?
             )
         }
     };
