@@ -205,21 +205,29 @@ impl Default for CircularBundle {
 }
 
 impl CircularBundle {
-    /// Mark circular as indeterminate mode when build.
-    pub fn as_indeterminate(mut self) -> Self {
-        self.circular_type = CircularType::Indeterminate;
-        self
-    }
-
-    /// Mark circular as percentage mode when build.
-    pub fn as_percentage(mut self, percent: f32) -> Self {
+    /// Set percentage for circular.
+    ///
+    /// If this method is called after mode, it will override the circular type.
+    pub fn percent(mut self, percent: f32) -> Self {
         self.circular_type = CircularType::Percent(percent);
         self
     }
 
+    /// Set mode for circular, either "indeterminate" or "percentage".
+    /// Default is "indeterminate".
+    pub fn mode(mut self, mode: &str) -> Self {
+        if mode.trim() == "indeterminate" {
+            self.circular_type = CircularType::Indeterminate
+        }
+        else {
+            self.circular_type = CircularType::Percent(0.0);
+        }
+        self
+    }
+
     /// Set circular spinning color. Default color will be used if this method is not called.
-    pub fn color(mut self, color: Color) -> Self {
-        self.circular_color.0 = color;
+    pub fn color(mut self, color: impl IntoColor) -> Self {
+        self.circular_color.0 = color.into_color();
         self
     }
 }

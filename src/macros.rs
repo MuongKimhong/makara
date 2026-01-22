@@ -254,3 +254,203 @@ macro_rules! checkbox_ {
         }
     };
 }
+
+/// Macro for creating [`CircularBundle`].
+///
+/// # Event Handlers
+/// * `MouseOver`
+/// * `MouseOut`
+/// * `Change<T>`
+///
+/// # Example
+/// ```rust
+/// circular_!(
+///     color: "blue",
+///     percent: 23.0;
+///
+///     on: |change: On<Change<f32>>| {
+///         println!("at {:?} percent", change.data);
+///     }
+/// );
+/// ```
+#[macro_export]
+macro_rules! circular_ {
+    (
+        $( $prop:ident : $val:expr ),* $(,)?
+
+        // Events
+        $( ; on: $handler:expr )*
+    ) => {
+        {
+            let mut c = $crate::widgets::circular::circular();
+            $( c = c.$prop($val); )*
+
+            (
+                c.build(),
+                $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+}
+
+/// Macro for creating [`ProgressBarBundle`].
+///
+/// # Event Handlers
+/// * `MouseOver`
+/// * `MouseOut`
+/// * `Change<T>`
+///
+/// # Example
+/// ```rust
+/// progress_bar_!(
+///     color: "blue",
+///     percent: 23.0;
+///
+///     on: |change: On<Change<f32>>| {
+///         println!("at {:?} percent", change.data);
+///     }
+/// );
+/// ```
+#[macro_export]
+macro_rules! progress_bar_ {
+    (
+        $( $prop:ident : $val:expr ),* $(,)?
+
+        $( ; on: $handler:expr )*
+    ) => {
+        {
+            let mut c = $crate::widgets::progress_bar::progress_bar();
+            $( c = c.$prop($val); )*
+
+            (
+                c.build(),
+                $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+}
+
+/// Macro for creating [`DropdownBundle`].
+///
+/// # Event Handlers
+/// * `Clicked`
+/// * `MouseOver`
+/// * `MouseOut`
+/// * `Active<T>`
+/// * `Inactive<T>`
+///
+/// # Example
+/// ```rust
+/// dropdown_!(
+///     "Click me to show option";
+///
+///     on: |active: On<Active<bool>>| {
+///         println!("options shown");
+///     };
+///
+///     [
+///         button_!("Option 1"),
+///         button_!("Option 2"),
+///         button_!("Option 3"),
+///     ]
+/// );
+/// ```
+#[macro_export]
+macro_rules! dropdown_ {
+    (
+        $text:expr
+        $(, $prop:ident : $val:expr )* $(,)?
+
+        // '*' means "0 or more"
+        $( ; on: $handler:expr )*
+
+        // '?' means "0 or 1"
+        $( ; [ $($child:expr),* $(,)? ] )?
+    ) => {
+        {
+            let mut d = $crate::widgets::dropdown::dropdown($text);
+            $( d = d.$prop($val); )*
+
+            (
+                d.build(),
+                $( $crate::prelude::observe($handler), )*
+
+                $(
+                    ::bevy::prelude::children![ $($child),* ]
+                )?
+            )
+        }
+    };
+}
+
+/// Macro for creating a [`ImageBundle`].
+///
+/// # Event Handlers
+/// * `Clicked`
+/// * `MouseOver`
+/// * `MouseOut`
+///
+/// # Example
+/// ```rust
+/// image_!(
+///     "dog.png";
+///
+///     on: |clicked: On<Clicked>| {
+///         println!("image clicked!")
+///     }
+/// );
+/// ```
+#[macro_export]
+macro_rules! image_ {
+    (
+        $path:expr
+        $(, $prop:ident : $val:expr )* $(,)?
+
+        $( ; on: $handler:expr )* $( ; [ $($child:expr),* $(,)? ] )?
+    ) => {
+        {
+            let mut i = $crate::widgets::image::image($path);
+            $( i = i.$prop($val); )*
+
+            (
+                i.build(),
+                $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+}
+
+/// Macro for creating a [`LinkBundle`].
+///
+/// # Event Handlers
+/// * `Clicked`
+/// * `MouseOver`
+/// * `MouseOut`
+///
+/// # Example
+/// ```rust
+/// link_!(
+///     "https://github.com/MuongKimhong/makara",
+///     font_size: 20.0,
+///     color: "white"
+/// )
+/// ```
+#[macro_export]
+macro_rules! link_ {
+    (
+        $path:expr
+        $(, $prop:ident : $val:expr )* $(,)?
+
+        $( ; on: $handler:expr )* $( ; [ $($child:expr),* $(,)? ] )?
+    ) => {
+        {
+            let mut i = $crate::widgets::link::link($path);
+            $( i = i.$prop($val); )*
+
+            (
+                i.build(),
+                $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+}

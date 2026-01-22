@@ -55,6 +55,11 @@ pub mod prelude {
     pub use crate::button_;
     pub use crate::text_;
     pub use crate::checkbox_;
+    pub use crate::circular_;
+    pub use crate::progress_bar_;
+    pub use crate::dropdown_;
+    pub use crate::image_;
+    pub use crate::link_;
 
     /// Schedule for this plugin to run at.
     /// Default is `AtUpdate`.

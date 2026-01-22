@@ -167,20 +167,33 @@ impl LinkBundle {
     }
 
     /// Remove underline from `link`.
-    pub fn no_underline(mut self) -> Self {
-        self.style.border_color.bottom = Color::NONE;
+    pub fn underline(mut self, value: bool) -> Self {
+        if !value {
+            self.style.border_color.bottom = Color::NONE;
+        }
+        else {
+            self.style.border_color.bottom = DEFAULT_LINK_COLOR;
+        }
         self
     }
 
     /// Set color for both text and underline.
     /// If `no_underline` is called before this method, provided color
     /// won't effect underline.
-    pub fn color(mut self, color: Color) -> Self {
+    pub fn color(mut self, color: impl IntoColor) -> Self {
+        let color = color.into_color();
+
         self.text_bundle.text_style.color.0 = color;
 
         if self.style.border_color.bottom != Color::NONE {
             self.style.border_color.bottom = color;
         }
+        self
+    }
+
+    /// Set text font size.
+    pub fn font_size(mut self, size: f32) -> Self {
+        self.text_bundle.text_style.font.font_size = size;
         self
     }
 }

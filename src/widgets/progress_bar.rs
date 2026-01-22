@@ -222,22 +222,31 @@ impl Default for ProgressBarBundle {
 }
 
 impl ProgressBarBundle {
-    /// Set `progress_bar` to indeterminate mode.
-    pub fn as_indeterminate(mut self) -> Self {
-        self.bar_type = ProgressbarType::Indeterminate;
-        self
-    }
-
-    /// Set `progress_bar` to percentage mode.
-    pub fn as_percentage(mut self, percent_value: f32) -> Self {
+    /// Set percentage to progress bar.
+    ///
+    /// if this method is called after mode, it will override the bar type.
+    pub fn percent(mut self, percent_value: f32) -> Self {
         self.bar_type = ProgressbarType::Percent(percent_value.clamp(0.0, 100.0));
         self.value_style.node.width = percent(percent_value);
         self
     }
 
+    /// Set mode for progress bar, either "indeterminate" or "percentage".
+    /// Default is "indeterminate".
+    pub fn mode(mut self, mode: &str) -> Self {
+        if mode.trim() == "indeterminate" {
+            self.bar_type = ProgressbarType::Indeterminate;
+        }
+        else {
+            self.bar_type = ProgressbarType::Percent(0.0);
+            self.value_style.node.width = percent(0.0);
+        }
+        self
+    }
+
     /// Set progress color. Default color will be used if this method is not called.
-    pub fn color(mut self, color: Color) -> Self {
-        self.value_color.0 = color;
+    pub fn color(mut self, color: impl IntoColor) -> Self {
+        self.value_color.0 = color.into_color();
         self
     }
 }
