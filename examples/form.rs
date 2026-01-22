@@ -40,57 +40,62 @@ fn main() {
 }
 
 fn form_container() -> impl Bundle {
-    (
-        column().align_items(AlignItems::Center).build(),
-        children![
-            (
-                text_input("Enter email address").width(px(200)).build(),
-                observe(|change: On<Change<String>>, mut user: ResMut<User>, mut txt_q: TextQuery| {
+
+    column_!(
+        align_items: AlignItems::Center;
+
+        [
+            text_input_!(
+                "Enter email address",
+                width: px(200);
+
+                on: |change: On<Change<String>>, mut user: ResMut<User>, mut txt_q: TextQuery| {
                     if let Some(txt) = txt_q.find_by_id("info-text") {
                         user.email = change.data.clone();
                         txt.text.value.0 = user.get_info();
                     }
-                })
+                }
             ),
 
-            (
-                text_input("Enter name").margin_top(px(5)).width(px(200)).build(),
-                observe(|change: On<Change<String>>, mut user: ResMut<User>, mut txt_q: TextQuery| {
+            text_input_!(
+                "Enter name",
+                margin_top: px(5),
+                width: px(200);
+
+                on: |change: On<Change<String>>, mut user: ResMut<User>, mut txt_q: TextQuery| {
                     if let Some(txt) = txt_q.find_by_id("info-text") {
                         user.name = change.data.clone();
                         txt.text.value.0 = user.get_info();
                     }
-                })
+                }
             ),
 
-            (
-                radio_group().margin_top(px(5)).build(),
-                children![
-                    radio("Male").build(),
-                    radio("Female").build(),
-                ],
-                observe(|change: On<Change<String>>, mut user: ResMut<User>, mut txt_q: TextQuery| {
+            radio_group_!(
+                margin_top: px(5);
+
+                on: |change: On<Change<String>>, mut user: ResMut<User>, mut txt_q: TextQuery| {
                     if let Some(txt) = txt_q.find_by_id("info-text") {
                         user.gender = change.data.clone();
                         txt.text.value.0 = user.get_info();
                     }
-                })
+                };
+
+                [ radio_!("Male"), radio_!("Female") ]
             )
         ]
     )
 }
 
 fn setup(mut commands: Commands, user: Res<User>) {
-    // spawning root & text widget.
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
 
-        children![
-            text(&user.get_info()).margin_bottom(px(5)).id("info-text").build(),
-            form_container()
-        ]
-    ));
+            [
+                text_!(&user.get_info(), margin_bottom: px(5), id: "info-text"),
+                form_container()
+            ]
+        )
+    );
 }

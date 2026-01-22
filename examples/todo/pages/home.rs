@@ -18,12 +18,11 @@ fn spawn_default_items(commands: &mut Commands, items: &Vec<TodoItem>) -> Vec<En
         let title = item.title.clone();
 
         let entity = commands
-            .spawn((
-                button(&item.title).class("item-btn").build(),
-                observe(move |_clicked: On<Clicked>, mut router: ResMut<Router>| {
+            .spawn(
+                button_!(&item.title, class: "item-btn"; on: move |_clicked: On<Clicked>, mut router: ResMut<Router>| {
                     router.navigate("item-detail", Param::new().value("title", &title.clone()));
                 })
-            ))
+            )
             .id();
 
         item_entities.push(entity);
@@ -39,25 +38,14 @@ pub fn setup_home_page(
 
     let item_entities = spawn_default_items(&mut commands, &todo_list.items);
 
-    let items_container = commands.spawn(
-        scroll()
-            .id("items-container")
-            .build()
-    )
-    .add_children(&item_entities)
-    .id();
+    let items_container = commands.spawn(scroll_!(id: "items-container"))
+        .add_children(&item_entities)
+        .id();
 
     commands.spawn(
-        (
-            root()
-                .route("home")
-                .class("page-container")
-                .build(),
-
-            children![
-                text("To Do").font_size(25.0).build()
-            ]
-        )
+        root_!(route: "home", class: "page-container"; [
+            text_!("To Do", font_size: 25.0)
+        ])
     )
     .add_child(items_container);
 }

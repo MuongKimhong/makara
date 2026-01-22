@@ -9,30 +9,27 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
 
-        children![
-            text("").id("selected-choice").build(),
+            [
+                text_!("", id: "selected-choice"),
 
-            (
-                select(
-                    "Select your",
-                    &["Ford Falcon XR6", "Ford Mustang GT", "Holden Commodore Z6", "Subaru WRX"]
-                )
-                .width(px(200))
-                .margin_top(px(10))
-                .build(),
+                select_!(
+                    "Select your choice",
+                    choices: &["Ford Falcon XR6", "Ford Mustang GT", "Holden Commodore Z6", "Subaru WRX"],
+                    width: px(200),
+                    margin_top: px(10);
 
-                observe(|change: On<Change<String>>, mut text_q: TextQuery| {
-                    if let Some(text) = text_q.find_by_id("selected-choice") {
-                        text.text.value.0 = change.data.clone();
+                    on: |change: On<Change<String>>, mut text_q: TextQuery| {
+                        if let Some(text) = text_q.find_by_id("selected-choice") {
+                            text.text.value.0 = change.data.clone();
+                        }
                     }
-                })
-            )
-        ]
-    ));
+                )
+            ]
+        )
+    );
 }

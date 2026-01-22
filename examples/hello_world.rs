@@ -10,16 +10,13 @@ fn main() {
 
 fn setup(mut commands: Commands) {
     // spawning root & text widget.
+    commands.spawn(
+        root_!(
+            background_color: Color::srgb(1.0, 0.5, 0.5),
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
 
-    commands.spawn((
-        root()
-            .background_color(Color::srgb(1.0, 0.5, 0.5))
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
-
-        children![
-            text("Hello world").font_size(25.0).build(),
-        ]
-    ));
+            [ text_!("Hello World", font_size: 25.0) ]
+        )
+    );
 }

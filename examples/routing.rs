@@ -33,79 +33,62 @@ fn on_route_changed(route_changed: On<RouteChanged>, mut btn_q: ButtonQuery) {
 }
 
 fn navigation_buttons() -> impl Bundle {
-    (
-        row()
-            .margin_bottom(px(20))
-            .justify_content(JustifyContent::Center)
-            .build(),
+    row_!(
+        justify_content: JustifyContent::Center,
+        margin_bottom: px(20);
 
-        children![
-            (
-                button("Home").class("nav_button").build(),
-                observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
+        [
+            button_!(
+                "Home", class: "nav_button";
+                on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
                     router.navigate("home", ());
-                })
+                }
             ),
-            text(" / ").class("nav_button").build(),
-            (
-                button("Sale").class("nav_button").build(),
-                observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
+            text_!(" / ", class: "nav_button"),
+            button_!(
+                "Sale", class: "nav_button";
+                on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
                     router.navigate("sale", ());
-                })
+                }
             ),
-            text(" / ").class("nav_button").build(),
-            (
-                button("Company").class("nav_button").build(),
-                observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
+            text_!(" / ", class: "nav_button"),
+            button_!(
+                "Company", class: "nav_button";
+                on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
                     router.navigate("company", ());
-                })
+                }
             ),
         ]
     )
 }
 
 fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("home")
-            .class("root_center")
-            .build(),
-
-        children![
+    commands.spawn(
+        root_!(route: "home", class: "root_center"; [
             navigation_buttons(),
-            text("Welcome to Home view").font_size(25.0).build()
-        ]
-    ));
+            text_!("Welcome to Home View", font_size: 25.0)
+        ])
+    );
 }
 
 
 fn setup_sale_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("sale")
-            .class("root_center")
-            .build(),
-
-        children![
+    commands.spawn(
+        root_!(route: "sale", class: "root_center"; [
             navigation_buttons(),
-            text("Sale view is for anything related to sales and business").font_size(25.0).build()
-        ]
-    ));
+            text_!("Sale view is for anything related to sales and business", font_size: 25.0)
+        ])
+    );
 }
 
 
 fn setup_company_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("company")
-            .class("root_center")
-            .build(),
-
-        children![
+    commands.spawn(
+        root_!(route: "company", class: "root_center"; [
             navigation_buttons(),
-            text("This company is all about love.").font_size(25.0).build()
-        ]
-    ));
+            text_!("This company is all about love.", font_size: 25.0)
+        ])
+    );
 }
 
 fn setup_router(mut router: ResMut<Router>) {

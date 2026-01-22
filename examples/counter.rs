@@ -28,34 +28,24 @@ fn on_minus_click(_click: On<Clicked>, mut count: ResMut<Count>, mut text_q: Tex
 }
 
 fn setup(mut commands: Commands, count: Res<Count>) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
 
-        children![
-            text(&format!("Count: {:?}", count.0))
-                .id("#count-text")
-                .build(),
+            [
+                text_!(&format!("Count: {:?}", count.0), id: "#count-text"),
 
-            (
-                row()
-                    .margin_top(px(5))
-                    .justify_content(JustifyContent::Center)
-                    .build(),
+                row_!(
+                    justify_content: JustifyContent::Center,
+                    margin_top: px(5);
 
-                children![
-                    (
-                        button("+").margin_right(px(5)).build(),
-                        observe(on_plus_click)
-                    ),
-                    (
-                        button("-").margin_left(px(5)).build(),
-                        observe(on_minus_click)
-                    ),
-                ]
-            )
-        ]
-    ));
+                    [
+                        button_!("+", margin_right: px(5); on: on_plus_click),
+                        button_!("-", margin_left: px(5); on: on_minus_click),
+                    ]
+                )
+            ]
+        )
+    );
 }

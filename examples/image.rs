@@ -41,27 +41,26 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
 
-        children![
-            (button("Change Image").build(), observe(on_button_click)),
+            [
+                button_!("Change Image"; on: on_button_click),
 
-            (
-                image("dog_meme_2.webp")
-                    .width(px(200))
-                    .id("image")
-                    .margin_top(px(10))
-                    .build(),
+                image_!(
+                    "dog_meme_2.webp",
+                    id: "image",
+                    width: px(200),
+                    margin_top: px(10);
 
-                observe(|_loading: On<Loading>| println!("image is loading")),
-                observe(|_loaded: On<Loaded>| println!("image is loaded"))
-            )
-        ]
-    ));
+                    on: |_loading: On<Loading>| println!("image is loading");
+                    on: |_loaded: On<Loaded>| println!("image is loaded")
+                )
+            ]
+        )
+    );
 }
 
 fn on_button_click(

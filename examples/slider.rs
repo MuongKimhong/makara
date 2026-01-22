@@ -11,47 +11,34 @@ fn main() {
 fn setup(mut commands: Commands) {
     // put white text under root, so that it's only visible
     // when root background alpha is low.
+    commands.spawn(text_!("This is underneath Text", color: Color::srgb(1.0, 1.0, 1.0)));
+
     commands.spawn(
-        text("This is underneath Text")
-            .color(Color::srgb(1.0, 1.0, 1.0))
-            .build()
+        root_!(
+            id: "root",
+            background_color: Color::srgba(1.0, 0.5, 0.5, 1.0),
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
+
+            [
+                text_!("Adjust background color alpha with slider"),
+
+                row_!(
+                    justify_content: JustifyContent::Center,
+                    margin_top: px(15);
+
+                    [
+                        text_!("0.0"),
+                        slider_!(
+                            min: 0.0, max: 1.0, step: 0.01, value: 1.0, margin_x: px(5);
+                            on: on_slider_value_change
+                        ),
+                        text_!("1.0"),
+                    ]
+                )
+            ]
+        )
     );
-
-    commands.spawn((
-        root()
-            .id("root")
-            .background_color(Color::srgba(1.0, 0.5, 0.5, 1.0))
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
-
-        children![
-            text("Adjust background color alpha with slider").build(),
-
-            (
-                row()
-                    .margin_top(px(15))
-                    .justify_content(JustifyContent::Center)
-                    .build(),
-
-                children![
-                    text("0.0").build(),
-                    (
-                        slider(0.0, 1.0)
-                            .id("slider")
-                            .margin_left(px(5))
-                            .margin_right(px(5))
-                            .step(0.01)
-                            .value(1.0)
-                            .build(),
-
-                        observe(on_slider_value_change)
-                    ),
-                    text("1.0").build()
-                ]
-            )
-        ]
-    ));
 }
 
 fn on_slider_value_change(change: On<Change<f32>>, mut root_q: RootQuery) {

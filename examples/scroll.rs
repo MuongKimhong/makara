@@ -9,54 +9,35 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
 
-        children![
-            (
-                button("Add 1 text to scroll container").build(),
-                observe(on_add_1_button_click)
-            ),
+            [
+                button_!("Add 1 text to scroll container"; on: on_add_1_button_click),
+                button_!("Add 3 text to scroll container"; on: on_add_3_button_click),
+                button_!("Remove last item from container"; on: on_remove_button_click),
+                scroll_!(
+                    id: "scroll-container",
+                    align_items: AlignItems::Center,
+                    height: px(500),
+                    width: px(500),
+                    margin_top: px(10);
 
-            (
-                button("Add 3 text to scroll container")
-                    .margin_top(px(5))
-                    .margin_bottom(px(5))
-                    .build(),
-
-                observe(on_add_3_button_click)
-            ),
-
-            (
-                button("Remove last item from container").build(),
-                observe(on_remove_button_click)
-            ),
-
-            (
-                scroll()
-                    .id("scroll-container")
-                    .height(px(200))
-                    .width(px(500))
-                    .align_items(AlignItems::Center)
-                    .background_color(Color::srgb(1.0, 0.1, 0.1))
-                    .margin_top(px(10))
-                    .build(),
-
-                observe(|scroll: On<Scrolling>| {
-                    println!("scrolling top position {:?}", scroll.position);
-                })
-            )
-        ]
-    ));
+                    on: |scroll: On<Scrolling>| {
+                        println!("scrolling top position {:?}", scroll.position);
+                    }
+                )
+            ]
+        )
+    );
 }
 
 fn on_add_1_button_click(_clicked: On<Clicked>, mut scrolls: ScrollQuery) {
     if let Some(mut scroll) = scrolls.find_by_id("scroll-container") {
         scroll.add_child(
-            text("Hello world!").font_size(15.0).build()
+            text_!("hello world!", font_size: 15.0)
         );
     }
 }
@@ -64,9 +45,9 @@ fn on_add_1_button_click(_clicked: On<Clicked>, mut scrolls: ScrollQuery) {
 fn on_add_3_button_click(_clicked: On<Clicked>, mut scrolls: ScrollQuery) {
     if let Some(mut scroll) = scrolls.find_by_id("scroll-container") {
         scroll.add_children([
-            text("Roses are red").font_size(30.0).build(),
-            text("Violets are blue").font_size(30.0).build(),
-            text("I Love you :)").font_size(30.0).build(),
+            text_!("Roses are red", font_size: 30.0),
+            text_!("Violets are blue", font_size: 30.0),
+            text_!("I Love You", font_size: 30.0)
         ]);
     }
 }
