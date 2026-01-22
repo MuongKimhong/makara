@@ -54,6 +54,7 @@ pub mod prelude {
     pub use crate::root_;
     pub use crate::button_;
     pub use crate::text_;
+    pub use crate::checkbox_;
 
     /// Schedule for this plugin to run at.
     /// Default is `AtUpdate`.

@@ -19,13 +19,13 @@
 #[macro_export]
 macro_rules! scroll_ {
     (
-        // Properties (Methods on the builder)
+        // Properties
         $( $prop:ident : $val:expr ),* $(,)?
 
-        // Specific Event Handlers
-        $( ; on_scrolling: $scroll_handler:expr )?
+        // '*' means "0 or more"
+        $( ; on: $handler:expr )*
 
-        // Children
+        // '?' means "0 or 1"
         $( ; [ $($child:expr),* $(,)? ] )?
     ) => {
         {
@@ -34,10 +34,10 @@ macro_rules! scroll_ {
 
             (
                 s.build(),
-                // If the user provided a handler, wrap it in observe()
-                $( $crate::prelude::observe($scroll_handler), )?
+                $( $crate::prelude::observe($handler), )*
+
                 $(
-                    bevy::prelude::children![ $($child),* ]
+                    ::bevy::prelude::children![ $($child),* ]
                 )?
             )
         }
@@ -149,9 +149,9 @@ macro_rules! root_ {
 /// Macro for creating a [`ButtonBundle`].
 ///
 /// # Event Handlers
-/// * `on_clicked` - Triggered on mouse click/press.
-/// * `on_mouse_over` - Triggered when the cursor enters the button area.
-/// * `on_mouse_out` - Triggered when the cursor leaves the button area.
+/// * `Clicked`
+/// * `MouseOver`
+/// * `MouseOut`
 ///
 /// # Example
 /// ```rust
@@ -159,10 +159,10 @@ macro_rules! root_ {
 ///     "Click Me",
 ///     background_color: "red";
 ///
-///     on_clicked: |clicked: On<Clicked>| {
+///     on: |clicked: On<Clicked>| {
 ///         println!("Button clicked!")
 ///     }
-/// )
+/// );
 /// ```
 #[macro_export]
 macro_rules! button_ {
@@ -170,20 +170,15 @@ macro_rules! button_ {
         $text:expr
         $(, $prop:ident : $val:expr )* $(,)?
 
-        $( ; on_clicked: $click_handler:expr $(,)? )?
-        $( ; on_mouse_over: $mouse_over_handler:expr $(,)? )?
-        $( ; on_mouse_out: $mouse_out_handler:expr $(,)? )?
+        $( ; on: $handler:expr )* $( ; [ $($child:expr),* $(,)? ] )?
     ) => {
         {
-            // Call the function with the text argument
             let mut b = $crate::widgets::button::button($text);
             $( b = b.$prop($val); )*
 
             (
                 b.build(),
-                $( $crate::prelude::observe($click_handler), )?
-                $( $crate::prelude::observe($mouse_over_handler), )?
-                $( $crate::prelude::observe($mouse_out_handler), )?
+                $( $crate::prelude::observe($handler), )*
             )
         }
     };
@@ -206,11 +201,11 @@ macro_rules! text_ {
         $(, $prop:ident : $val:expr )* $(,)?
     ) => {
         {
-            let mut b = $crate::widgets::text::text($text);
-            $( b = b.$prop($val); )*
+            let mut t = $crate::widgets::text::text($text);
+            $( t = t.$prop($val); )*
 
             (
-                b.build(),
+                t.build(),
             )
         }
     };
@@ -219,26 +214,26 @@ macro_rules! text_ {
 /// Macro for creating [`CheckboxBundle`].
 ///
 /// # Event Handlers
-/// You can attach observers by using the following keys:
-/// * `on_clicked` - Triggered when the checkbox is clicked.
-/// * `on_mouse_over` - Triggered when the cursor enters the checkbox.
-/// * `on_mouse_out` - Triggered when the cursor leaves.
-/// * `on_active` - Triggered when the checkbox becomes checked.
-/// * `on_inactive` - Triggered when the checkbox becomes unchecked.
+/// `checkbox` emits following events:
+/// * `Clicked`
+/// * `MouseOver`
+/// * `MouseOut`
+/// * `Active<T>`
+/// * `Inactive<T>`
 ///
 /// # Example
 /// ```rust
-/// commands.spawn(checkbox_!(
+/// checkbox_!(
 ///     "Enable Features",
 ///     id: "feature_toggle";
 ///
-///     on_active: |active: On<Active>| {
+///     on: |active: On<Active<String>>| {
 ///         println!("Enabled!");
 ///     },
-///     on_inactive: |inactive: On<Inactive>| {
+///     on: |inactive: On<Inactive<String>>| {
 ///         println!("Disabled");
 ///     }
-/// ));
+/// );
 /// ```
 #[macro_export]
 macro_rules! checkbox_ {
@@ -246,23 +241,15 @@ macro_rules! checkbox_ {
         $text:expr
         $(, $prop:ident : $val:expr )* $(,)?
 
-        $( ; on_clicked: $click_handler:expr $(,)? )?
-        $( ; on_mouse_over: $mouse_over_handler:expr $(,)? )?
-        $( ; on_mouse_out: $mouse_out_handler:expr $(,)? )?
-        $( ; on_active: $active_handler:expr $(,)? )?
-        $( ; on_inactive: $inactive_handler:expr $(,)? )?
+        $( ; on: $handler:expr )* $( ; [ $($child:expr),* $(,)? ] )?
     ) => {
         {
-            let mut b = $crate::widgets::checkbox::checkbox($text);
-            $( b = b.$prop($val); )*
+            let mut c = $crate::widgets::checkbox::checkbox($text);
+            $( c = c.$prop($val); )*
 
             (
-                b.build(),
-                $( $crate::prelude::observe($click_handler), )?
-                $( $crate::prelude::observe($mouse_over_handler), )?
-                $( $crate::prelude::observe($mouse_out_handler), )?
-                $( $crate::prelude::observe($active_handler), )?
-                $( $crate::prelude::observe($inactive_handler), )?
+                c.build(),
+                $( $crate::prelude::observe($handler), )*
             )
         }
     };
