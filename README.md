@@ -1,12 +1,12 @@
-![Static Badge](https://img.shields.io/badge/Version-0.2.1-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.2.2-blue)
 ![Static Badge](https://img.shields.io/badge/OS-Mac%20Linux%20Window-orange)
-[![static Badge](https://img.shields.io/badge/crate.io-0.2.1-green)](https://crates.io/crates/makara)
+[![static Badge](https://img.shields.io/badge/crate.io-0.2.2-green)](https://crates.io/crates/makara)
 
 <p align="center">
   <img width="200" src="assets/logo.png">
 </p>
 
-<h2 align="center">Built GUI application with rust and power of game engine (Bevy).</h2>
+<h2 align="center">GUI Library built on top of Bevy Game Engine.</h2>
 
 ## Getting start
 ```rust
@@ -16,17 +16,18 @@ fn on_button_click(click: On<Clicked>, mut text_q: TextQuery) {
    }
 }
 
-fn setup(mut commands: Commands) {
-    commands.spawn((
-       root().build(),
-       children![
-           text("Hello earth").id("my-text").build(),
-           (
-               button("Press me").build(),
-               observe(on_button_click)
-           )
-       ]
-   ));
+fn setup(mut commands: Commands) {    
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
+            
+            [
+                text_!("Hello earth", id: "my-text"),
+                button_!("Click me"; on: on_button_click)
+            ]
+        )
+    );
 }
 ```
 
