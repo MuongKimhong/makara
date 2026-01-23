@@ -41,6 +41,12 @@ pub struct DropdownWidget<'a> {
     pub text: ChildText<'a>
 }
 
+impl<'a> SetText for DropdownWidget<'a> {
+    fn set_text(&mut self, text: &str) {
+        self.text.value.0 = text.to_string();
+    }
+}
+
 /// `dropdown` system param.
 #[derive(SystemParam)]
 pub struct DropdownQuery<'w, 's> {

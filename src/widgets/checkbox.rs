@@ -36,6 +36,12 @@ pub struct CheckboxWidget<'a, 'w, 's> {
     pub commands: &'a mut Commands<'w, 's>
 }
 
+impl<'a, 'w, 's> SetText for CheckboxWidget<'a, 'w, 's> {
+    fn set_text(&mut self, text: &str) {
+        self.text.value.0 = text.to_string();
+    }
+}
+
 impl<'a, 'w, 's> CheckboxWidget<'a, 'w, 's> {
     /// Set state of a `checkbox` to active.
     pub fn set_active(&mut self) {

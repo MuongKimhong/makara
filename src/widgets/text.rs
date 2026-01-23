@@ -35,6 +35,10 @@ impl TextStyle {
     }
 }
 
+pub trait SetText {
+    fn set_text(&mut self, text: &str);
+}
+
 /// A struct used to mutate components related to `text`.
 pub struct TextWidget<'a> {
     pub class: &'a mut Class,
@@ -42,6 +46,11 @@ pub struct TextWidget<'a> {
     pub text: ChildText<'a>
 }
 
+impl<'a> SetText for TextWidget<'a> {
+    fn set_text(&mut self, text: &str) {
+        self.text.value.0 = text.to_string();
+    }
+}
 
 #[derive(SystemParam)]
 pub struct TextQueryAsChild<'w, 's,  F: QueryFilter + 'static = ()> {

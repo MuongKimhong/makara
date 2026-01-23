@@ -20,6 +20,12 @@ pub struct ButtonWidget<'a> {
     pub text: ChildText<'a>
 }
 
+impl<'a> SetText for ButtonWidget<'a> {
+    fn set_text(&mut self, text: &str) {
+        self.text.value.0 = text.to_string();
+    }
+}
+
 type IsButtonOnly = (
     (
         With<MakaraButton>,

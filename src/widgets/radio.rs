@@ -39,6 +39,12 @@ pub struct RadioWidget<'a, 'w, 's> {
     pub commands: &'a mut Commands<'w, 's>
 }
 
+impl<'a, 'w, 's> SetText for RadioWidget<'a, 'w, 's> {
+    fn set_text(&mut self, text: &str) {
+        self.text.value.0 = text.to_string();
+    }
+}
+
 type IsRadioOnly = (
     (
         With<MakaraRadio>,

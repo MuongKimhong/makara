@@ -66,6 +66,12 @@ pub struct SelectWidget<'a, 'w, 's> {
     pub commands: &'a mut Commands<'w, 's>
 }
 
+impl<'a, 'w, 's> SetText for SelectWidget<'a, 'w, 's> {
+    fn set_text(&mut self, text: &str) {
+        self.placeholder.value.0 = text.to_string();
+    }
+}
+
 impl<'a, 'w, 's> SelectWidget<'a, 'w, 's> {
     pub fn set_value(&mut self, value: &str) {
         self.commands.trigger(SetSelectValue {

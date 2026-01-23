@@ -21,6 +21,12 @@ pub struct LinkWidget<'a> {
     pub text: ChildText<'a>
 }
 
+impl<'a> SetText for LinkWidget<'a> {
+    fn set_text(&mut self, text: &str) {
+        self.text.value.0 = text.to_string();
+    }
+}
+
 type IsLinkOnly = (
     (
         With<MakaraLink>,
