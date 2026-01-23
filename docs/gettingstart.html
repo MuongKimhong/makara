@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e0ad94.js";
+            window.path_to_searchindex_js = "searchindex-37b30491.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-8607d2e3.js"></script>
+        <script src="toc-2ed979a7.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -192,16 +192,14 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
-
-        children![
-            text("Hello world").font_size(20.0).build()
-        ]
-    ));
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
+            
+            [ text_!("Hello world", font_size: 20.0) ]
+        )
+    );
 }</code></pre>
 <h3 id="an-overview-of-ecs"><a class="header" href="#an-overview-of-ecs">An overview of ECS</a></h3>
 <p>Because this library is powered by a game engine which is based on ECS architecture, it’s a must to understand how ECS works.</p>
@@ -217,11 +215,8 @@ of <strong>Makara</strong> or <strong>Bevy</strong>, component is just a rust st
 <p>For example, you create a button with background color of red and border color of blue in <strong>Makara</strong>.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>// create button with background color of red and border color of blue
-button("Click me")
-  .background_color("red")
-  .border_color("blue")
-  .build();
+</span>// create button with background color of red and border color of blue 
+button_!("Click me", background_color: "red", border_color: "blue");
 <span class="boring">}</span></code></pre>
 <p>Under the hood, the button is just an entity that contains these
 2 components, <a href="https://docs.rs/bevy/latest/bevy/prelude/struct.BackgroundColor.html"><code>BackgroundColor</code></a>
@@ -261,58 +256,7 @@ In <strong>Makara</strong>, you start by spawning a single <strong>root</strong>
 as children of <strong>root</strong> except <strong>modal</strong>.</p>
 <p>In above example, when you run the application with <code>cargo run</code> you will see the text
 “Hello world” appears at the center of the screen.</p>
-<p>You can make a widget becomes a child of another widget by using <code>children</code> macro provided by Bevy.</p>
-<p>A widget is an entity. An <strong>entity</strong> is a set of <strong>components</strong>. If you have more than one component for
-an entity, you will need to wrap it inside a <code>tuple</code>. For example,</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>#[derive(Component)]
-pub struct HelloWorldComponent;
-
-#[derive(Component)]
-pub struct HelloMomComponent;
-
-// spawn an entity with just one component
-commands.spawn(HelloWorldComponent);
-
-// spawn an entity with 2 components
-commands.spawn((HelloWorldComponent, HelloMomComponent));
-<span class="boring">}</span></code></pre>
-<p>This also applies to <strong>Makara</strong>’s widgets.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// no need tuple here, because text doesn't need other components
-children![
-    text("Hello world").font_size(20.0).build()
-]
-
-// wrap button inside a tuple because it needs to observe Clicked event.
-children![
-    (
-        button("Click me").build(),
-        observe(|_clicked: On&lt;Clicked&gt;| {
-            // do something
-        })
-    )
-]
-<span class="boring">}</span></code></pre>
-<h3 id="the-build-method"><a class="header" href="#the-build-method">The <strong><code>build</code></strong> method</a></h3>
-<p>You propaly notice that every time a widget is called, they will ended with <code>.build()</code>. To simplify UI
-creation, we use a Builder Pattern that abstracts the complexity of Bevy’s ECS.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// This gives us a blueprint of the button.
-// We then can customise this blueprint with what we want.
-button("Click me");
-
-// Example, changing background color or attaching an ID.
-button("Click").id("my-btn").background_color(Color::BLACK);
-
-// Finally, call .build() method to flatten the blueprint,
-// attaches internal identifying tags and finally register
-// event listeners and emitters.
-button("Click").id("my-btn").background_color(Color::BLACK).build();
-<span class="boring">}</span></code></pre>
+<p>You can make a widget becomes a child of another widget by using <code>[]</code>, we will talk about it later.</p>
 
                     </main>
 
@@ -322,7 +266,7 @@ button("Click").id("my-btn").background_color(Color::BLACK).build();
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="widgets.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="widget_structure.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -336,7 +280,7 @@ button("Click").id("my-btn").background_color(Color::BLACK).build();
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="widgets.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="widget_structure.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

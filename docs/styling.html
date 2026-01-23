@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e0ad94.js";
+            window.path_to_searchindex_js = "searchindex-37b30491.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-8607d2e3.js"></script>
+        <script src="toc-2ed979a7.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,7 +177,7 @@
                         <h2 id="styling-in-makara"><a class="header" href="#styling-in-makara">Styling in Makara</a></h2>
 <p>There are 2 ways to provide custom styles to widgets.</p>
 <ol>
-<li>Style on widgets directly.</li>
+<li>Style on widgets directly using properties.</li>
 <li>Attach an <code>ID</code> or <code>Classes</code> and provide styles via <code>ID</code> or <code>Classes</code>.</li>
 </ol>
 <h3 id="direct-styling"><a class="header" href="#direct-styling">Direct styling</a></h3>
@@ -189,17 +189,14 @@
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center) // direct styling
-            .justify_content(JustifyContent::Center) // direct styling
-            .build(),
-
-        children![
-            // direct styling for font size
-            text("Hello world").font_size(20.0).build()
-        ]
-    ));
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center, // direct styling
+            justify_content: JustifyContent::Center; // direct styling
+            
+            [ text_!("Hello world", font_size: 20.0) ]
+        )
+    );
 }</code></pre>
 <h3 id="with-id-and-classes"><a class="header" href="#with-id-and-classes">With ID and Classes</a></h3>
 <pre class="playground"><code class="language-rust">fn main() {
@@ -210,16 +207,14 @@ fn setup(mut commands: Commands) {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root().id("root").build(),
-
-        children![
-            text("Hello world").id("text-one").class("text").build(),
-            text("Hello mom").class("text").build(),
-            text("Hello friend").class("text hello-friend").build(),
-            text("Hello stranger").class("text").build()
-        ]
-    ));
+    commands.spawn(
+        root_!(id: "root"; [
+            text_!("Hello world", id: "text-one", class: "text"),
+            text_!("Hello mom", class: "text"),
+            text_!("Hello friend", class: "text hello-friend"),
+            text_!("Hello stranger", class: "text")
+        ])
+    );
 }
 
 fn setup_styles(mut style: ResMut&lt;CustomStyle&gt;) {

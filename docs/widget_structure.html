@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Widgets - Makara Book</title>
+        <title>Widget Structure - Makara Book</title>
 
 
         <!-- Custom HTML head -->
@@ -174,382 +174,83 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <p><strong>Makara</strong> provides built-in widgets that are needed for building GUI applications including
-<strong>button</strong>, <strong>modal</strong>, <strong>text input</strong> and more. There will be more important widgets added
-to <strong>Makara</strong> in upcoming new versions.</p>
-<h3 id="root"><a class="header" href="#root">Root</a></h3>
-<p><code>root_!</code> is a starting point for UI hierarchy, so it needs to be spawned by commands.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>commands.spawn(root_!());
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootBundle.html">RootBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootQuery.html">RootQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootWidget.html">RootWidget</a>.</p>
-<h3 id="text"><a class="header" href="#text">Text</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>text_!("Hello world");
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextBundle.html">TextBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextQuery.html">TextQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextWidget.html">TextWidget</a>.</p>
-<h3 id="button"><a class="header" href="#button">Button</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>button_!("Click me");
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
+                        <h3 id="understanding-the-structure-of-widgets-in-makara"><a class="header" href="#understanding-the-structure-of-widgets-in-makara">Understanding the structure of widgets in Makara</a></h3>
+<p>In <strong>Makara</strong>, creating a widget can be done by calling its pre-defined macro.
+A button can be created using <code>button_!</code> and a text can be created using <code>text_!</code>.</p>
+<p>Each macro is splitted into 3 parts with specific orders and the orders are:</p>
+<ol>
+<li>Properties</li>
+<li>Event handlers</li>
+<li>Children</li>
+</ol>
+<p>Let’s have a look at a few examples.</p>
+<p>Button</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>button_!(
-    "Click me";
+    "Click me", 
+    id: "my-btn", 
+    background_color: "blue"; // properties end with ;
     
-    on: |clicked: On&lt;Clicked&gt;| {}; 
-    on: |over: On&lt;MouseOver&gt;| {}; 
-    on: |out: On&lt;MouseOut&gt;| {}; 
-    on: |built: On&lt;WidgetBuilt&gt;| {}
+    on: |clicked: On&lt;Clicked&gt;| { 
+        println("Button is clicked"); 
+    };
+    on: |mouse_over: On&lt;MouseOver&gt;| {
+        println!("Mouse is over button");
+    }
 );
+
+// We don't need ; at the end of properties because we don't have an event handler.
+button_!("Click me", border_color: "red");
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonBundle.html">ButtonBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonQuery.html">ButtonQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonWidget.html">ButtonWidget</a>.</p>
-<h3 id="checkbox"><a class="header" href="#checkbox">Checkbox</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>checkbox_!("Check me");
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>checkbox_!(
-    "Check me";
-    
-    on: |clicked: On&lt;Clicked&gt;| {}; 
-    on: |over: On&lt;MouseOver&gt;| {}; 
-    on: |out: On&lt;MouseOut&gt;| {}; 
-    on: |active: On&lt;Active&lt;String&gt;&gt;| {}; 
-    on: |inactive: On&lt;Inactive&lt;String&gt;&gt;| {}; 
-    on: |built: On&lt;WidgetBuilt&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxBundle.html">CheckboxBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxQuery.html">CheckboxQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxWidget.html">CheckboxWidget</a>.</p>
-<h3 id="circular"><a class="header" href="#circular">Circular</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>circular_!();
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>circular_!(
-    on: |over: On&lt;MouseOver&gt;| {}; 
-    on: |out: On&lt;MouseOut&gt;| {}; 
-    on: |change: On&lt;Change&lt;f32&gt;&gt;| {}; 
-    on: |built: On&lt;WidgetBuilt&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularBundle.html">CircularBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularQuery.html">CircularQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularWidget.html">CircularWidget</a>.</p>
-<h3 id="progress-bar"><a class="header" href="#progress-bar">Progress Bar</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>progress_bar_!();
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>progress_bar_!(
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |change: On&lt;Change&lt;f32&gt;&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarBundle.html">ProgressBarBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarQuery.html">ProgressBarQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarWidget.html">ProgressBarWidget</a>.</p>
-<h3 id="column"><a class="header" href="#column">Column</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>column_!([
-    text_!("Item 1"),
-    text_!("Item 2")
-]);
-<span class="boring">}</span></code></pre>
-<p>With event listener</p>
+<p>Column</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>column_!(
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-    [ text_!("Item 1") ]
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnBundle.html">ColumnBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnQuery.html">ColumnQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnWidget.html">ColumnWidget</a>.</p>
-<h3 id="row"><a class="header" href="#row">Row</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>row_!([
-    text_!("Left"),
-    text_!("Right")
-]);
-<span class="boring">}</span></code></pre>
-<p>With event listener</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>row_!(
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-    [ text_!("Item 1") ]
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowBundle.html">RowBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowQuery.html">RowQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowWidget.html">RowWidget</a>.</p>
-<h3 id="link"><a class="header" href="#link">Link</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>link_!("https://rust-lang.org/");
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>link_!(
-    "https://rust-lang.org/";
-
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkBundle.html">LinkBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkQuery.html">LinkQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkWidget.html">LinkWidget</a>.</p>
-<h3 id="dropdown"><a class="header" href="#dropdown">Dropdown</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>dropdown_!(
-    "Click me to show option";
-    [
-        button_!("Sign In"),
-        button_!("Sign Up"),
-        button_!("About us")
-    ]
-);
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>dropdown_!(
-    "Click me to show option";
-
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-
-    [
-        button_!("Sign In"),
-        button_!("Sign Up")
-    ]
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownBundle.html">DropdownBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownQuery.html">DropdownQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownWidget.html">DropdownWidget</a>.</p>
-<h3 id="image"><a class="header" href="#image">Image</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// path or url
-image_!("path/to/image.png");
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>image_!(
-    "path/to/image.png";
+    id: "my-column",
+    align_items: AlignItems::Center; // properties end with ;
     
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageBundle.html">ImageBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageQuery.html">ImageQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageWidget.html">ImageWidget</a>.</p>
-<h3 id="modal"><a class="header" href="#modal">Modal</a></h3>
-<p>Modal is independent and doesn’t need to be part of <code>root</code> widget.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>command.spawn(
-    modal_!([
-        column_!([
-            text_!("Hello world"),
-            button_!("Close modal")
-        ])
-    ])
-);
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>modal_!(
-    on: |active: On&lt;Active&gt;| {};
-    on: |inactive: On&lt;Inactive&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-
     [
-        column_!([
-            text_!("Hello world"),
-            button_!("Close modal")
-        ])
+        text_!("Hello world"), 
+        text_!("Hello again")
     ]
 );
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalBundle.html">ModalBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalQuery.html">ModalQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalWidget.html">ModalWidget</a>.</p>
-<h3 id="radio-group--radio"><a class="header" href="#radio-group--radio">Radio Group &amp; Radio</a></h3>
-<p><code>radio_group</code> needs <code>radio</code> as its item.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>radio_group_!([
-    radio_!("Pay by Card"),
-    radio_!("Pay by Cash")
-]);
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>radio_group_!(
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |change: On&lt;Change&lt;String&gt;&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {};
 
-    [
-        radio_!(
-            "Pay by Card";
-            on: |active: On&lt;Active&gt;| {}; 
-            on: |inactive: On&lt;Inactive&gt;| {}
-        ),
-        radio_!("Pay by Cash")
-    ]
-);
+// We don't need ; at the end of properties because we don't have any children.
+column_!(id: "my-column", align_items: AlignItems::Center);
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupBundle.html">RadioGroupBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupQuery.html">RadioGroupQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupWidget.html">RadioGroupWidget</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioBundle.html">RadioBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioQuery.html">RadioQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioWidget.html">RadioWidget</a>.</p>
-<h3 id="scroll"><a class="header" href="#scroll">Scroll</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>scroll_!([
-    text_!("Hello world"),
-    text_!("Hello there")
-]);
-<span class="boring">}</span></code></pre>
-<p>With event listener</p>
+<p>Scroll</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>scroll_!(
-    on: |scrolling: On&lt;Scrolling&gt;| {};
+    align_items: AlignItems::Center;  // properties end with ;
+    
+    on: |scrolling; On&lt;Scrolling&gt;| {
+        println!("scrolling");
+    }; // event handler ends with ;
+    
     [
         text_!("Hello world"),
-        text_!("Hello there")
+        text_!("Hello mom"),
+        text_!("Hello friends")
     ]
 );
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollBundle.html">ScrollBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollQuery.html">ScrollQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollWidget.html">ScrollWidget</a>.</p>
-<h3 id="select"><a class="header" href="#select">Select</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>select_!("Click me to show option", choices: &amp;["Cash", "Card", "Afterpay"]);    
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>select_!(
-    "Click me to show option", 
-    choices: &amp;["Cash", "Card", "Afterpay"];
-    
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-    on: |active: On&lt;Active&gt;| {};
-    on: |inactive: On&lt;Inactive&gt;| {};
-    on: |change: On&lt;Change&lt;String&gt;&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectBundle.html">SelectBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectQuery.html">SelectQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectWidget.html">SelectWidget</a>.</p>
-<h3 id="slider"><a class="header" href="#slider">Slider</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// Takes range-start &amp; range-end as arguments.
-// In this case start at 0.0, end at 100.0 .
-slider_!(min: 0.0, max: 100.0);
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>slider_!(
-    min: 0.0, max: 100.0;
-    
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}; 
-    on: |change: On&lt;Change&lt;f32&gt;&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderBundle.html">SliderBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderQuery.html">SliderQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderWidget.html">SliderWidget</a>.</p>
-<h3 id="text-input"><a class="header" href="#text-input">Text Input</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>text_input_!("Enter something");
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>text_input_!(
-    "Enter something";
-    
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}; 
-    on: |change: On&lt;Change&lt;String&gt;&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputBundle.html">TextInputBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputQuery.html">TextInputQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputWidget.html">TextInputWidget</a>.</p>
+<h3 id="the-rules-for-using-widget-macro"><a class="header" href="#the-rules-for-using-widget-macro">The rules for using widget macro</a></h3>
+<ol>
+<li>Always put <code>;</code> after properties if there are event handlers or children <code>[]</code>.</li>
+<li>Always put <code>;</code> after an event handler if there are more event handlers or children <code>[]</code>.</li>
+</ol>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="widget_structure.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="gettingstart.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="query.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="widgets.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -559,11 +260,11 @@ slider_!(min: 0.0, max: 100.0);
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="widget_structure.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="gettingstart.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="query.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="widgets.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

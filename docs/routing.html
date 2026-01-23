@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e0ad94.js";
+            window.path_to_searchindex_js = "searchindex-37b30491.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-8607d2e3.js"></script>
+        <script src="toc-2ed979a7.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -195,29 +195,17 @@ each <code>root</code> defines one page or view.</p>
 }
 
 fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("home") // specifying route name
-            .build(),
-        
-        children![
-            text("This is Home view").build()
-        ]
-    ));
+    commands.spawn(
+        root_!(route: "home"; [ text_!("This is home view") ])
+    );
 }
 
 fn setup_about_us_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("about-us") // specifying route name
-            .build(),
-        
-        children![
-            text("This is About Us view").build()
-        ]
-    ));
+    commands.spawn(
+        root_!(route: "about-us"; [ text_!("This is about us view") ])
+    );
 }</code></pre>
-<p>We can specify route name for each view by calling <code>route</code> method.</p>
+<p>We can specify route name for each view by using <code>route</code> property.</p>
 <h3 id="registering-routes"><a class="header" href="#registering-routes">Registering Routes</a></h3>
 <p>After we defined route on each view, we need to register those routes.
 We can do so by using <code>Router</code> resource.</p>
@@ -241,45 +229,37 @@ fn setup_routes(mut router: ResMut&lt;Router&gt;) {
 
 // setup view systems..</code></pre>
 <p>You may also want to set the default route. If you don’t, the first route in the list
-will be set to default route automatically.</p>
+will be set to default automatically.</p>
 <h3 id="route-navigation"><a class="header" href="#route-navigation">Route Navigation</a></h3>
 <p>Let’s update the above examples to demonstrate how to nagivate to specific route.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("home")
-            .build(),
-        
-        children![
-            text("This is Home view").build(),
-            (
-                button("Go to About Us view").build(),
-                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+    commands.spawn(
+        root_!(route: "home"; [
+            text_!("This is home view"),
+            button_!(
+                "Go to about us view";
+                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
                     router.nagivate("about-us", ());
-                })
+                }
             )
-        ]
-    ));
+        ])
+    );
 }
 
 fn setup_about_us_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("about-us")
-            .build(),
-        
-        children![
-            text("This is About Us view").build(),
-            (
-                button("Go to Home view").build(),
-                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+    commands.spawn(
+        root_!(route: "about-us"; [
+            text_!("This is about us view"),
+            button_!(
+                "Go to home view";
+                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
                     router.nagivate("home", ());
-                })
+                }
             )
-        ]
-    ));
+        ])
+    );
 }
 <span class="boring">}</span></code></pre>
 <p>We can navigate to any route by calling <code>navigate</code> method.</p>
@@ -290,42 +270,40 @@ on product id or name.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root().route("home").build(),
-        
-        children![
-            text("This is Home view").build(),
-            (
-                button("See product").build(),
-                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+    commands.spawn(
+        root_!(route: "home"; [
+            text_!("This is home view"),
+            button_!(
+                "See product";
+                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
                     router.nagivate(
                         "product-detail", 
                         Param::new()
                             .value("id", "1234") // just random product id
                             .value("name", "Iphone 17 256GB") // product name
                     );
-                })
+                }
             )
-        ]
-    ));
+        ])
+    );
 }
 
-fn setup_product_detail_view(mut commands: Commands) {
-    commands.spawn((
-        root().route("product-detail").build(),
-        
-        children![
-            text("Product name: Unknown").id("product-name").build()
-        ],
-        
-        observe(|page_loaded: On&lt;PageLoaded&gt;, mut text_q: TextQuery| {
-            if let Some(text) = text_q.find_by_id("product-name") {
-                if let Some(name) = page_loaded.param.get("name") { 
-                    text.text.value.0 = name.clone();
-                } 
-            }
-        })
-    ));
+fn setup_product_detail_view(mut commands: Commands) { 
+    commands.spawn(
+        root_!(
+            route: "product-detail";
+            
+            on: |page_loaded: On&lt;PageLoaded&gt;, mut text_q: TextQuery| {
+                if let Some(text) = text_q.find_by_id("product-name") {
+                    if let Some(name) = page_loaded.param.get("name") { 
+                        text.text.value.0 = name.clone();
+                    } 
+                }
+            };
+            
+            [ text_!("Product name: Unknown", id: "product-name") ]
+        )
+    );
 }
 <span class="boring">}</span></code></pre>
 <p>See <a href="https://docs.rs/makara/latest/makara/routers/struct.Router.html">Router</a> and
