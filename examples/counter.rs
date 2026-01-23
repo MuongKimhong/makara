@@ -14,16 +14,16 @@ fn main() {
 }
 
 fn on_plus_click(_click: On<Clicked>, mut count: ResMut<Count>, mut text_q: TextQuery) {
-    if let Some(text_widget) = text_q.find_by_id("#count-text") {
+    if let Some(mut text_widget) = text_q.find_by_id("#count-text") {
         count.0 += 1;
-        text_widget.text.value.0 = format!("Count: {:?}", count.0);
+        text_widget.set_text(&format!("Count: {:?}", count.0));
     }
 }
 
 fn on_minus_click(_click: On<Clicked>, mut count: ResMut<Count>, mut text_q: TextQuery) {
-    if let Some(text_widget) = text_q.find_by_id("#count-text") {
+    if let Some(mut text_widget) = text_q.find_by_id("#count-text") {
         count.0 -= 1;
-        text_widget.text.value.0 = format!("Count: {:?}", count.0);
+        text_widget.set_text(&format!("Count: {:?}", count.0));
     }
 }
 

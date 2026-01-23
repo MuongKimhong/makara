@@ -23,11 +23,11 @@ fn setup(mut commands: Commands) {
                     [
                         button_!("Red"; on: |_clicked: On<Clicked>, mut root_q: RootQuery| {
                             let root = root_q.find_by_id("root").unwrap();
-                            root.style.background_color.0 = Color::srgb(1.0, 0.0, 0.0);
+                            root.style.background_color.set_color("red");
                         }),
                         button_!("Blue"; on: |_clicked: On<Clicked>, mut root_q: RootQuery| {
                             let root = root_q.find_by_id("root").unwrap();
-                            root.style.background_color.0 = Color::srgb(0.0, 0.0, 1.0);
+                            root.style.background_color.set_color("blue");
                         })
                     ]
                 )

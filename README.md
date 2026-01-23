@@ -11,9 +11,7 @@
 ## Getting start
 ```rust
 fn on_button_click(click: On<Clicked>, mut text_q: TextQuery) {
-   if let Some(text) = text_q.find_by_id("my-text") {
-       text.text.value.0 = "Hello mars!".to_string();
-   }
+   text_q.get_by_id("my-text", |t| t.set_text("Hello mars"));
 }
 
 fn setup(mut commands: Commands) {    
