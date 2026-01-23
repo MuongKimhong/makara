@@ -295,6 +295,42 @@ pub struct Id(pub String);
 #[derive(Component, Debug, Default, PartialEq, Eq, Clone)]
 pub struct Class(pub String);
 
+impl Class {
+    /// Adds a class to the widget if it doesn't already exist.
+    pub fn add_class(&mut self, class: &str) {
+        let mut classes: Vec<_> = self.0.split_whitespace().collect();
+        if !classes.contains(&class) {
+            classes.push(class);
+            self.0 = classes.join(" ");
+        }
+    }
+
+    /// Removes a specific class from the widget.
+    pub fn remove_class(&mut self, class: &str) {
+        let classes: Vec<_> = self.0
+            .split_whitespace()
+            .filter(|&c| c != class)
+            .collect();
+
+        self.0 = classes.join(" ");
+    }
+
+    /// Returns an iterator over the individual class names.
+    ///
+    /// Useful for checking specific styles or logic conditions.
+    pub fn class_list(&self) -> Vec<String> {
+        self.0
+            .split_whitespace()
+            .map(|s| s.to_string())
+            .collect()
+    }
+
+    /// Checks if the widget contains a specific class.
+    pub fn has_class(&self, class: &str) -> bool {
+        self.0.split_whitespace().any(|c| c == class)
+    }
+}
+
 #[derive(Bundle, Clone, Default, Debug)]
 pub struct IdAndClass {
     pub id: Id,
