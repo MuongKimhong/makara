@@ -190,23 +190,23 @@ impl IntoColor for &str {
 
 /// Helper trait to allow .set() on &mut BackgroundColor, &mut BorderColor and &mut TextColor
 pub trait SetColor {
-    fn set(&mut self, color: impl IntoColor);
+    fn set_color(&mut self, color: impl IntoColor);
 }
 
 impl SetColor for BackgroundColor {
-    fn set(&mut self, color: impl IntoColor) {
+    fn set_color(&mut self, color: impl IntoColor) {
         self.0 = color.into_color();
     }
 }
 
 impl SetColor for TextColor {
-    fn set(&mut self, color: impl IntoColor) {
+    fn set_color(&mut self, color: impl IntoColor) {
         self.0 = color.into_color();
     }
 }
 
 impl SetColor for BorderColor {
-    fn set(&mut self, color: impl IntoColor) {
+    fn set_color(&mut self, color: impl IntoColor) {
         let color = color.into_color();
         self.top = color;
         self.bottom = color;

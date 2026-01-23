@@ -4,7 +4,7 @@
 //! # Example
 //! ```rust,ignore
 //! fn on_button_click(click: On<Clicked>, mut text_q: TextQuery) {
-//!    text_q.get_by_id("my-text", |t| t.text.value.0 = "Hello mars!".to_string());
+//!    text_q.get_by_id("my-text", |t| t.set_text("Hello mars"));
 //! }
 //!
 //! fn setup(mut commands: Commands) {
