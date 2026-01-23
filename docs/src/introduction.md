@@ -2,8 +2,6 @@
     Build high performance GUI app with power of Game Engine (Bevy).
 </h3>
 
-### What is Makara? and Why Makara?
-
 Makara is a UI Library built on top of Bevy engine.
 
 [Bevy](https://bevy.org/) is a game engine written in Rust, based on 
@@ -55,14 +53,12 @@ Let's see how **Makara** reduce the verbosity.
 
 ```rust
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        button("Click me")
-            .padding(px(10))
-            .background_color("white")
-            .build(),
-        
-        observe(on_button_click)
-    ));
+    commands.spawn(
+        button_!(
+            "Click me", background_color: "white", padding: px(10);
+            on: on_button_click
+        )
+    );
 }
 
 fn on_button_click(_clicked: On<Clicked>) {

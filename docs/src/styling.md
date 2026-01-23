@@ -2,7 +2,7 @@
 
 There are 2 ways to provide custom styles to widgets.
 
-1. Style on widgets directly.
+1. Style on widgets directly using properties.
 2. Attach an `ID` or `Classes` and provide styles via `ID` or `Classes`.
 
 ### Direct styling
@@ -15,17 +15,14 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center) // direct styling
-            .justify_content(JustifyContent::Center) // direct styling
-            .build(),
-
-        children![
-            // direct styling for font size
-            text("Hello world").font_size(20.0).build()
-        ]
-    ));
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center, // direct styling
+            justify_content: JustifyContent::Center; // direct styling
+            
+            [ text_!("Hello world", font_size: 20.0) ]
+        )
+    );
 }
 ```
 
@@ -39,16 +36,14 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root().id("root").build(),
-
-        children![
-            text("Hello world").id("text-one").class("text").build(),
-            text("Hello mom").class("text").build(),
-            text("Hello friend").class("text hello-friend").build(),
-            text("Hello stranger").class("text").build()
-        ]
-    ));
+    commands.spawn(
+        root_!(id: "root"; [
+            text_!("Hello world", id: "text-one", class: "text"),
+            text_!("Hello mom", class: "text"),
+            text_!("Hello friend", class: "text hello-friend"),
+            text_!("Hello stranger", class: "text")
+        ])
+    );
 }
 
 fn setup_styles(mut style: ResMut<CustomStyle>) {

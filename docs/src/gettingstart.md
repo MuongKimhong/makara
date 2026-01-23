@@ -20,16 +20,14 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
-
-        children![
-            text("Hello world").font_size(20.0).build()
-        ]
-    ));
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
+            
+            [ text_!("Hello world", font_size: 20.0) ]
+        )
+    );
 }
 ```
 
@@ -48,11 +46,8 @@ of **Makara** or **Bevy**, component is just a rust struct or enum.
   For example, you create a button with background color of red and border color of blue in **Makara**.
 
   ```rust
-  // create button with background color of red and border color of blue
-  button("Click me")
-    .background_color("red")
-    .border_color("blue")
-    .build();
+  // create button with background color of red and border color of blue 
+  button_!("Click me", background_color: "red", border_color: "blue");
   ```
 
   Under the hood, the button is just an entity that contains these 
@@ -98,57 +93,4 @@ as children of **root** except **modal**.
 In above example, when you run the application with `cargo run` you will see the text
 "Hello world" appears at the center of the screen.
 
-You can make a widget becomes a child of another widget by using `children` macro provided by Bevy.
-
-A widget is an entity. An **entity** is a set of **components**. If you have more than one component for
-an entity, you will need to wrap it inside a `tuple`. For example,
-```rust
-#[derive(Component)]
-pub struct HelloWorldComponent;
-
-#[derive(Component)]
-pub struct HelloMomComponent;
-
-// spawn an entity with just one component
-commands.spawn(HelloWorldComponent);
-
-// spawn an entity with 2 components
-commands.spawn((HelloWorldComponent, HelloMomComponent));
-```
-
-This also applies to **Makara**'s widgets.
-```rust
-// no need tuple here, because text doesn't need other components
-children![
-    text("Hello world").font_size(20.0).build()
-]
-
-// wrap button inside a tuple because it needs to observe Clicked event.
-children![
-    (
-        button("Click me").build(),
-        observe(|_clicked: On<Clicked>| {
-            // do something
-        })
-    )
-]
-```
-
-### The **`build`** method
-
-You propaly notice that every time a widget is called, they will ended with `.build()`. To simplify UI 
-creation, we use a Builder Pattern that abstracts the complexity of Bevy's ECS.
-
-```rust
-// This gives us a blueprint of the button.
-// We then can customise this blueprint with what we want.
-button("Click me");
-
-// Example, changing background color or attaching an ID.
-button("Click").id("my-btn").background_color(Color::BLACK);
-
-// Finally, call .build() method to flatten the blueprint,
-// attaches internal identifying tags and finally register
-// event listeners and emitters.
-button("Click").id("my-btn").background_color(Color::BLACK).build();
-```
+You can make a widget becomes a child of another widget by using `[]`, we will talk about it later.

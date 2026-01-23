@@ -15,54 +15,34 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands) {
-    commands.spawn(Camera2d); // spawn 2D camera as bevy needs this.
-
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
-
-        children![
-            text("Register your info").build(), 
-            input_container(), 
-            button_container()
-        ]
-    ));
+fn setup(mut commands: Commands) {    
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
+            
+            [
+                text_!("Register your info"),
+                input_container(),
+                button_container()
+            ]
+        )
+    );
 }
 
 fn input_container() -> impl Bundle {
-    (
-        column().build(),
-        children![
-            text_input("Enter Email").build(),
-            text_input("Enter Name").build(), 
-            text("Choose gender").build(),
-            (
-                radio_group().build(),
-                children![
-                    radio("Male").build(),
-                    radio("Female").build(),
-                ]
-            )
-        ]
-    )
+    column_!([
+        text_input_!("Enter email"),
+        text_input_!("Enter name"),
+        text_!("Choose gender"),
+        radio_group_!([ radio_!("Male"), radio_!("Female") ])
+    ])
 }
 
 fn button_container() -> impl Bundle {
-    (
-        row().build(),
-        children![
-            (
-                button("Cancel").build(),
-                observe(|_clicked: On<Clicked>| {})
-            ),
-            (
-                button("Submit").build(),
-                observe(|_clicked: On<Clicked>| {})
-            )
-        ]
-    )
+    row_!([
+        button_!("Cancel"; on: |_clicked: On<Clicked>| {}),
+        button_!("Submit"; on: |_clicked: On<Clicked>| {})
+    ])
 }
 ```

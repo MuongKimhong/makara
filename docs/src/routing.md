@@ -24,30 +24,18 @@ fn main() {
 }
 
 fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("home") // specifying route name
-            .build(),
-        
-        children![
-            text("This is Home view").build()
-        ]
-    ));
+    commands.spawn(
+        root_!(route: "home"; [ text_!("This is home view") ])
+    );
 }
 
 fn setup_about_us_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("about-us") // specifying route name
-            .build(),
-        
-        children![
-            text("This is About Us view").build()
-        ]
-    ));
+    commands.spawn(
+        root_!(route: "about-us"; [ text_!("This is about us view") ])
+    );
 }
 ```
-We can specify route name for each view by calling `route` method.
+We can specify route name for each view by using `route` property.
 
 ### Registering Routes
 After we defined route on each view, we need to register those routes.
@@ -75,46 +63,38 @@ fn setup_routes(mut router: ResMut<Router>) {
 // setup view systems..
 ```
 You may also want to set the default route. If you don't, the first route in the list
-will be set to default route automatically.
+will be set to default automatically.
 
 ### Route Navigation
 Let's update the above examples to demonstrate how to nagivate to specific route.
 
 ```rust
 fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("home")
-            .build(),
-        
-        children![
-            text("This is Home view").build(),
-            (
-                button("Go to About Us view").build(),
-                observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
+    commands.spawn(
+        root_!(route: "home"; [
+            text_!("This is home view"),
+            button_!(
+                "Go to about us view";
+                on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
                     router.nagivate("about-us", ());
-                })
+                }
             )
-        ]
-    ));
+        ])
+    );
 }
 
 fn setup_about_us_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("about-us")
-            .build(),
-        
-        children![
-            text("This is About Us view").build(),
-            (
-                button("Go to Home view").build(),
-                observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
+    commands.spawn(
+        root_!(route: "about-us"; [
+            text_!("This is about us view"),
+            button_!(
+                "Go to home view";
+                on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
                     router.nagivate("home", ());
-                })
+                }
             )
-        ]
-    ));
+        ])
+    );
 }
 ```
 We can navigate to any route by calling `navigate` method.
@@ -127,42 +107,40 @@ on product id or name.
 
 ```rust
 fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root().route("home").build(),
-        
-        children![
-            text("This is Home view").build(),
-            (
-                button("See product").build(),
-                observe(|_clicked: On<Clicked>, mut router: ResMut<Router>| {
+    commands.spawn(
+        root_!(route: "home"; [
+            text_!("This is home view"),
+            button_!(
+                "See product";
+                on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
                     router.nagivate(
                         "product-detail", 
                         Param::new()
                             .value("id", "1234") // just random product id
                             .value("name", "Iphone 17 256GB") // product name
                     );
-                })
+                }
             )
-        ]
-    ));
+        ])
+    );
 }
 
-fn setup_product_detail_view(mut commands: Commands) {
-    commands.spawn((
-        root().route("product-detail").build(),
-        
-        children![
-            text("Product name: Unknown").id("product-name").build()
-        ],
-        
-        observe(|page_loaded: On<PageLoaded>, mut text_q: TextQuery| {
-            if let Some(text) = text_q.find_by_id("product-name") {
-                if let Some(name) = page_loaded.param.get("name") { 
-                    text.text.value.0 = name.clone();
-                } 
-            }
-        })
-    ));
+fn setup_product_detail_view(mut commands: Commands) { 
+    commands.spawn(
+        root_!(
+            route: "product-detail";
+            
+            on: |page_loaded: On<PageLoaded>, mut text_q: TextQuery| {
+                if let Some(text) = text_q.find_by_id("product-name") {
+                    if let Some(name) = page_loaded.param.get("name") { 
+                        text.text.value.0 = name.clone();
+                    } 
+                }
+            };
+            
+            [ text_!("Product name: Unknown", id: "product-name") ]
+        )
+    );
 }
 ```
 

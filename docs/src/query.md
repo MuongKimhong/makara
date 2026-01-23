@@ -6,18 +6,14 @@ For example, let's say we have a text and a button. Once the button is clicked,
 we want to update the text.
 
 ```rust
-(
-    text("Hello world").id("my-text").build(),
-    (
-        button("Click me").build(),
-    
-        observe(|_clicked: On<Clicked>, mut text_q: TextQuery| {
-            if let Some(text) = text_q.find_by_id("my-text") {
-                text.text.value.0 = "Hello Mom".to_string();
-            }
-        })
-    )
-)
+column_!([
+    text_!("Hello world", id: "my-text"),
+    button_!("Click me"; on: |_clicked: On<Clicked>, mut text_q: TextQuery| {
+        if let Some(text) = text_q.find_by_id("my-text") {
+            text.text.value.0 = "Hello Mom".to_string();
+        }
+    })
+]);
 ```
 
 In the example above, once the button is clicked, we query text widgets using `TextQuery`.
@@ -30,27 +26,24 @@ you to write extra code.
 
 ```rust
 // change all text colors when button is clicked.
-(
-    text("Hello World").class("my-text").build(),
-    text("Hello Mom").class("my-text").build(),
-    text("Hello Friend").class("my-text").build(),
-    text("Hello Stranger").class("my-text").build(),
-    (
-        button("Click me").build(),
+column_!([
+    text_!("Hello world", class: "my-text"),
+    text_!("Hello mom", class: "my-text"),
+    text_!("Hello friend", class: "my-text"),
+    text_!("Hello stranger", class: "my-text"),
     
-        observe(|_clicked: On<Clicked>, mut text_q: TextQuery| {
-            // find_by_class returns list of entity
-            let text_entities = text_q.find_by_class("my-text");
-        
-            // iterate thru the list
-            for entity in text_entities.into_iter() {
-                if let Some(text) = text_q.find_by_entity(entity) {
-                    text.text.color.0 = Color::RED;
-                }
+    button_!("Click me"; on: |_clicked: On<Clicked>, mut text_q: TextQuery| {
+        // find_by_class returns list of entity
+        let text_entities = text_q.find_by_class("my-text");
+    
+        // iterate thru the list
+        for entity in text_entities.into_iter() {
+            if let Some(text) = text_q.find_by_entity(entity) {
+                text.text.color.0 = Color::RED;
             }
-        })
-    )
-)
+        }
+    })
+]);
 ```
 
 For more information about widget query and its blueprint, see [widgets](./widgets.md).
