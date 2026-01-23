@@ -4,22 +4,16 @@
 //! # Example
 //! ```rust,ignore
 //! fn on_button_click(click: On<Clicked>, mut text_q: TextQuery) {
-//!    if let Some(text) = text_q.find_by_id("my-text") {
-//!        text.text.value.0 = "Hello mars!".to_string();
-//!    }
+//!    text_q.get_by_id("my-text", |t| t.text.value.0 = "Hello mars!".to_string());
 //! }
 //!
 //! fn setup(mut commands: Commands) {
-//!     commands.spawn((
-//!        root().build(),
-//!        children![
-//!            text("Hello earth").id("my-text").build(),
-//!            (
-//!                button("Press me").build(),
-//!                observe(on_button_click)
-//!            )
-//!        ]
-//!    ));
+//!    commands.spawn(
+//!        root_!([
+//!            text_!("Hello earth", id: "my-text"),
+//!            button_!("Click me"; on: on_button_click)
+//!        ])
+//!    );
 //! }
 //! ```
 

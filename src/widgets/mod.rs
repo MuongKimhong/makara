@@ -345,6 +345,45 @@ pub trait WidgetQuery<'w, 's> {
     /// Method to find entities that match with provided classes.
     fn find_by_class(&self, target_class: &str) -> Vec<Entity>;
 
+    /// Get the widget and executes a closure on a widget found by its ID.
+    ///
+    /// This is the preferred way to perform single-shot updates to avoid `if let` boilerplate.
+    ///
+    /// # Example
+    /// ```rust
+    /// text_q.get_by_id("header", |t| t.text.value.0 = "Settings".to_string());
+    /// ```
+    fn get_by_id(&mut self, id: &str, f: impl FnOnce(&mut Self::WidgetView<'_>)) {
+        if let Some(mut widget) = self.find_by_id(id) {
+            f(&mut widget);
+        }
+    }
+
+    /// Get the widget and executes a closure on a widget found by its Entity.
+    fn get_by_entity(&mut self, entity: Entity, f: impl FnOnce(&mut Self::WidgetView<'_>)) {
+        if let Some(mut widget) = self.find_by_entity(entity) {
+            f(&mut widget);
+        }
+    }
+
+    /// Executes a closure on every widget that matches the specified class.
+    ///
+    /// This is useful for bulk-updating styles or states (e.g., highlighting all buttons).
+    ///
+    /// # Example
+    /// ```rust
+    /// button_q.get_by_class("active", |btn| btn.style.background_color.0 = Color::GOLD);
+    /// ```
+    fn get_by_class(&mut self, class: &str, mut f: impl FnMut(&mut Self::WidgetView<'_>)) {
+        let entities = self.find_by_class(class);
+
+        for entity in entities {
+            if let Some(mut widget) = self.find_by_entity(entity) {
+                f(&mut widget);
+            }
+        }
+    }
+
     /// Get related components of an entity.
     fn get_components<'a>(&'a mut self, entity: Entity) -> Option<Self::WidgetView<'a>>;
 }
