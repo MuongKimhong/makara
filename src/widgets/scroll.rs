@@ -452,7 +452,7 @@ pub(crate) fn detect_scroll_children_added(
     }
 }
 
-pub(crate) fn detect_move_panel_height_change(
+pub(crate) fn detect_scroll_height_change(
     scrolls: Query<
         (&ComputedNode, &ScrollMovePanelEntity, &ScrollBarEntity),
         Changed<ComputedNode>
@@ -462,6 +462,33 @@ pub(crate) fn detect_move_panel_height_change(
 ) {
     for (scroll_computed, panel_entity, bar_entity) in scrolls.iter() {
         if let Ok(panel_computed) = panels.get(panel_entity.0) {
+            if let Ok((mut vis, mut bar_node)) = bars.get_mut(bar_entity.0) {
+                let scroll_height = scroll_computed.size().y * scroll_computed.inverse_scale_factor();
+                let panel_height = panel_computed.size().y * panel_computed.inverse_scale_factor();
+
+                if panel_height <= scroll_height {
+                    *vis = Visibility::Hidden;
+                }
+                else {
+                    let bar_height = (scroll_height / panel_height) * scroll_height;
+                    bar_node.height = px(bar_height);
+                    *vis = Visibility::Visible;
+                }
+            }
+        }
+    }
+}
+
+pub(crate) fn detect_move_panel_height_change(
+    panels: Query<
+        (&ComputedNode, &ScrollEntity),
+        (With<MakaraScrollMovePanel>, Changed<ComputedNode>)
+    >,
+    scrolls: Query<(&ComputedNode, &ScrollBarEntity)>,
+    mut bars: Query<(&mut Visibility, &mut Node), IsScrollBarOnly>
+) {
+    for (panel_computed, scroll_entity) in panels.iter() {
+        if let Ok((scroll_computed, bar_entity)) = scrolls.get(scroll_entity.0) {
             if let Ok((mut vis, mut bar_node)) = bars.get_mut(bar_entity.0) {
                 let scroll_height = scroll_computed.size().y * scroll_computed.inverse_scale_factor();
                 let panel_height = panel_computed.size().y * panel_computed.inverse_scale_factor();

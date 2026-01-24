@@ -237,6 +237,7 @@ pub mod prelude {
                 (
                     detect_scroll_built,
                     detect_scroll_children_added,
+                    detect_scroll_height_change,
                     detect_move_panel_height_change,
                     handle_scrolling
                 )
