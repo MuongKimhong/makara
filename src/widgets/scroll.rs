@@ -434,7 +434,10 @@ pub(crate) fn detect_scroll_children_added(
             bar_style.0.clone(),
             MakaraScrollbar,
             ScrollEntity(scroll_entity),
-            Visibility::Hidden
+            Visibility::Hidden,
+            observe(on_scrollbar_drag),
+            observe(on_scrollbar_mouse_over),
+            observe(on_mouse_out)
         ))
         .id();
 
@@ -504,6 +507,64 @@ pub(crate) fn detect_move_panel_height_change(
             }
         }
     }
+}
+
+fn on_scrollbar_drag(
+    drag: On<Pointer<Drag>>,
+    scrolls: Query<(&ComputedNode, &ScrollMovePanelEntity)>,
+    mut bars: Query<(&mut Node, &ComputedNode, &ChildOf), Without<MakaraScrollList>>,
+    mut panels: Query<(&mut Node, &ComputedNode, &mut MakaraScrollList)>,
+    mut commands: Commands,
+) {
+    let Ok((mut bar_node, bar_computed, bar_parent)) = bars.get_mut(drag.entity) else {
+        return
+    };
+
+    let Ok((scroll_computed, panel_entity)) = scrolls.get(bar_parent.0) else {
+        return
+    };
+
+    let Ok((mut panel_node, panel_computed, mut scroll_list)) = panels.get_mut(panel_entity.0) else {
+        return
+    };
+
+    let scale = bar_computed.inverse_scale_factor();
+    let container_height = scroll_computed.size().y * scale;
+    let panel_height = panel_computed.size().y * scale;
+    let bar_height = bar_computed.size().y * scale;
+
+    let max_scroll = (panel_height - container_height).max(0.0);
+    let track_space = (container_height - bar_height).max(1.0); // Avoid div by zero
+
+    let current_bar_top = if let Val::Px(p) = bar_node.top {
+        p
+    }
+    else {
+        0.0
+    };
+
+    let new_bar_top = (current_bar_top + drag.delta.y).clamp(0.0, track_space);
+    bar_node.top = Val::Px(new_bar_top);
+
+    // Calculate the ratio 0.0 to 1.0
+    let scroll_ratio = new_bar_top / track_space;
+
+    scroll_list.position = -(scroll_ratio * max_scroll);
+    panel_node.top = Val::Px(scroll_list.position);
+
+    commands.trigger(Scrolling {
+        entity: bar_parent.0,
+        position: scroll_list.position,
+    });
+}
+
+fn on_scrollbar_mouse_over(
+    mut over: On<Pointer<Over>>,
+    mut commands: Commands,
+    window: Single<Entity, With<Window>>,
+) {
+    commands.entity(*window).insert(CursorIcon::System(SystemCursorIcon::Pointer));
+    over.propagate(false);
 }
 
 pub(crate) fn handle_scrolling(
