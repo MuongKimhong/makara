@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e0ad94.js";
+            window.path_to_searchindex_js = "searchindex-37b30491.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-8607d2e3.js"></script>
+        <script src="toc-2ed979a7.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -180,7 +180,6 @@
     Build high performance GUI app with power of Game Engine (Bevy).
 </h3>
 
-<h3 id="what-is-makara-and-why-makara"><a class="header" href="#what-is-makara-and-why-makara">What is Makara? and Why Makara?</a></h3>
 <p>Makara is a UI Library built on top of Bevy engine.</p>
 <p><a href="https://bevy.org/">Bevy</a> is a game engine written in Rust, based on
 <a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a> architecture.
@@ -226,14 +225,12 @@ that most rust devs familiar with, to make it easy to write and maintain the cod
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn setup(mut commands: Commands) {
-    commands.spawn((
-        button("Click me")
-            .padding(px(10))
-            .background_color("white")
-            .build(),
-        
-        observe(on_button_click)
-    ));
+    commands.spawn(
+        button_!(
+            "Click me", background_color: "white", padding: px(10);
+            on: on_button_click
+        )
+    );
 }
 
 fn on_button_click(_clicked: On&lt;Clicked&gt;) {
@@ -282,16 +279,14 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
-
-        children![
-            text("Hello world").font_size(20.0).build()
-        ]
-    ));
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
+            
+            [ text_!("Hello world", font_size: 20.0) ]
+        )
+    );
 }</code></pre>
 <h3 id="an-overview-of-ecs"><a class="header" href="#an-overview-of-ecs">An overview of ECS</a></h3>
 <p>Because this library is powered by a game engine which is based on ECS architecture, it’s a must to understand how ECS works.</p>
@@ -307,11 +302,8 @@ of <strong>Makara</strong> or <strong>Bevy</strong>, component is just a rust st
 <p>For example, you create a button with background color of red and border color of blue in <strong>Makara</strong>.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>// create button with background color of red and border color of blue
-button("Click me")
-  .background_color("red")
-  .border_color("blue")
-  .build();
+</span>// create button with background color of red and border color of blue 
+button_!("Click me", background_color: "red", border_color: "blue");
 <span class="boring">}</span></code></pre>
 <p>Under the hood, the button is just an entity that contains these
 2 components, <a href="https://docs.rs/bevy/latest/bevy/prelude/struct.BackgroundColor.html"><code>BackgroundColor</code></a>
@@ -351,96 +343,114 @@ In <strong>Makara</strong>, you start by spawning a single <strong>root</strong>
 as children of <strong>root</strong> except <strong>modal</strong>.</p>
 <p>In above example, when you run the application with <code>cargo run</code> you will see the text
 “Hello world” appears at the center of the screen.</p>
-<p>You can make a widget becomes a child of another widget by using <code>children</code> macro provided by Bevy.</p>
-<p>A widget is an entity. An <strong>entity</strong> is a set of <strong>components</strong>. If you have more than one component for
-an entity, you will need to wrap it inside a <code>tuple</code>. For example,</p>
+<p>You can make a widget becomes a child of another widget by using <code>[]</code>, we will talk about it later.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="widget-structure"><a href="#widget-structure" class="header">Widget Structure</a></h1>
+<h3 id="understanding-the-structure-of-widgets-in-makara"><a class="header" href="#understanding-the-structure-of-widgets-in-makara">Understanding the structure of widgets in Makara</a></h3>
+<p>In <strong>Makara</strong>, creating a widget can be done by calling its pre-defined macro.
+A button can be created using <code>button_!</code> and a text can be created using <code>text_!</code>.</p>
+<p>Each macro is splitted into 3 parts with specific orders and the orders are:</p>
+<ol>
+<li>Properties</li>
+<li>Event handlers</li>
+<li>Children</li>
+</ol>
+<p>Let’s have a look at a few examples.</p>
+<p>Button</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>#[derive(Component)]
-pub struct HelloWorldComponent;
+</span>button_!(
+    "Click me", 
+    id: "my-btn", 
+    background_color: "blue"; // properties end with ;
+    
+    on: |clicked: On&lt;Clicked&gt;| { 
+        println("Button is clicked"); 
+    };
+    on: |mouse_over: On&lt;MouseOver&gt;| {
+        println!("Mouse is over button");
+    }
+);
 
-#[derive(Component)]
-pub struct HelloMomComponent;
-
-// spawn an entity with just one component
-commands.spawn(HelloWorldComponent);
-
-// spawn an entity with 2 components
-commands.spawn((HelloWorldComponent, HelloMomComponent));
+// We don't need ; at the end of properties because we don't have an event handler.
+button_!("Click me", border_color: "red");
 <span class="boring">}</span></code></pre>
-<p>This also applies to <strong>Makara</strong>’s widgets.</p>
+<p>Column</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>// no need tuple here, because text doesn't need other components
-children![
-    text("Hello world").font_size(20.0).build()
-]
+</span>column_!(
+    id: "my-column",
+    align_items: AlignItems::Center; // properties end with ;
+    
+    [
+        text_!("Hello world"), 
+        text_!("Hello again")
+    ]
+);
 
-// wrap button inside a tuple because it needs to observe Clicked event.
-children![
-    (
-        button("Click me").build(),
-        observe(|_clicked: On&lt;Clicked&gt;| {
-            // do something
-        })
-    )
-]
+// We don't need ; at the end of properties because we don't have any children.
+column_!(id: "my-column", align_items: AlignItems::Center);
 <span class="boring">}</span></code></pre>
-<h3 id="the-build-method"><a class="header" href="#the-build-method">The <strong><code>build</code></strong> method</a></h3>
-<p>You propaly notice that every time a widget is called, they will ended with <code>.build()</code>. To simplify UI
-creation, we use a Builder Pattern that abstracts the complexity of Bevy’s ECS.</p>
+<p>Scroll</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>// This gives us a blueprint of the button.
-// We then can customise this blueprint with what we want.
-button("Click me");
-
-// Example, changing background color or attaching an ID.
-button("Click").id("my-btn").background_color(Color::BLACK);
-
-// Finally, call .build() method to flatten the blueprint,
-// attaches internal identifying tags and finally register
-// event listeners and emitters.
-button("Click").id("my-btn").background_color(Color::BLACK).build();
+</span>scroll_!(
+    align_items: AlignItems::Center;  // properties end with ;
+    
+    on: |scrolling; On&lt;Scrolling&gt;| {
+        println!("scrolling");
+    }; // event handler ends with ;
+    
+    [
+        text_!("Hello world"),
+        text_!("Hello mom"),
+        text_!("Hello friends")
+    ]
+);
 <span class="boring">}</span></code></pre>
+<h3 id="the-rules-for-using-widget-macro"><a class="header" href="#the-rules-for-using-widget-macro">The rules for using widget macro</a></h3>
+<ol>
+<li>Always put <code>;</code> after properties if there are event handlers or children <code>[]</code>.</li>
+<li>Always put <code>;</code> after an event handler if there are more event handlers or children <code>[]</code>.</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="widgets"><a href="#widgets" class="header">Widgets</a></h1>
 <p><strong>Makara</strong> provides built-in widgets that are needed for building GUI applications including
 <strong>button</strong>, <strong>modal</strong>, <strong>text input</strong> and more. There will be more important widgets added
 to <strong>Makara</strong> in upcoming new versions.</p>
 <h3 id="root"><a class="header" href="#root">Root</a></h3>
+<p><code>root_!</code> is a starting point for UI hierarchy, so it needs to be spawned by commands.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>root().build()
+</span>commands.spawn(root_!());
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootBundle.html">RootBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootQuery.html">RootQuery</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootWidget.html">RootWidget</a>.</p>
 <h3 id="text"><a class="header" href="#text">Text</a></h3>
-<pre><code class="language-rus">text("Hi Mom!").build()
-</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text_!("Hello world");
+<span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextBundle.html">TextBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextQuery.html">TextQuery</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextWidget.html">TextWidget</a>.</p>
 <h3 id="button"><a class="header" href="#button">Button</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>button("Click me").build()
+</span>button_!("Click me");
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    button("Click me").build(),
-
-    observe(|clicked: On&lt;Clicked&gt;| {}),
-
-    observe(|over: On&lt;MouseOver&gt;| {}),
-
-    observe(|out: On&lt;MouseOut&gt;| {}),
-
-    observe(|built: On&lt;WidgetBuilt&gt;| {}),
-)
+</span>button_!(
+    "Click me";
+    
+    on: |clicked: On&lt;Clicked&gt;| {}; 
+    on: |over: On&lt;MouseOver&gt;| {}; 
+    on: |out: On&lt;MouseOut&gt;| {}; 
+    on: |built: On&lt;WidgetBuilt&gt;| {}
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonBundle.html">ButtonBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonQuery.html">ButtonQuery</a>,
@@ -448,26 +458,21 @@ to <strong>Makara</strong> in upcoming new versions.</p>
 <h3 id="checkbox"><a class="header" href="#checkbox">Checkbox</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>checkbox("Check me").build()
+</span>checkbox_!("Check me");
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    checkbox("Check me").build(),
-
-    observe(|clicked: On&lt;Clicked&gt;| {}),
-
-    observe(|over: On&lt;MouseOver&gt;| {}),
-
-    observe(|out: On&lt;MouseOut&gt;| {}),
-
-    observe(|active: On&lt;Active&gt;| {}),
-
-    observe(|inactive: On&lt;Inactive&gt;| {}),
-
-    observe(|built: On&lt;WidgetBuilt&gt;| {}),
-)
+</span>checkbox_!(
+    "Check me";
+    
+    on: |clicked: On&lt;Clicked&gt;| {}; 
+    on: |over: On&lt;MouseOver&gt;| {}; 
+    on: |out: On&lt;MouseOut&gt;| {}; 
+    on: |active: On&lt;Active&lt;String&gt;&gt;| {}; 
+    on: |inactive: On&lt;Inactive&lt;String&gt;&gt;| {}; 
+    on: |built: On&lt;WidgetBuilt&gt;| {}
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxBundle.html">CheckboxBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxQuery.html">CheckboxQuery</a>,
@@ -475,22 +480,17 @@ to <strong>Makara</strong> in upcoming new versions.</p>
 <h3 id="circular"><a class="header" href="#circular">Circular</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>circular().build()
+</span>circular_!();
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    circular().build(),
-
-    observe(|over: On&lt;MouseOver&gt;| {}),
-
-    observe(|out: On&lt;MouseOut&gt;| {}),
-
-    observe(|change: On&lt;Change&lt;f32&gt;&gt;| {}),
-
-    observe(|built: On&lt;WidgetBuilt&gt;| {}),
-)
+</span>circular_!(
+    on: |over: On&lt;MouseOver&gt;| {}; 
+    on: |out: On&lt;MouseOut&gt;| {}; 
+    on: |change: On&lt;Change&lt;f32&gt;&gt;| {}; 
+    on: |built: On&lt;WidgetBuilt&gt;| {}
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularBundle.html">CircularBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularQuery.html">CircularQuery</a>,
@@ -498,22 +498,17 @@ to <strong>Makara</strong> in upcoming new versions.</p>
 <h3 id="progress-bar"><a class="header" href="#progress-bar">Progress Bar</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>progress_bar().build()
+</span>progress_bar_!();
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    progress_bar().build(),
-
-    observe(|over: On&lt;MouseOver&gt;| {}),
-
-    observe(|out: On&lt;MouseOut&gt;| {}),
-
-    observe(|change: On&lt;Change&lt;f32&gt;&gt;| {}),
-
-    observe(|built: On&lt;WidgetBuilt&gt;| {}),
-)
+</span>progress_bar_!(
+    on: |over: On&lt;MouseOver&gt;| {};
+    on: |out: On&lt;MouseOut&gt;| {};
+    on: |change: On&lt;Change&lt;f32&gt;&gt;| {};
+    on: |built: On&lt;WidgetBuilt&gt;| {}
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarBundle.html">ProgressBarBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarQuery.html">ProgressBarQuery</a>,
@@ -521,16 +516,18 @@ to <strong>Makara</strong> in upcoming new versions.</p>
 <h3 id="column"><a class="header" href="#column">Column</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>column().build()
+</span>column_!([
+    text_!("Item 1"),
+    text_!("Item 2")
+]);
 <span class="boring">}</span></code></pre>
 <p>With event listener</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    column().build(),
-
-    observe(|built: On&lt;WidgetBuilt&gt;| {}),
-)
+</span>column_!(
+    on: |built: On&lt;WidgetBuilt&gt;| {};
+    [ text_!("Item 1") ]
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnBundle.html">ColumnBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnQuery.html">ColumnQuery</a>,
@@ -538,16 +535,18 @@ to <strong>Makara</strong> in upcoming new versions.</p>
 <h3 id="row"><a class="header" href="#row">Row</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>row().build()
+</span>row_!([
+    text_!("Left"),
+    text_!("Right")
+]);
 <span class="boring">}</span></code></pre>
 <p>With event listener</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    row().build(),
-
-    observe(|built: On&lt;WidgetBuilt&gt;| {}),
-)
+</span>row_!(
+    on: |built: On&lt;WidgetBuilt&gt;| {};
+    [ text_!("Item 1") ]
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowBundle.html">RowBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowQuery.html">RowQuery</a>,
@@ -555,22 +554,19 @@ to <strong>Makara</strong> in upcoming new versions.</p>
 <h3 id="link"><a class="header" href="#link">Link</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>link("https://rust-lang.org/").build()
+</span>link_!("https://rust-lang.org/");
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    link("https://rust-lang.org/").build(),
+</span>link_!(
+    "https://rust-lang.org/";
 
-    observe(|clicked: On&lt;Clicked&gt;| {}),
-
-    observe(|over: On&lt;MouseOver&gt;| {}),
-
-    observe(|out: On&lt;MouseOut&gt;| {}),
-
-    observe(|built: On&lt;WidgetBuilt&gt;| {}),
-)
+    on: |clicked: On&lt;Clicked&gt;| {};
+    on: |over: On&lt;MouseOver&gt;| {};
+    on: |out: On&lt;MouseOut&gt;| {};
+    on: |built: On&lt;WidgetBuilt&gt;| {}
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkBundle.html">LinkBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkQuery.html">LinkQuery</a>,
@@ -578,34 +574,31 @@ to <strong>Makara</strong> in upcoming new versions.</p>
 <h3 id="dropdown"><a class="header" href="#dropdown">Dropdown</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    dropdown("Click me to show option").build(),
-    children![
-        button("Sign In").build(),
-        button("Sign Up").build(),
-        button("About us").build()
+</span>dropdown_!(
+    "Click me to show option";
+    [
+        button_!("Sign In"),
+        button_!("Sign Up"),
+        button_!("About us")
     ]
-)
+);
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    dropdown("Click me to show option").build(),
-    children![
-        button("Sign In").build(),
-        button("Sign Up").build(),
-        button("About us").build()
-    ],
-    
-    observe(|clicked: On&lt;Clicked&gt;| {}),
-    
-    observe(|over: On&lt;MouseOver&gt;| {}),
-    
-    observe(|out: On&lt;MouseOut&gt;| {}),
-    
-    observe(|built: On&lt;WidgetBuilt&gt;| {})
-)
+</span>dropdown_!(
+    "Click me to show option";
+
+    on: |clicked: On&lt;Clicked&gt;| {};
+    on: |over: On&lt;MouseOver&gt;| {};
+    on: |out: On&lt;MouseOut&gt;| {};
+    on: |built: On&lt;WidgetBuilt&gt;| {};
+
+    [
+        button_!("Sign In"),
+        button_!("Sign Up")
+    ]
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownBundle.html">DropdownBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownQuery.html">DropdownQuery</a>,
@@ -614,22 +607,19 @@ to <strong>Makara</strong> in upcoming new versions.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// path or url
-image("path/to/image.png").build()
+image_!("path/to/image.png");
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    image("path/to/image.png").build()
+</span>image_!(
+    "path/to/image.png";
     
-    observe(|clicked: On&lt;Clicked&gt;| {}),
-    
-    observe(|over: On&lt;MouseOver&gt;| {}),
-    
-    observe(|out: On&lt;MouseOut&gt;| {}),
-    
-    observe(|built: On&lt;WidgetBuilt&gt;| {})
-)
+    on: |clicked: On&lt;Clicked&gt;| {};
+    on: |over: On&lt;MouseOver&gt;| {};
+    on: |out: On&lt;MouseOut&gt;| {};
+    on: |built: On&lt;WidgetBuilt&gt;| {}
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageBundle.html">ImageBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageQuery.html">ImageQuery</a>,
@@ -638,41 +628,30 @@ image("path/to/image.png").build()
 <p>Modal is independent and doesn’t need to be part of <code>root</code> widget.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    modal().build(),
-    children![
-        ( 
-            // modal content need to wrapped inside a container
-            column().build(),
-            children![
-                text("Hello world").build(),
-                button("Close modal").build()
-            ]
-        )
-    ]
-)
+</span>command.spawn(
+    modal_!([
+        column_!([
+            text_!("Hello world"),
+            button_!("Close modal")
+        ])
+    ])
+);
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    modal().build(),
-    children![
-        ( 
-            // modal content
-            column().build(),
-            children![
-                text("Hello world").build(),
-                button("Close modal").build()
-            ]
-        )
-    ],
-    observe(|active: On&lt;Active&gt;| {}),
+</span>modal_!(
+    on: |active: On&lt;Active&gt;| {};
+    on: |inactive: On&lt;Inactive&gt;| {};
+    on: |built: On&lt;WidgetBuilt&gt;| {};
 
-    observe(|inactive: On&lt;Inactive&gt;| {}),
-        
-    observe(|built: On&lt;WidgetBuilt&gt;| {})
-)
+    [
+        column_!([
+            text_!("Hello world"),
+            button_!("Close modal")
+        ])
+    ]
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalBundle.html">ModalBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalQuery.html">ModalQuery</a>,
@@ -681,39 +660,30 @@ image("path/to/image.png").build()
 <p><code>radio_group</code> needs <code>radio</code> as its item.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    radio_group().build(),
-    children![
-        radio("Pay by Card").build(),
-        radio("Pay by Cash").build(), 
-    ]
-)
+</span>radio_group_!([
+    radio_!("Pay by Card"),
+    radio_!("Pay by Cash")
+]);
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    radio_group().build(),
-    children![
-        (
-            radio("Pay by Card").build(),
-            
-            observe(|active: On&lt;Active&gt;| {}), 
-            observe(|inactive: On&lt;Inactive&gt;| {})
+</span>radio_group_!(
+    on: |clicked: On&lt;Clicked&gt;| {};
+    on: |over: On&lt;MouseOver&gt;| {};
+    on: |out: On&lt;MouseOut&gt;| {};
+    on: |change: On&lt;Change&lt;String&gt;&gt;| {};
+    on: |built: On&lt;WidgetBuilt&gt;| {};
+
+    [
+        radio_!(
+            "Pay by Card";
+            on: |active: On&lt;Active&gt;| {}; 
+            on: |inactive: On&lt;Inactive&gt;| {}
         ),
-        radio("Pay by Cash").build(), 
-    ],
-
-    observe(|clicked: On&lt;Clicked&gt;| {}),
-
-    observe(|over: On&lt;MouseOver&gt;| {}),
-
-    observe(|out: On&lt;MouseOut&gt;| {}),
-
-    observe(|change: On&lt;Change&lt;String&gt;&gt;| {}),
-
-    observe(|built: On&lt;WidgetBuilt&gt;| {}),
-)
+        radio_!("Pay by Cash")
+    ]
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupBundle.html">RadioGroupBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupQuery.html">RadioGroupQuery</a>,
@@ -724,28 +694,21 @@ image("path/to/image.png").build()
 <h3 id="scroll"><a class="header" href="#scroll">Scroll</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    scroll().build(),
-    children![
-        // scroll content
-        text("Hello world").build(),
-        text("Hello there").build(),
-    ]
-)
+</span>scroll_!([
+    text_!("Hello world"),
+    text_!("Hello there")
+]);
 <span class="boring">}</span></code></pre>
 <p>With event listener</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    scroll().build(),
-    children![
-        // scroll content
-        text("Hello world").build(),
-        text("Hello there").build(),
-    ],
-
-    observe(|scrolling: On&lt;Scrolling&gt;| {})
-)
+</span>scroll_!(
+    on: |scrolling: On&lt;Scrolling&gt;| {};
+    [
+        text_!("Hello world"),
+        text_!("Hello there")
+    ]
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollBundle.html">ScrollBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollQuery.html">ScrollQuery</a>,
@@ -753,28 +716,23 @@ image("path/to/image.png").build()
 <h3 id="select"><a class="header" href="#select">Select</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>select("Click me to show option", &amp;["Cash", "Card", "Afterpay"]).build(), 
+</span>select_!("Click me to show option", choices: &amp;["Cash", "Card", "Afterpay"]);    
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    select("Click me to show option", &amp;["Cash", "Card", "Afterpay"]).build(),
+</span>select_!(
+    "Click me to show option", 
+    choices: &amp;["Cash", "Card", "Afterpay"];
     
-    observe(|clicked: On&lt;Clicked&gt;| {}),
-    
-    observe(|over: On&lt;MouseOver&gt;| {}),
-    
-    observe(|out: On&lt;MouseOut&gt;| {}),
-    
-    observe(|built: On&lt;WidgetBuilt&gt;| {}),
-    
-    observe(|active: On&lt;Active&gt;| {}),
-    
-    observe(|inactive: On&lt;Inactive&gt;| {}),
-
-    observe(|change: On&lt;Change&lt;String&gt;&gt;| {}),
-)
+    on: |clicked: On&lt;Clicked&gt;| {};
+    on: |over: On&lt;MouseOver&gt;| {};
+    on: |out: On&lt;MouseOut&gt;| {};
+    on: |built: On&lt;WidgetBuilt&gt;| {};
+    on: |active: On&lt;Active&gt;| {};
+    on: |inactive: On&lt;Inactive&gt;| {};
+    on: |change: On&lt;Change&lt;String&gt;&gt;| {}
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectBundle.html">SelectBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectQuery.html">SelectQuery</a>,
@@ -784,24 +742,20 @@ image("path/to/image.png").build()
 </span><span class="boring">fn main() {
 </span>// Takes range-start &amp; range-end as arguments.
 // In this case start at 0.0, end at 100.0 .
-slider(0.0, 100.0).build()
+slider_!(min: 0.0, max: 100.0);
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    slider(0.0, 100.0).build()
+</span>slider_!(
+    min: 0.0, max: 100.0;
     
-    observe(|clicked: On&lt;Clicked&gt;| {}),
-    
-    observe(|over: On&lt;MouseOver&gt;| {}),
-    
-    observe(|out: On&lt;MouseOut&gt;| {}),
-    
-    observe(|built: On&lt;WidgetBuilt&gt;| {}), 
-
-    observe(|change: On&lt;Change&lt;f32&gt;&gt;| {}),
-)
+    on: |clicked: On&lt;Clicked&gt;| {};
+    on: |over: On&lt;MouseOver&gt;| {};
+    on: |out: On&lt;MouseOut&gt;| {};
+    on: |built: On&lt;WidgetBuilt&gt;| {}; 
+    on: |change: On&lt;Change&lt;f32&gt;&gt;| {}
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderBundle.html">SliderBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderQuery.html">SliderQuery</a>,
@@ -809,24 +763,20 @@ slider(0.0, 100.0).build()
 <h3 id="text-input"><a class="header" href="#text-input">Text Input</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>text_input("Enter something").build()
+</span>text_input_!("Enter something");
 <span class="boring">}</span></code></pre>
 <p>With event listeners</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(    
-    text_input("Enter something").build(),
+</span>text_input_!(
+    "Enter something";
     
-    observe(|clicked: On&lt;Clicked&gt;| {}),
-    
-    observe(|over: On&lt;MouseOver&gt;| {}),
-    
-    observe(|out: On&lt;MouseOut&gt;| {}),
-    
-    observe(|built: On&lt;WidgetBuilt&gt;| {}), 
-    
-    observe(|change: On&lt;Change&lt;String&gt;&gt;| {}),
-)
+    on: |clicked: On&lt;Clicked&gt;| {};
+    on: |over: On&lt;MouseOver&gt;| {};
+    on: |out: On&lt;MouseOut&gt;| {};
+    on: |built: On&lt;WidgetBuilt&gt;| {}; 
+    on: |change: On&lt;Change&lt;String&gt;&gt;| {}
+);
 <span class="boring">}</span></code></pre>
 <p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputBundle.html">TextInputBundle</a>,
 <a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputQuery.html">TextInputQuery</a>,
@@ -840,18 +790,14 @@ its corresponding query struct.</p>
 we want to update the text.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    text("Hello world").id("my-text").build(),
-    (
-        button("Click me").build(),
-    
-        observe(|_clicked: On&lt;Clicked&gt;, mut text_q: TextQuery| {
-            if let Some(text) = text_q.find_by_id("my-text") {
-                text.text.value.0 = "Hello Mom".to_string();
-            }
-        })
-    )
-)
+</span>column_!([
+    text_!("Hello world", id: "my-text"),
+    button_!("Click me"; on: |_clicked: On&lt;Clicked&gt;, mut text_q: TextQuery| {
+        if let Some(text) = text_q.find_by_id("my-text") {
+            text.text.value.0 = "Hello Mom".to_string();
+        }
+    })
+]);
 <span class="boring">}</span></code></pre>
 <p>In the example above, once the button is clicked, we query text widgets using <code>TextQuery</code>.
 We then find the specific widget using its <code>id</code>. This is similar to how <code>javascript</code> finds
@@ -862,27 +808,24 @@ you to write extra code.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// change all text colors when button is clicked.
-(
-    text("Hello World").class("my-text").build(),
-    text("Hello Mom").class("my-text").build(),
-    text("Hello Friend").class("my-text").build(),
-    text("Hello Stranger").class("my-text").build(),
-    (
-        button("Click me").build(),
+column_!([
+    text_!("Hello world", class: "my-text"),
+    text_!("Hello mom", class: "my-text"),
+    text_!("Hello friend", class: "my-text"),
+    text_!("Hello stranger", class: "my-text"),
     
-        observe(|_clicked: On&lt;Clicked&gt;, mut text_q: TextQuery| {
-            // find_by_class returns list of entity
-            let text_entities = text_q.find_by_class("my-text");
-        
-            // iterate thru the list
-            for entity in text_entities.into_iter() {
-                if let Some(text) = text_q.find_by_entity(entity) {
-                    text.text.color.0 = Color::RED;
-                }
+    button_!("Click me"; on: |_clicked: On&lt;Clicked&gt;, mut text_q: TextQuery| {
+        // find_by_class returns list of entity
+        let text_entities = text_q.find_by_class("my-text");
+    
+        // iterate thru the list
+        for entity in text_entities.into_iter() {
+            if let Some(text) = text_q.find_by_entity(entity) {
+                text.text.color.0 = Color::RED;
             }
-        })
-    )
-)
+        }
+    })
+]);
 <span class="boring">}</span></code></pre>
 <p>For more information about widget query and its blueprint, see <a href="#widgets">widgets</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div>
@@ -890,7 +833,7 @@ you to write extra code.</p>
 <h2 id="styling-in-makara"><a class="header" href="#styling-in-makara">Styling in Makara</a></h2>
 <p>There are 2 ways to provide custom styles to widgets.</p>
 <ol>
-<li>Style on widgets directly.</li>
+<li>Style on widgets directly using properties.</li>
 <li>Attach an <code>ID</code> or <code>Classes</code> and provide styles via <code>ID</code> or <code>Classes</code>.</li>
 </ol>
 <h3 id="direct-styling"><a class="header" href="#direct-styling">Direct styling</a></h3>
@@ -902,17 +845,14 @@ you to write extra code.</p>
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center) // direct styling
-            .justify_content(JustifyContent::Center) // direct styling
-            .build(),
-
-        children![
-            // direct styling for font size
-            text("Hello world").font_size(20.0).build()
-        ]
-    ));
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center, // direct styling
+            justify_content: JustifyContent::Center; // direct styling
+            
+            [ text_!("Hello world", font_size: 20.0) ]
+        )
+    );
 }</code></pre>
 <h3 id="with-id-and-classes"><a class="header" href="#with-id-and-classes">With ID and Classes</a></h3>
 <pre class="playground"><code class="language-rust">fn main() {
@@ -923,16 +863,14 @@ fn setup(mut commands: Commands) {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn((
-        root().id("root").build(),
-
-        children![
-            text("Hello world").id("text-one").class("text").build(),
-            text("Hello mom").class("text").build(),
-            text("Hello friend").class("text hello-friend").build(),
-            text("Hello stranger").class("text").build()
-        ]
-    ));
+    commands.spawn(
+        root_!(id: "root"; [
+            text_!("Hello world", id: "text-one", class: "text"),
+            text_!("Hello mom", class: "text"),
+            text_!("Hello friend", class: "text hello-friend"),
+            text_!("Hello stranger", class: "text")
+        ])
+    );
 }
 
 fn setup_styles(mut style: ResMut&lt;CustomStyle&gt;) {
@@ -990,29 +928,17 @@ each <code>root</code> defines one page or view.</p>
 }
 
 fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("home") // specifying route name
-            .build(),
-        
-        children![
-            text("This is Home view").build()
-        ]
-    ));
+    commands.spawn(
+        root_!(route: "home"; [ text_!("This is home view") ])
+    );
 }
 
 fn setup_about_us_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("about-us") // specifying route name
-            .build(),
-        
-        children![
-            text("This is About Us view").build()
-        ]
-    ));
+    commands.spawn(
+        root_!(route: "about-us"; [ text_!("This is about us view") ])
+    );
 }</code></pre>
-<p>We can specify route name for each view by calling <code>route</code> method.</p>
+<p>We can specify route name for each view by using <code>route</code> property.</p>
 <h3 id="registering-routes"><a class="header" href="#registering-routes">Registering Routes</a></h3>
 <p>After we defined route on each view, we need to register those routes.
 We can do so by using <code>Router</code> resource.</p>
@@ -1036,45 +962,37 @@ fn setup_routes(mut router: ResMut&lt;Router&gt;) {
 
 // setup view systems..</code></pre>
 <p>You may also want to set the default route. If you don’t, the first route in the list
-will be set to default route automatically.</p>
+will be set to default automatically.</p>
 <h3 id="route-navigation"><a class="header" href="#route-navigation">Route Navigation</a></h3>
 <p>Let’s update the above examples to demonstrate how to nagivate to specific route.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("home")
-            .build(),
-        
-        children![
-            text("This is Home view").build(),
-            (
-                button("Go to About Us view").build(),
-                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+    commands.spawn(
+        root_!(route: "home"; [
+            text_!("This is home view"),
+            button_!(
+                "Go to about us view";
+                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
                     router.nagivate("about-us", ());
-                })
+                }
             )
-        ]
-    ));
+        ])
+    );
 }
 
 fn setup_about_us_view(mut commands: Commands) {
-    commands.spawn((
-        root()
-            .route("about-us")
-            .build(),
-        
-        children![
-            text("This is About Us view").build(),
-            (
-                button("Go to Home view").build(),
-                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+    commands.spawn(
+        root_!(route: "about-us"; [
+            text_!("This is about us view"),
+            button_!(
+                "Go to home view";
+                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
                     router.nagivate("home", ());
-                })
+                }
             )
-        ]
-    ));
+        ])
+    );
 }
 <span class="boring">}</span></code></pre>
 <p>We can navigate to any route by calling <code>navigate</code> method.</p>
@@ -1085,42 +1003,40 @@ on product id or name.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn setup_home_view(mut commands: Commands) {
-    commands.spawn((
-        root().route("home").build(),
-        
-        children![
-            text("This is Home view").build(),
-            (
-                button("See product").build(),
-                observe(|_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
+    commands.spawn(
+        root_!(route: "home"; [
+            text_!("This is home view"),
+            button_!(
+                "See product";
+                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
                     router.nagivate(
                         "product-detail", 
                         Param::new()
                             .value("id", "1234") // just random product id
                             .value("name", "Iphone 17 256GB") // product name
                     );
-                })
+                }
             )
-        ]
-    ));
+        ])
+    );
 }
 
-fn setup_product_detail_view(mut commands: Commands) {
-    commands.spawn((
-        root().route("product-detail").build(),
-        
-        children![
-            text("Product name: Unknown").id("product-name").build()
-        ],
-        
-        observe(|page_loaded: On&lt;PageLoaded&gt;, mut text_q: TextQuery| {
-            if let Some(text) = text_q.find_by_id("product-name") {
-                if let Some(name) = page_loaded.param.get("name") { 
-                    text.text.value.0 = name.clone();
-                } 
-            }
-        })
-    ));
+fn setup_product_detail_view(mut commands: Commands) { 
+    commands.spawn(
+        root_!(
+            route: "product-detail";
+            
+            on: |page_loaded: On&lt;PageLoaded&gt;, mut text_q: TextQuery| {
+                if let Some(text) = text_q.find_by_id("product-name") {
+                    if let Some(name) = page_loaded.param.get("name") { 
+                        text.text.value.0 = name.clone();
+                    } 
+                }
+            };
+            
+            [ text_!("Product name: Unknown", id: "product-name") ]
+        )
+    );
 }
 <span class="boring">}</span></code></pre>
 <p>See <a href="https://docs.rs/makara/latest/makara/routers/struct.Router.html">Router</a> and
@@ -1141,55 +1057,35 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands) {
-    commands.spawn(Camera2d); // spawn 2D camera as bevy needs this.
-
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
-
-        children![
-            text("Register your info").build(), 
-            input_container(), 
-            button_container()
-        ]
-    ));
+fn setup(mut commands: Commands) {    
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
+            
+            [
+                text_!("Register your info"),
+                input_container(),
+                button_container()
+            ]
+        )
+    );
 }
 
 fn input_container() -&gt; impl Bundle {
-    (
-        column().build(),
-        children![
-            text_input("Enter Email").build(),
-            text_input("Enter Name").build(), 
-            text("Choose gender").build(),
-            (
-                radio_group().build(),
-                children![
-                    radio("Male").build(),
-                    radio("Female").build(),
-                ]
-            )
-        ]
-    )
+    column_!([
+        text_input_!("Enter email"),
+        text_input_!("Enter name"),
+        text_!("Choose gender"),
+        radio_group_!([ radio_!("Male"), radio_!("Female") ])
+    ])
 }
 
 fn button_container() -&gt; impl Bundle {
-    (
-        row().build(),
-        children![
-            (
-                button("Cancel").build(),
-                observe(|_clicked: On&lt;Clicked&gt;| {})
-            ),
-            (
-                button("Submit").build(),
-                observe(|_clicked: On&lt;Clicked&gt;| {})
-            )
-        ]
-    )
+    row_!([
+        button_!("Cancel"; on: |_clicked: On&lt;Clicked&gt;| {}),
+        button_!("Submit"; on: |_clicked: On&lt;Clicked&gt;| {})
+    ])
 }</code></pre>
 
                     </main>

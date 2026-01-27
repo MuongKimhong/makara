@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e0ad94.js";
+            window.path_to_searchindex_js = "searchindex-37b30491.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-8607d2e3.js"></script>
+        <script src="toc-2ed979a7.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -188,55 +188,35 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands) {
-    commands.spawn(Camera2d); // spawn 2D camera as bevy needs this.
-
-    commands.spawn((
-        root()
-            .align_items(AlignItems::Center)
-            .justify_content(JustifyContent::Center)
-            .build(),
-
-        children![
-            text("Register your info").build(), 
-            input_container(), 
-            button_container()
-        ]
-    ));
+fn setup(mut commands: Commands) {    
+    commands.spawn(
+        root_!(
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center;
+            
+            [
+                text_!("Register your info"),
+                input_container(),
+                button_container()
+            ]
+        )
+    );
 }
 
 fn input_container() -&gt; impl Bundle {
-    (
-        column().build(),
-        children![
-            text_input("Enter Email").build(),
-            text_input("Enter Name").build(), 
-            text("Choose gender").build(),
-            (
-                radio_group().build(),
-                children![
-                    radio("Male").build(),
-                    radio("Female").build(),
-                ]
-            )
-        ]
-    )
+    column_!([
+        text_input_!("Enter email"),
+        text_input_!("Enter name"),
+        text_!("Choose gender"),
+        radio_group_!([ radio_!("Male"), radio_!("Female") ])
+    ])
 }
 
 fn button_container() -&gt; impl Bundle {
-    (
-        row().build(),
-        children![
-            (
-                button("Cancel").build(),
-                observe(|_clicked: On&lt;Clicked&gt;| {})
-            ),
-            (
-                button("Submit").build(),
-                observe(|_clicked: On&lt;Clicked&gt;| {})
-            )
-        ]
-    )
+    row_!([
+        button_!("Cancel"; on: |_clicked: On&lt;Clicked&gt;| {}),
+        button_!("Submit"; on: |_clicked: On&lt;Clicked&gt;| {})
+    ])
 }</code></pre>
 
                     </main>

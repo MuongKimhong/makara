@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e0ad94.js";
+            window.path_to_searchindex_js = "searchindex-37b30491.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-8607d2e3.js"></script>
+        <script src="toc-2ed979a7.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -181,18 +181,14 @@ its corresponding query struct.</p>
 we want to update the text.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>(
-    text("Hello world").id("my-text").build(),
-    (
-        button("Click me").build(),
-    
-        observe(|_clicked: On&lt;Clicked&gt;, mut text_q: TextQuery| {
-            if let Some(text) = text_q.find_by_id("my-text") {
-                text.text.value.0 = "Hello Mom".to_string();
-            }
-        })
-    )
-)
+</span>column_!([
+    text_!("Hello world", id: "my-text"),
+    button_!("Click me"; on: |_clicked: On&lt;Clicked&gt;, mut text_q: TextQuery| {
+        if let Some(text) = text_q.find_by_id("my-text") {
+            text.text.value.0 = "Hello Mom".to_string();
+        }
+    })
+]);
 <span class="boring">}</span></code></pre>
 <p>In the example above, once the button is clicked, we query text widgets using <code>TextQuery</code>.
 We then find the specific widget using its <code>id</code>. This is similar to how <code>javascript</code> finds
@@ -203,27 +199,24 @@ you to write extra code.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// change all text colors when button is clicked.
-(
-    text("Hello World").class("my-text").build(),
-    text("Hello Mom").class("my-text").build(),
-    text("Hello Friend").class("my-text").build(),
-    text("Hello Stranger").class("my-text").build(),
-    (
-        button("Click me").build(),
+column_!([
+    text_!("Hello world", class: "my-text"),
+    text_!("Hello mom", class: "my-text"),
+    text_!("Hello friend", class: "my-text"),
+    text_!("Hello stranger", class: "my-text"),
     
-        observe(|_clicked: On&lt;Clicked&gt;, mut text_q: TextQuery| {
-            // find_by_class returns list of entity
-            let text_entities = text_q.find_by_class("my-text");
-        
-            // iterate thru the list
-            for entity in text_entities.into_iter() {
-                if let Some(text) = text_q.find_by_entity(entity) {
-                    text.text.color.0 = Color::RED;
-                }
+    button_!("Click me"; on: |_clicked: On&lt;Clicked&gt;, mut text_q: TextQuery| {
+        // find_by_class returns list of entity
+        let text_entities = text_q.find_by_class("my-text");
+    
+        // iterate thru the list
+        for entity in text_entities.into_iter() {
+            if let Some(text) = text_q.find_by_entity(entity) {
+                text.text.color.0 = Color::RED;
             }
-        })
-    )
-)
+        }
+    })
+]);
 <span class="boring">}</span></code></pre>
 <p>For more information about widget query and its blueprint, see <a href="./widgets.html">widgets</a>.</p>
 

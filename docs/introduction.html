@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e0ad94.js";
+            window.path_to_searchindex_js = "searchindex-37b30491.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-8607d2e3.js"></script>
+        <script src="toc-2ed979a7.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -178,7 +178,6 @@
     Build high performance GUI app with power of Game Engine (Bevy).
 </h3>
 
-<h3 id="what-is-makara-and-why-makara"><a class="header" href="#what-is-makara-and-why-makara">What is Makara? and Why Makara?</a></h3>
 <p>Makara is a UI Library built on top of Bevy engine.</p>
 <p><a href="https://bevy.org/">Bevy</a> is a game engine written in Rust, based on
 <a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a> architecture.
@@ -224,14 +223,12 @@ that most rust devs familiar with, to make it easy to write and maintain the cod
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn setup(mut commands: Commands) {
-    commands.spawn((
-        button("Click me")
-            .padding(px(10))
-            .background_color("white")
-            .build(),
-        
-        observe(on_button_click)
-    ));
+    commands.spawn(
+        button_!(
+            "Click me", background_color: "white", padding: px(10);
+            on: on_button_click
+        )
+    );
 }
 
 fn on_button_click(_clicked: On&lt;Clicked&gt;) {
