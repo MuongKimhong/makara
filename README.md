@@ -1,9 +1,9 @@
-![Static Badge](https://img.shields.io/badge/Version-0.2.2-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.2.3-blue)
 ![Static Badge](https://img.shields.io/badge/OS-Mac%20Linux%20Window-orange)
-[![static Badge](https://img.shields.io/badge/crate.io-0.2.2-green)](https://crates.io/crates/makara)
+[![static Badge](https://img.shields.io/badge/crate.io-0.2.3-green)](https://crates.io/crates/makara)
 
 <p align="center">
-  <img width="200" src="assets/logo.png">
+  <img width="180" src="assets/logo.png">
 </p>
 
 <h2 align="center">GUI Library built on top of Bevy Game Engine.</h2>
