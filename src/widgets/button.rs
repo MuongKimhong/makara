@@ -3,7 +3,7 @@
 use bevy::{prelude::*, ui::InteractionDisabled, ui_widgets::observe};
 use bevy::window::{CursorIcon, SystemCursorIcon};
 
-use crate::{consts::*, events::*, utils::*, on_mouse_out};
+use crate::{consts::*, events::*, on_mouse_out, utils::*, colors::*};
 use super::*;
 
 /// Marker component for `button`.
@@ -179,11 +179,70 @@ impl ButtonBundle {
     pub fn build_as_disabled(self) -> impl Bundle {
         (self.build(), InteractionDisabled)
     }
+
+    fn process_built_in_color_class(&mut self) {
+        for class in self.id_class.class.class_list() {
+            match class.as_str() {
+                "is-primary" => {
+                    self.style.background_color.0 = PRIMARY_BG;
+                    self.text_bundle.text_style.color.0 = PRIMARY_TEXT;
+                }
+                "is-primary-dark" => {
+                    self.style.background_color.0 = PRIMARY_DARK_BG;
+                    self.text_bundle.text_style.color.0 = PRIMARY_DARK_TEXT;
+                }
+                "is-link" => {
+                    self.style.background_color.0 = LINK_BG;
+                    self.text_bundle.text_style.color.0 = LINK_TEXT;
+                }
+                "is-link-dark" => {
+                    self.style.background_color.0 = LINK_DARK_BG;
+                    self.text_bundle.text_style.color.0 = LINK_DARK_TEXT;
+                }
+                "is-info" => {
+                    self.style.background_color.0 = INFO_BG;
+                    self.text_bundle.text_style.color.0 = INFO_TEXT;
+                }
+                "is-info-dark" => {
+                    self.style.background_color.0 = INFO_DARK_BG;
+                    self.text_bundle.text_style.color.0 = INFO_DARK_TEXT;
+                }
+                "is-success" => {
+                    self.style.background_color.0 = SUCCESS_BG;
+                    self.text_bundle.text_style.color.0 = SUCCESS_TEXT;
+                }
+                "is-success-dark" => {
+                    self.style.background_color.0 = SUCCESS_DARK_BG;
+                    self.text_bundle.text_style.color.0 = SUCCESS_DARK_TEXT;
+                }
+                "is-warning" => {
+                    self.style.background_color.0 = WARNING_BG;
+                    self.text_bundle.text_style.color.0 = WARNING_TEXT;
+                }
+                "is-warning-dark" => {
+                    self.style.background_color.0 = WARNING_DARK_BG;
+                    self.text_bundle.text_style.color.0 = WARNING_DARK_TEXT;
+                }
+                "is-danger" => {
+                    self.style.background_color.0 = DANGER_BG;
+                    self.text_bundle.text_style.color.0 = DANGER_TEXT;
+                }
+                "is-danger-dark" => {
+                    self.style.background_color.0 = DANGER_DARK_BG;
+                    self.text_bundle.text_style.color.0 = DANGER_DARK_TEXT;
+                }
+                _ => {}
+            }
+        }
+    }
 }
 
 impl Widget for ButtonBundle {
     /// Build `button`.
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        self.process_built_in_color_class();
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+
         (
             self.id_class,
             self.style,
@@ -196,6 +255,7 @@ impl Widget for ButtonBundle {
             MakaraWidget,
             observe(on_mouse_click),
             observe(on_button_mouse_over),
+            observe(on_button_mouse_out),
             observe(on_mouse_out)
         )
     }
@@ -239,7 +299,14 @@ fn on_mouse_click(
 fn on_button_mouse_over(
     mut over: On<Pointer<Over>>,
     mut btns: Query<
-        (Has<InteractionDisabled>, &Children, &UiTransform, &ComputedNode),
+        (
+            Has<InteractionDisabled>,
+            &Children,
+            &UiTransform,
+            &ComputedNode,
+            &Class,
+            &mut BackgroundColor
+        ),
         With<MakaraButton>
     >,
     mut tooltips: Query<
@@ -249,7 +316,7 @@ fn on_button_mouse_over(
     mut commands: Commands,
     window: Single<Entity, With<Window>>,
 ) {
-    if let Ok((is_disabled, children, transform, computed)) = btns.get_mut(over.entity) {
+    if let Ok((is_disabled, children, transform, computed, class, mut bg)) = btns.get_mut(over.entity) {
         let cursor_icon = if is_disabled {
             CursorIcon::System(SystemCursorIcon::Default)
         } else {
@@ -258,10 +325,22 @@ fn on_button_mouse_over(
 
         commands.entity(*window).insert(cursor_icon);
         show_or_hide_tooltip(true, &mut tooltips, Some(computed), Some(transform), children);
+         process_button_built_in_color_class_hover_only(&class, &mut bg);
     }
 
     commands.trigger(MouseOver { entity: over.entity });
     over.propagate(false);
+}
+
+fn on_button_mouse_out(
+    mut out: On<Pointer<Out>>,
+    mut btns: Query<(&mut BackgroundColor, &Class), With<MakaraButton>>
+) {
+    if let Ok((mut bg, class)) = btns.get_mut(out.entity) {
+        process_button_built_in_color_class_bg_only(&class, &mut bg);
+    }
+
+    out.propagate(false);
 }
 
 pub(crate) fn update_button_style_on_theme_change_system(

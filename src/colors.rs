@@ -222,3 +222,57 @@ pub fn rgb(r: f32, g: f32, b: f32) -> Color {
 pub fn rgba(r: f32, g: f32, b: f32, a: f32) -> Color {
     Color::srgba(r, g, b, a)
 }
+
+pub const PRIMARY_BG: Color = Color::srgba(0.0, 0.82, 0.70, 1.0);
+pub const PRIMARY_TEXT: Color = Color::srgba(0.21, 0.21, 0.21, 1.0);
+pub const PRIMARY_DARK_BG: Color = Color::srgba(0.0, 0.58, 0.49, 1.0);
+pub const PRIMARY_DARK_TEXT: Color = Color::srgba(0.45, 1.0, 0.91, 1.0);
+
+pub const LINK_BG: Color = Color::srgba(0.28, 0.37, 0.82, 1.0);
+pub const LINK_TEXT: Color = Color::srgba(1.0, 1.0, 1.0, 1.0);
+pub const LINK_DARK_BG: Color = Color::srgba(0.22, 0.30, 0.62, 1.0);
+pub const LINK_DARK_TEXT: Color = Color::srgba(0.85, 0.88, 1.0, 1.0);
+
+pub const INFO_BG: Color = Color::srgba(0.24, 0.56, 0.82, 1.0);
+pub const INFO_TEXT: Color = Color::srgba(0.21, 0.21, 0.21, 1.0);
+pub const INFO_DARK_BG: Color = Color::srgba(0.16, 0.44, 0.66, 1.0);
+pub const INFO_DARK_TEXT: Color = Color::srgba(0.82, 0.92, 1.0, 1.0);
+
+pub const SUCCESS_BG: Color = Color::srgba(0.28, 0.78, 0.56, 1.0);
+pub const SUCCESS_TEXT: Color = Color::srgba(0.21, 0.21, 0.21, 1.0);
+pub const SUCCESS_DARK_BG: Color = Color::srgba(0.22, 0.59, 0.42, 1.0);
+pub const SUCCESS_DARK_TEXT: Color = Color::srgba(0.80, 1.0, 0.89, 1.0);
+
+pub const WARNING_BG: Color = Color::srgba(1.0, 0.88, 0.54, 1.0);
+pub const WARNING_TEXT: Color = Color::srgba(0.21, 0.21, 0.21, 1.0);
+pub const WARNING_DARK_BG: Color = Color::srgba(0.76, 0.64, 0.26, 1.0);
+pub const WARNING_DARK_TEXT: Color = Color::srgba(1.0, 0.98, 0.82, 1.0);
+
+pub const DANGER_BG: Color = Color::srgba(0.95, 0.27, 0.41, 1.0);
+pub const DANGER_TEXT: Color = Color::srgba(0.05, 0.05, 0.05, 1.0);
+pub const DANGER_DARK_BG: Color = Color::srgba(0.71, 0.20, 0.30, 1.0);
+pub const DANGER_DARK_TEXT: Color = Color::srgba(1.0, 0.85, 0.88, 1.0);
+
+// Primary
+pub const PRIMARY_BG_HOVER: Color = Color::srgba(0.1, 0.92, 0.8, 1.0);
+pub const PRIMARY_DARK_BG_HOVER: Color = Color::srgba(0.1, 0.68, 0.59, 1.0);
+
+// Link
+pub const LINK_BG_HOVER: Color = Color::srgba(0.38, 0.47, 0.92, 1.0);
+pub const LINK_DARK_BG_HOVER: Color = Color::srgba(0.32, 0.4, 0.72, 1.0);
+
+// Info
+pub const INFO_BG_HOVER: Color = Color::srgba(0.34, 0.66, 0.92, 1.0);
+pub const INFO_DARK_BG_HOVER: Color = Color::srgba(0.26, 0.54, 0.76, 1.0);
+
+// Success
+pub const SUCCESS_BG_HOVER: Color = Color::srgba(0.38, 0.88, 0.66, 1.0);
+pub const SUCCESS_DARK_BG_HOVER: Color = Color::srgba(0.32, 0.69, 0.52, 1.0);
+
+// Warning
+pub const WARNING_BG_HOVER: Color = Color::srgba(1.0, 0.93, 0.64, 1.0);
+pub const WARNING_DARK_BG_HOVER: Color = Color::srgba(0.86, 0.74, 0.36, 1.0);
+
+// Danger
+pub const DANGER_BG_HOVER: Color = Color::srgba(1.0, 0.37, 0.51, 1.0);
+pub const DANGER_DARK_BG_HOVER: Color = Color::srgba(0.81, 0.3, 0.4, 1.0);
