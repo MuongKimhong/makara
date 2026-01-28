@@ -503,11 +503,15 @@ macro_rules! radio_group_ {
 /// ```
 #[macro_export]
 macro_rules! text_input_ {
-    ($text:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )* $(; [ $($child:expr),* $(,)? ])?) => {
+    ($text:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )*) => {
         {
             let mut b = $crate::widgets::text_input::text_input($text);
             $( b = b.$prop($val); )*
-            (b.build(), $( $crate::prelude::observe($handler), )* $( ::bevy::prelude::children![ $($child),* ] )?)
+
+            (
+                b.build(),
+                $( $crate::prelude::observe($handler), )*
+            )
         }
     };
 }

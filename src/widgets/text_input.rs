@@ -946,6 +946,10 @@ pub(crate) fn update_text_input_render(
     mut cursor_query: Query<&mut Node, With<MakaraTextInputCursor>>,
 ) {
     for (mut input, img_node, editor_style, value, computed, children) in editors.iter_mut() {
+        // If the UI hasn't calculated a size yet, skip this frame.
+        if computed.size.x <= 0.0 || computed.size.y <= 0.0 {
+            continue;
+        }
         if !input.editor.redraw() {
             continue;
         }
