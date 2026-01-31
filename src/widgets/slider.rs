@@ -196,7 +196,8 @@ impl SliderBundle {
 
 impl Widget for SliderBundle {
     /// Build slider.
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,

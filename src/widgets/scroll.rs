@@ -3,7 +3,7 @@
 use bevy::input::mouse::{MouseWheel, MouseScrollUnit};
 use bevy::ui_widgets::observe;
 
-use crate::{events::*, consts::*};
+use crate::{events::*, consts::*, utils::*};
 use super::*;
 
 /// Internal resource used to track scroll.
@@ -366,7 +366,8 @@ impl Default for ScrollBundle {
 
 impl Widget for ScrollBundle {
     /// Build `scroll`.
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,

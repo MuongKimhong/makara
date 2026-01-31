@@ -5,7 +5,7 @@ use bevy::ui_widgets::observe;
 use bevy::asset::LoadState;
 use std::collections::HashMap;
 
-use crate::{events::*};
+use crate::{events::*, utils::*};
 use super::*;
 
 #[derive(Resource, Debug, Default)]
@@ -190,7 +190,8 @@ impl Default for ImageBundle {
 }
 
 impl Widget for ImageBundle {
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,

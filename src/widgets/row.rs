@@ -2,7 +2,7 @@
 
 use bevy::prelude::*;
 
-use crate::{ContainerStyle, SetContainerStyle, Widget, events::*};
+use crate::{ContainerStyle, SetContainerStyle, Widget, events::*, utils::*};
 use super::*;
 
 /// Marker component for `row`.
@@ -198,7 +198,8 @@ impl Default for RowBundle {
 
 impl Widget for RowBundle {
     /// Build `row`.
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,

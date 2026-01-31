@@ -2,7 +2,7 @@ use bevy::render::render_resource::AsBindGroup;
 use bevy::shader::ShaderRef;
 use bevy::{prelude::*, ui_widgets::observe};
 
-use crate::{consts::*, events::*, on_mouse_out, utils::*};
+use crate::{consts::*, events::*, utils::*, on_mouse_out};
 use super::*;
 
 /// Material for `circular`.
@@ -234,7 +234,8 @@ impl CircularBundle {
 
 impl Widget for CircularBundle {
     /// Build `circular`.
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,

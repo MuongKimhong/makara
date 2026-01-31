@@ -3,7 +3,7 @@ use bevy::ui_widgets::observe;
 use bevy::window::{CursorIcon, SystemCursorIcon};
 
 use crate::utils::update_focus_state_for_widgets_on_click;
-use crate::{events::*, consts::*};
+use crate::{events::*, consts::*, utils::*};
 use super::*;
 
 /// Marker component for `link`.
@@ -206,7 +206,8 @@ impl LinkBundle {
 
 impl Widget for LinkBundle {
     /// Build `link`.
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,

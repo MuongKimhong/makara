@@ -2,7 +2,7 @@
 
 use bevy::prelude::*;
 
-use crate::{ContainerStyle, SetContainerStyle, Widget, events::*};
+use crate::{ContainerStyle, SetContainerStyle, Widget, events::*, utils::*};
 use super::*;
 
 /// Marker component for `column`.
@@ -198,7 +198,8 @@ impl Default for ColumnBundle {
 
 impl Widget for ColumnBundle {
     /// Build `column`.
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,

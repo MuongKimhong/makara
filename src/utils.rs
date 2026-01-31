@@ -89,7 +89,10 @@ pub fn get_bulma_bg_colors(class_name: &str) -> Option<(Color, Color)> {
     }
 }
 
-pub(crate) fn process_button_built_in_color_class_bg_only(class: &Class, bg: &mut BackgroundColor) {
+pub(crate) fn process_button_built_in_color_class_bg_only(
+    class: &Class,
+    bg: &mut BackgroundColor
+) {
     for class_name in class.class_list() {
         if let Some((base_color, _)) = get_bulma_bg_colors(class_name.as_str()) {
             bg.0 = base_color;
@@ -97,7 +100,10 @@ pub(crate) fn process_button_built_in_color_class_bg_only(class: &Class, bg: &mu
     }
 }
 
-pub(crate) fn process_button_built_in_color_class_hover_only(class: &Class, bg: &mut BackgroundColor) {
+pub(crate) fn process_button_built_in_color_class_hover_only(
+    class: &Class,
+    bg: &mut BackgroundColor
+) {
     for class_name in class.class_list() {
         if let Some((_, hover_color)) = get_bulma_bg_colors(class_name.as_str()) {
             bg.0 = hover_color;

@@ -328,7 +328,8 @@ impl TextInputBundle {
 
 impl Widget for TextInputBundle {
     /// Build `text_input`
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,

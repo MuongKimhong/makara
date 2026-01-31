@@ -4,7 +4,7 @@ use bevy::{prelude::*, ui::InteractionDisabled, ui_widgets::observe};
 use bevy::window::{CursorIcon, SystemCursorIcon};
 
 use crate::utils::update_focus_state_for_widgets_on_click;
-use crate::{consts::*, events::*, on_mouse_out};
+use crate::{consts::*, events::*, utils::*, on_mouse_out};
 use super::*;
 
 /// Marker component for `checkbox`.
@@ -328,7 +328,9 @@ impl CheckboxBundle {
 
 impl Widget for CheckboxBundle {
     /// Build `checkbox`.
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+
         (
             self.id_class,
             self.style,

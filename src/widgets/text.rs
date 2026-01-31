@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{ContainerStyle, SetContainerStyle, MakaraTheme, Theme, Widget};
-use crate::{events::*, consts::*};
+use crate::{events::*, consts::*, utils::*};
 use super::*;
 
 /// Marker component for text.
@@ -175,7 +175,9 @@ impl TextBundle {
 
 impl Widget for TextBundle {
     /// Build text.
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+
         (self.id_class, self.text_style, self.text, self.style, MakaraText)
     }
 }
