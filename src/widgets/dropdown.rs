@@ -219,6 +219,19 @@ impl Widget for DropdownBundle {
     /// Build `dropdown`.
     fn build(mut self) -> impl Bundle {
         process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+        process_built_in_color(
+            &self.id_class.class,
+            &mut self.style.background_color.0
+        );
+        process_built_in_color(
+            &self.id_class.class,
+            &mut self.overlay_style.background_color.0
+        );
+        process_text_built_in_color_class(
+            &self.id_class.class,
+            &mut self.text_bundle.text_style.color.0
+        );
+
         (
             self.id_class,
             self.style,
@@ -353,6 +366,7 @@ pub(crate) fn detect_user_provided_children_system(
         (
             Entity,
             &Children,
+            &Class,
             &mut MakaraDropdownOverlayStyle,
             &MakaraDropdownTextBundle,
             &MakaraDropdownTooltipBundle
@@ -362,12 +376,14 @@ pub(crate) fn detect_user_provided_children_system(
     mut commands: Commands,
     mut makara_theme: ResMut<MakaraTheme>,
     mut overlay_and_text_added: ResMut<DropdownOverlayAndTextAdded>,
+    mut text_q: Query<&mut TextColor>,
+    children_q: Query<&Children>
 ) {
     if overlay_and_text_added.0 {
         return;
     }
 
-    for (entity, children, mut overlay_style, text_bundle, tooltip_bundle) in dropdown_q.iter_mut() {
+    for (entity, children, class, mut overlay_style, text_bundle, tooltip_bundle) in dropdown_q.iter_mut() {
         let mut child_entities: Vec<Entity> = Vec::new();
 
         for child in children.iter() {
@@ -385,6 +401,15 @@ pub(crate) fn detect_user_provided_children_system(
                     }
                     click.propagate(false);
                 });
+
+            if let Ok(btn_children) = children_q.get(child) {
+                for btn_child in btn_children.iter() {
+                    if let Ok(mut text_color) = text_q.get_mut(btn_child) {
+                        process_text_built_in_color_class(class, &mut text_color.0);
+                        break;
+                    }
+                }
+            }
 
             child_entities.push(child);
         }

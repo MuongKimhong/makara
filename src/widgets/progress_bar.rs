@@ -255,6 +255,8 @@ impl Widget for ProgressBarBundle {
     /// Build `progress_bar`.
     fn build(mut self) -> impl Bundle {
         process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+        process_built_in_color(&self.id_class.class, &mut self.value_color.0);
+
         (
             self.id_class,
             self.style,

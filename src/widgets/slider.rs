@@ -198,6 +198,8 @@ impl Widget for SliderBundle {
     /// Build slider.
     fn build(mut self) -> impl Bundle {
         process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+        process_built_in_color(&self.id_class.class, &mut self.thumb_style.background_color.0);
+
         (
             self.id_class,
             self.style,

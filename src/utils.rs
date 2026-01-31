@@ -107,13 +107,13 @@ pub fn get_bulma_text_colors(class_name: &str) -> Option<Color> {
     }
 }
 
-pub(crate) fn process_button_built_in_color_class_bg_only(
+pub(crate) fn process_built_in_color(
     class: &Class,
-    bg: &mut BackgroundColor
+    color: &mut Color
 ) {
     for class_name in class.class_list() {
         if let Some((base_color, _)) = get_bulma_bg_colors(class_name.as_str()) {
-            bg.0 = base_color;
+            *color = base_color;
         }
     }
 }
@@ -131,11 +131,11 @@ pub(crate) fn process_button_built_in_color_class_hover_only(
 
 pub(crate) fn process_text_built_in_color_class(
     class: &Class,
-    color: &mut TextColor
+    color: &mut Color
 ) {
     for class_name in class.class_list() {
-        if let Some((base_color, _)) = get_bulma_bg_colors(class_name.as_str()) {
-            color.0 = base_color;
+        if let Some(base_color) = get_bulma_text_colors(class_name.as_str()) {
+            *color = base_color;
         }
     }
 }

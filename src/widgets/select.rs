@@ -331,6 +331,23 @@ impl Widget for SelectBundle {
     /// Build `select`.
     fn build(mut self) -> impl Bundle {
         process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+        process_built_in_color(
+            &self.id_class.class,
+            &mut self.style.background_color.0
+        );
+        process_built_in_color(
+            &self.id_class.class,
+            &mut self.overlay_style.background_color.0
+        );
+        process_text_built_in_color_class(
+            &self.id_class.class,
+            &mut self.text_bundle.text_style.color.0
+        );
+        process_text_built_in_color_class(
+            &self.id_class.class,
+            &mut self.arrow_text_bundle.text_style.color.0
+        );
+
         (
             self.id_class,
             self.style,
@@ -510,14 +527,14 @@ pub(crate) fn detect_select_placeholder_added(
 
 pub(crate) fn detect_select_items_added_and_overlay_resized(
     mut select_q: Query<
-        (Entity, &mut SelectItemsAdded, &mut MakaraSelectChoices, &ComputedNode, &Children),
+        (Entity, &mut SelectItemsAdded, &mut MakaraSelectChoices, &ComputedNode, &Children, &Class),
         With<MakaraSelect>
     >,
     mut overlay_q: Query<(&mut Node, &ComputedNode), With<MakaraSelectOverlay>>,
     mut commands: Commands,
     mut makara_theme: ResMut<MakaraTheme>,
 ) {
-    for (entity, mut items_added, mut choices, select_computed, children) in select_q.iter_mut() {
+    for (entity, mut items_added, mut choices, select_computed, children, class) in select_q.iter_mut() {
         for child in children {
             if let Ok((mut node, overlay_computed)) = overlay_q.get_mut(*child) {
                 if !items_added.items_added {
@@ -535,6 +552,11 @@ pub(crate) fn detect_select_items_added_and_overlay_resized(
                             if choice == "-/-" {
                                 btn.style.node.margin.top = px(2.5);
                             }
+
+                            process_text_built_in_color_class(
+                                class,
+                                &mut btn.text_bundle.text_style.color.0
+                            );
 
                             p.spawn((
                                 btn.build(),

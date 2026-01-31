@@ -330,6 +330,23 @@ impl Widget for TextInputBundle {
     /// Build `text_input`
     fn build(mut self) -> impl Bundle {
         process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+        process_built_in_color(
+            &self.id_class.class,
+            &mut self.style.background_color.0
+        );
+        process_text_built_in_color_class(
+            &self.id_class.class,
+            &mut self.caret_style.background_color.0
+        );
+        process_text_built_in_color_class(
+            &self.id_class.class,
+            &mut self.editor_style.placeholder_color
+        );
+        process_text_built_in_color_class(
+            &self.id_class.class,
+            &mut self.editor_style.text_color
+        );
+
         (
             self.id_class,
             self.style,

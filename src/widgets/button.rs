@@ -3,7 +3,7 @@
 use bevy::{prelude::*, ui::InteractionDisabled, ui_widgets::observe};
 use bevy::window::{CursorIcon, SystemCursorIcon};
 
-use crate::{consts::*, events::*, on_mouse_out, utils::*, colors::*};
+use crate::{consts::*, events::*, on_mouse_out, utils::*};
 use super::*;
 
 /// Marker component for `button`.
@@ -179,68 +179,19 @@ impl ButtonBundle {
     pub fn build_as_disabled(self) -> impl Bundle {
         (self.build(), InteractionDisabled)
     }
-
-    fn process_built_in_color_class(&mut self) {
-        for class in self.id_class.class.class_list() {
-            match class.as_str() {
-                "is-primary" => {
-                    self.style.background_color.0 = PRIMARY_BG;
-                    self.text_bundle.text_style.color.0 = PRIMARY_TEXT;
-                }
-                "is-primary-dark" => {
-                    self.style.background_color.0 = PRIMARY_DARK_BG;
-                    self.text_bundle.text_style.color.0 = PRIMARY_DARK_TEXT;
-                }
-                "is-link" => {
-                    self.style.background_color.0 = LINK_BG;
-                    self.text_bundle.text_style.color.0 = LINK_TEXT;
-                }
-                "is-link-dark" => {
-                    self.style.background_color.0 = LINK_DARK_BG;
-                    self.text_bundle.text_style.color.0 = LINK_DARK_TEXT;
-                }
-                "is-info" => {
-                    self.style.background_color.0 = INFO_BG;
-                    self.text_bundle.text_style.color.0 = INFO_TEXT;
-                }
-                "is-info-dark" => {
-                    self.style.background_color.0 = INFO_DARK_BG;
-                    self.text_bundle.text_style.color.0 = INFO_DARK_TEXT;
-                }
-                "is-success" => {
-                    self.style.background_color.0 = SUCCESS_BG;
-                    self.text_bundle.text_style.color.0 = SUCCESS_TEXT;
-                }
-                "is-success-dark" => {
-                    self.style.background_color.0 = SUCCESS_DARK_BG;
-                    self.text_bundle.text_style.color.0 = SUCCESS_DARK_TEXT;
-                }
-                "is-warning" => {
-                    self.style.background_color.0 = WARNING_BG;
-                    self.text_bundle.text_style.color.0 = WARNING_TEXT;
-                }
-                "is-warning-dark" => {
-                    self.style.background_color.0 = WARNING_DARK_BG;
-                    self.text_bundle.text_style.color.0 = WARNING_DARK_TEXT;
-                }
-                "is-danger" => {
-                    self.style.background_color.0 = DANGER_BG;
-                    self.text_bundle.text_style.color.0 = DANGER_TEXT;
-                }
-                "is-danger-dark" => {
-                    self.style.background_color.0 = DANGER_DARK_BG;
-                    self.text_bundle.text_style.color.0 = DANGER_DARK_TEXT;
-                }
-                _ => {}
-            }
-        }
-    }
 }
 
 impl Widget for ButtonBundle {
     /// Build `button`.
     fn build(mut self) -> impl Bundle {
-        self.process_built_in_color_class();
+        process_built_in_color(
+            &self.id_class.class,
+            &mut self.style.background_color.0
+        );
+        process_text_built_in_color_class(
+            &self.id_class.class,
+            &mut self.text_bundle.text_style.color.0
+        );
         process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
 
         (
@@ -337,7 +288,7 @@ fn on_button_mouse_out(
     mut btns: Query<(&mut BackgroundColor, &Class), With<MakaraButton>>
 ) {
     if let Ok((mut bg, class)) = btns.get_mut(out.entity) {
-        process_button_built_in_color_class_bg_only(&class, &mut bg);
+        process_built_in_color(&class, &mut bg.0);
     }
 
     out.propagate(false);
