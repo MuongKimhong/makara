@@ -177,6 +177,7 @@ impl Widget for TextBundle {
     /// Build text.
     fn build(mut self) -> impl Bundle {
         process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+        process_text_built_in_color_class(&self.id_class.class, &mut self.text_style.color);
 
         (self.id_class, self.text_style, self.text, self.style, MakaraText)
     }

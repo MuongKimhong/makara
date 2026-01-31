@@ -71,12 +71,10 @@ impl Router {
     /// Navigate to provided route with/without param.
     pub fn navigate(&mut self, name: &str, param: impl Into<Param>) {
         self.default_route(name, param.into());
-        println!("current_route {:?}", self.current_route);
     }
 
     /// Get current route and its param.
     pub fn get_current_route(&self) -> Option<(String, Param)> {
-        println!("current_route {:?}", self.current_route);
         self.current_route.clone()
     }
 }

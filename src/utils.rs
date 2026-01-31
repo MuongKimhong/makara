@@ -89,6 +89,24 @@ pub fn get_bulma_bg_colors(class_name: &str) -> Option<(Color, Color)> {
     }
 }
 
+pub fn get_bulma_text_colors(class_name: &str) -> Option<Color> {
+    match class_name {
+        "is-primary"      => Some(PRIMARY_TEXT),
+        "is-primary-dark" => Some(PRIMARY_DARK_TEXT),
+        "is-link"         => Some(LINK_TEXT),
+        "is-link-dark"    => Some(LINK_DARK_TEXT),
+        "is-info"         => Some(INFO_TEXT),
+        "is-info-dark"    => Some(INFO_DARK_TEXT),
+        "is-success"      => Some(SUCCESS_TEXT),
+        "is-success-dark" => Some(SUCCESS_DARK_TEXT),
+        "is-warning"      => Some(WARNING_TEXT),
+        "is-warning-dark" => Some(WARNING_DARK_TEXT),
+        "is-danger"       => Some(DANGER_TEXT),
+        "is-danger-dark"  => Some(DANGER_DARK_TEXT),
+        _ => None,
+    }
+}
+
 pub(crate) fn process_button_built_in_color_class_bg_only(
     class: &Class,
     bg: &mut BackgroundColor
@@ -107,6 +125,17 @@ pub(crate) fn process_button_built_in_color_class_hover_only(
     for class_name in class.class_list() {
         if let Some((_, hover_color)) = get_bulma_bg_colors(class_name.as_str()) {
             bg.0 = hover_color;
+        }
+    }
+}
+
+pub(crate) fn process_text_built_in_color_class(
+    class: &Class,
+    color: &mut TextColor
+) {
+    for class_name in class.class_list() {
+        if let Some((base_color, _)) = get_bulma_bg_colors(class_name.as_str()) {
+            color.0 = base_color;
         }
     }
 }
