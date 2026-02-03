@@ -231,6 +231,14 @@ pub(crate) fn detect_row_built(
     }
 }
 
+pub(crate) fn detect_row_class_change_for_built_in(
+    mut rows: Query<(&Class, &mut Node), IsRowOnly>
+) {
+    for (class, mut node) in rows.iter_mut() {
+        process_built_in_spacing_class(class, &mut node);
+    }
+}
+
 /// Create row widget.
 pub fn row() -> RowBundle {
     RowBundle::default()

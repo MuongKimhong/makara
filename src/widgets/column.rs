@@ -231,6 +231,14 @@ pub(crate) fn detect_column_built(
     }
 }
 
+pub(crate) fn detect_column_class_change_for_built_in(
+    mut columns: Query<(&Class, &mut Node), IsColumnOnly>
+) {
+    for (class, mut node) in columns.iter_mut() {
+        process_built_in_spacing_class(class, &mut node);
+    }
+}
+
 /// Create column widget.
 pub fn column() -> ColumnBundle {
     ColumnBundle::default()

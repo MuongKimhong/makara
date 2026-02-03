@@ -280,6 +280,15 @@ pub fn circular() -> CircularBundle {
     bundle
 }
 
+pub(crate) fn detect_circular_class_change_for_built_in_color(
+    mut circulars: Query<(&Class, &mut Node, &mut CircularColor), IsCircularOnly>
+) {
+    for (class, mut node, mut cir_color) in circulars.iter_mut() {
+        process_built_in_spacing_class(class, &mut node);
+        process_built_in_color(class, &mut cir_color.0);
+    }
+}
+
 fn on_circular_value_set(
     value_set: On<SetCircularValue>,
     mut circulars: Query<&mut CircularType>,

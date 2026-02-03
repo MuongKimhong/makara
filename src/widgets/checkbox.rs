@@ -383,6 +383,25 @@ pub fn checkbox(text: &str) -> CheckboxBundle {
     bundle
 }
 
+pub(crate) fn detect_checkbox_class_change_for_built_in_color(
+    mut checkboxs: Query<
+        (&Class, &mut Node, &mut MakaraCheckboxState, &Children),
+        (IsCheckboxOnly, Changed<Class>)
+    >,
+    mut checkbox_btns: Query<&mut CheckboxButtonActiveColor, IsCheckboxButtonOnly>,
+) {
+    for (class, mut node, mut state, children) in checkboxs.iter_mut() {
+        for child in children.iter() {
+            if let Ok(mut active_color) = checkbox_btns.get_mut(child) {
+                process_built_in_color(class, &mut active_color.0);
+                process_built_in_spacing_class(class, &mut node);
+                state.set_changed();
+                break;
+            }
+        }
+    }
+}
+
 fn on_checkbox_mouse_over(
     mut over: On<Pointer<Over>>,
     mut checkboxs: Query<

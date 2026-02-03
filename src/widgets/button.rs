@@ -237,6 +237,25 @@ pub fn button(text: &str) -> ButtonBundle {
     button_bundle
 }
 
+pub(crate) fn detect_button_class_change_for_built_in_color(
+    mut btns: Query<
+        (&Class, &mut BackgroundColor, &mut Node, &Children),
+        (IsButtonOnly, Changed<Class>)
+    >,
+    mut texts: Query<&mut TextColor>
+) {
+    for (class, mut bg, mut node, children) in btns.iter_mut() {
+        for child in children.iter() {
+            if let Ok(mut text_color) = texts.get_mut(child) {
+                process_built_in_color(class, &mut bg.0);
+                process_text_built_in_color_class(class, &mut text_color.0);
+                process_built_in_spacing_class(class, &mut node);
+                break;
+            }
+        }
+    }
+}
+
 fn on_mouse_click(
     mut click: On<Pointer<Click>>,
     mut commands: Commands,

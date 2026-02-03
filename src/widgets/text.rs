@@ -233,6 +233,16 @@ pub(crate) fn detect_text_built(
     }
 }
 
+
+pub(crate) fn detect_text_class_change_for_built_in(
+    mut texts: Query<(&Class, &mut Node, &mut TextColor), With<MakaraText>>
+) {
+    for (class, mut node, mut text_color) in texts.iter_mut() {
+        process_built_in_spacing_class(class, &mut node);
+        process_text_built_in_color_class(class, &mut text_color.0);
+    }
+}
+
 pub(crate) fn can_run_text_systems(q: Query<&MakaraText>) -> bool {
     q.count() > 0
 }

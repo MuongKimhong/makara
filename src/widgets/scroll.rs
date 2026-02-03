@@ -644,6 +644,15 @@ pub(crate) fn detect_scroll_built(
     }
 }
 
+
+pub(crate) fn detect_scroll_class_change_for_built_in(
+    mut scrolls: Query<(&Class, &mut Node), IsScrollOnly>
+) {
+    for (class, mut node) in scrolls.iter_mut() {
+        process_built_in_spacing_class(class, &mut node);
+    }
+}
+
 /// Create column widget.
 pub fn scroll() -> ScrollBundle {
     ScrollBundle::default()

@@ -135,6 +135,7 @@ pub mod prelude {
                 // btn
                 (
                     update_button_style_on_theme_change_system,
+                    detect_button_class_change_for_built_in_color,
                     detect_button_built
                 )
                 .run_if(can_run_button_systems),
@@ -153,6 +154,7 @@ pub mod prelude {
                 (
                     update_checkbox_button_style_on_theme_change_system,
                     update_checkbox_style_on_state_change_system,
+                    detect_checkbox_class_change_for_built_in_color,
                     detect_checkbox_built
                 )
                 .run_if(can_run_checkbox_systems),
@@ -213,6 +215,7 @@ pub mod prelude {
                 // circular
                 (
                     detect_circular_added,
+                    detect_circular_class_change_for_built_in_color,
                     update_circular_material_u_time,
                     update_circular_style_on_theme_change_system,
                 )
@@ -265,7 +268,11 @@ pub mod prelude {
                 detect_makara_text_added,
                 detect_widget_class_change,
                 check_unique_id,
-                handle_match_route_to_root
+                handle_match_route_to_root,
+                detect_row_class_change_for_built_in,
+                detect_column_class_change_for_built_in,
+                detect_scroll_class_change_for_built_in,
+                detect_text_class_change_for_built_in
             ));
             app.add_systems(
                 Update,
