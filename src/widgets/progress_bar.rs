@@ -302,6 +302,24 @@ pub fn progress_bar() -> ProgressBarBundle {
     bundle
 }
 
+pub(crate) fn detect_bar_class_change_for_built_in_color(
+    mut bars: Query<
+        (&Class, &mut Node, &Children),
+        (IsProgressBarOnly, Changed<Class>)
+    >,
+    mut values: Query<&mut ProgressValueColor>
+) {
+    for (class, mut node, children) in bars.iter_mut() {
+        for child in children.iter() {
+            if let Ok(mut value_color) = values.get_mut(child) {
+                process_built_in_color(class, &mut value_color.0);
+                process_built_in_spacing_class(class, &mut node);
+                break;
+            }
+        }
+    }
+}
+
 fn on_progress_bar_value_set(
     value_set: On<SetProgressBarValue>,
     bars: Query<&Children, With<MakaraProgressBar>>,

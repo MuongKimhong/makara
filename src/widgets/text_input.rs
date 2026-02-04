@@ -338,7 +338,7 @@ impl Widget for TextInputBundle {
             &self.id_class.class,
             &mut self.caret_style.background_color.0
         );
-        process_text_built_in_color_class(
+        process_placeholder_text_built_in_color_class(
             &self.id_class.class,
             &mut self.editor_style.placeholder_color
         );
@@ -403,6 +403,39 @@ pub fn text_input(placeholder: &str) -> TextInputBundle {
     let mut bundle = TextInputBundle::default();
     bundle.placeholder.0 = placeholder.to_string();
     bundle
+}
+
+pub(crate) fn detect_text_input_class_change_for_built_in(
+    mut inputs: Query<
+        (&Class, &TextInputCursorEntity, &TextInputEditorEntity, &mut BackgroundColor, &mut Node),
+        (With<MakaraTextInput>, Changed<Class>)
+    >,
+    mut editors: Query<(&mut TextEditor, &mut TextInputEditorStyle)>,
+    mut carets: Query<
+        &mut BackgroundColor,
+        (With<MakaraTextInputCursor>, Without<MakaraTextInput>)
+    >
+) {
+    for (class, cursor_entity, editor_entity, mut bg, mut node) in inputs.iter_mut() {
+        if let Ok((mut editor, mut editor_style)) = editors.get_mut(editor_entity.0) {
+            process_placeholder_text_built_in_color_class(
+                class,
+                &mut editor_style.placeholder_color
+            );
+            process_text_built_in_color_class(
+                class,
+                &mut editor_style.text_color
+            );
+            editor.editor.set_redraw(true);
+        }
+
+        if let Ok(mut cursor_bg) = carets.get_mut(cursor_entity.0) {
+            process_text_built_in_color_class(class, &mut cursor_bg.0);
+        }
+
+        process_built_in_color(class, &mut bg.0);
+        process_built_in_spacing_class(class, &mut node);
+    }
 }
 
 fn on_mouse_click(

@@ -413,6 +413,36 @@ pub fn select(placeholder: &str, choices: &[&str]) -> SelectBundle {
     bundle
 }
 
+pub(crate) fn detect_select_class_change_for_built_in(
+    mut selects: Query<
+        (&Class, &Children, &SelectPlaceholderTextEntity, &mut Node, &mut BackgroundColor),
+        (With<MakaraSelect>, Changed<Class>)
+    >,
+    mut overlays: Query<
+        &mut BackgroundColor,
+        (With<MakaraSelectOverlay>, Without<MakaraSelect>)
+    >,
+    mut texts: Query<&mut TextColor, With<MakaraText>>
+) {
+    for (class, children, pl_entity, mut node, mut bg) in selects.iter_mut() {
+        for child in children.iter() {
+            if let Ok(mut overlay_bg) = overlays.get_mut(child) {
+                process_built_in_color(class, &mut overlay_bg.0);
+            }
+
+            if let Ok(mut arrow_color) = texts.get_mut(child) {
+                process_text_built_in_color_class(class, &mut arrow_color.0);
+            }
+        }
+
+        if let Ok(mut pl_color) = texts.get_mut(pl_entity.0) {
+            process_text_built_in_color_class(class, &mut pl_color.0);
+        }
+        process_built_in_spacing_class(class, &mut node);
+        process_built_in_color( class, &mut bg.0);
+    }
+}
+
 fn on_select_mouse_over(
     mut over: On<Pointer<Over>>,
     mut selects: Query<

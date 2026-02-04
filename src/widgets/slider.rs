@@ -253,6 +253,25 @@ pub fn slider(range_start: f32, range_end: f32) -> SliderBundle {
     bundle
 }
 
+pub(crate) fn detect_slider_class_change_for_built_in(
+    mut sliders: Query<
+        (&Class, &mut Node, &Children),
+        (With<MakaraSlider>, Changed<Class>)
+    >,
+    mut thumbs: Query<&mut BackgroundColor, With<MakaraSliderThumb>>,
+) {
+    for (class, mut node, children) in sliders.iter_mut() {
+        for child in children.iter() {
+            if let Ok(mut thumb_bg) = thumbs.get_mut(child) {
+                process_built_in_color(class, &mut thumb_bg.0);
+                break;
+            }
+        }
+
+        process_built_in_spacing_class(class, &mut node);
+    }
+}
+
 fn on_thumb_mouse_click(
     mut click: On<Pointer<Click>>,
     mut widgets: Query<(Entity, &mut WidgetFocus)>

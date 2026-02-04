@@ -272,7 +272,11 @@ pub mod prelude {
                 detect_row_class_change_for_built_in,
                 detect_column_class_change_for_built_in,
                 detect_scroll_class_change_for_built_in,
-                detect_text_class_change_for_built_in
+                detect_text_class_change_for_built_in,
+                detect_bar_class_change_for_built_in_color,
+                detect_select_class_change_for_built_in,
+                detect_slider_class_change_for_built_in,
+                detect_text_input_class_change_for_built_in
             ));
             app.add_systems(
                 Update,

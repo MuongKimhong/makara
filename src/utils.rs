@@ -107,6 +107,24 @@ pub fn get_bulma_text_colors(class_name: &str) -> Option<Color> {
     }
 }
 
+pub fn get_bulma_placeholder_colors(class_name: &str) -> Option<Color> {
+    match class_name {
+        "is-primary"      => Some(PRIMARY_PLACEHOLDER),
+        "is-primary-dark" => Some(PRIMARY_DARK_PLACEHOLDER),
+        "is-link"         => Some(LINK_PLACEHOLDER),
+        "is-link-dark"    => Some(LINK_DARK_PLACEHOLDER),
+        "is-info"         => Some(INFO_PLACEHOLDER),
+        "is-info-dark"    => Some(INFO_DARK_PLACEHOLDER),
+        "is-success"      => Some(SUCCESS_PLACEHOLDER),
+        "is-success-dark" => Some(SUCCESS_DARK_PLACEHOLDER),
+        "is-warning"      => Some(WARNING_PLACEHOLDER),
+        "is-warning-dark" => Some(WARNING_DARK_PLACEHOLDER),
+        "is-danger"       => Some(DANGER_PLACEHOLDER),
+        "is-danger-dark"  => Some(DANGER_DARK_PLACEHOLDER),
+        _ => None,
+    }
+}
+
 pub(crate) fn process_built_in_color(
     class: &Class,
     color: &mut Color
@@ -135,6 +153,17 @@ pub(crate) fn process_text_built_in_color_class(
 ) {
     for class_name in class.class_list() {
         if let Some(base_color) = get_bulma_text_colors(class_name.as_str()) {
+            *color = base_color;
+        }
+    }
+}
+
+pub(crate) fn process_placeholder_text_built_in_color_class(
+    class: &Class,
+    color: &mut Color
+) {
+    for class_name in class.class_list() {
+        if let Some(base_color) = get_bulma_placeholder_colors(class_name.as_str()) {
             *color = base_color;
         }
     }
