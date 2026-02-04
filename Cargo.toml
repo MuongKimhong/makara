@@ -1,6 +1,6 @@
 [package]
 name = "makara"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2024"
 description = "A Bevy UI simplifier that make it easy to build GUI app with bevy engine."
 keywords = ["GUI", "Rust", "ECS"]
