@@ -296,20 +296,26 @@ pub struct Id(pub String);
 pub struct Class(pub String);
 
 impl Class {
-    /// Adds a class to the widget if it doesn't already exist.
+    /// Adds a class (or multiple space-separated classes) to the widget.
     pub fn add_class(&mut self, class: &str) {
         let mut classes: Vec<_> = self.0.split_whitespace().collect();
-        if !classes.contains(&class) {
-            classes.push(class);
-            self.0 = classes.join(" ");
+
+        for new_class in class.split_whitespace() {
+            if !classes.contains(&new_class) {
+                classes.push(new_class);
+            }
         }
+
+        self.0 = classes.join(" ");
     }
 
-    /// Removes a specific class from the widget.
+    /// Removes a specific class (or multiple) from the widget.
     pub fn remove_class(&mut self, class: &str) {
+        let to_remove: Vec<_> = class.split_whitespace().collect();
+
         let classes: Vec<_> = self.0
             .split_whitespace()
-            .filter(|&c| c != class)
+            .filter(|c| !to_remove.contains(c))
             .collect();
 
         self.0 = classes.join(" ");
@@ -381,36 +387,70 @@ pub trait WidgetQuery<'w, 's> {
     /// Method to find entities that match with provided classes.
     fn find_by_class(&self, target_class: &str) -> Vec<Entity>;
 
+    // /// Get the widget and executes a closure on a widget found by its ID.
+    // ///
+    // /// This is the preferred way to perform single-shot updates to avoid `if let` boilerplate.
+    // ///
+    // /// # Example
+    // /// ```rust
+    // /// text_q.get_by_id("header", |t| t.text.value.0 = "Settings".to_string());
+    // /// ```
+    // fn get_by_id(&mut self, id: &str, f: impl FnOnce(&mut Self::WidgetView<'_>)) {
+    //     if let Some(mut widget) = self.find_by_id(id) {
+    //         f(&mut widget);
+    //     }
+    // }
+
+    // /// Get the widget and executes a closure on a widget found by its Entity.
+    // fn get_by_entity(&mut self, entity: Entity, f: impl FnOnce(&mut Self::WidgetView<'_>)) {
+    //     if let Some(mut widget) = self.find_by_entity(entity) {
+    //         f(&mut widget);
+    //     }
+    // }
+
+    // /// Executes a closure on every widget that matches the specified class.
+    // ///
+    // /// This is useful for bulk-updating styles or states (e.g., highlighting all buttons).
+    // ///
+    // /// # Example
+    // /// ```rust
+    // /// button_q.get_by_class("active", |btn| btn.style.background_color.0 = Color::GOLD);
+    // /// ```
+    // fn get_by_class(&mut self, class: &str, mut f: impl FnMut(&mut Self::WidgetView<'_>)) {
+    //     let entities = self.find_by_class(class);
+
+    //     for entity in entities {
+    //         if let Some(mut widget) = self.find_by_entity(entity) {
+    //             f(&mut widget);
+    //         }
+    //     }
+    // }
+
     /// Get the widget and executes a closure on a widget found by its ID.
-    ///
-    /// This is the preferred way to perform single-shot updates to avoid `if let` boilerplate.
-    ///
-    /// # Example
-    /// ```rust
-    /// text_q.get_by_id("header", |t| t.text.value.0 = "Settings".to_string());
-    /// ```
-    fn get_by_id(&mut self, id: &str, f: impl FnOnce(&mut Self::WidgetView<'_>)) {
+    fn get_by_id<F>(&mut self, id: &str, f: F)
+    where
+        F: for<'a> FnOnce(&mut Self::WidgetView<'a>)
+    {
         if let Some(mut widget) = self.find_by_id(id) {
             f(&mut widget);
         }
     }
 
     /// Get the widget and executes a closure on a widget found by its Entity.
-    fn get_by_entity(&mut self, entity: Entity, f: impl FnOnce(&mut Self::WidgetView<'_>)) {
+    fn get_by_entity<F>(&mut self, entity: Entity, f: F)
+    where
+        F: for<'a> FnOnce(&mut Self::WidgetView<'a>)
+    {
         if let Some(mut widget) = self.find_by_entity(entity) {
             f(&mut widget);
         }
     }
 
     /// Executes a closure on every widget that matches the specified class.
-    ///
-    /// This is useful for bulk-updating styles or states (e.g., highlighting all buttons).
-    ///
-    /// # Example
-    /// ```rust
-    /// button_q.get_by_class("active", |btn| btn.style.background_color.0 = Color::GOLD);
-    /// ```
-    fn get_by_class(&mut self, class: &str, mut f: impl FnMut(&mut Self::WidgetView<'_>)) {
+    fn get_by_class<F>(&mut self, class: &str, mut f: F)
+    where
+        F: for<'a> FnMut(&mut Self::WidgetView<'a>)
+    {
         let entities = self.find_by_class(class);
 
         for entity in entities {
