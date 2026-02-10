@@ -227,43 +227,43 @@ pub const PRIMARY_BG: Color = Color::srgba(0.0, 0.82, 0.70, 1.0);
 pub const PRIMARY_TEXT: Color = Color::srgba(0.21, 0.21, 0.21, 1.0);
 pub const PRIMARY_DARK_BG: Color = Color::srgba(0.0, 0.58, 0.49, 1.0);
 pub const PRIMARY_DARK_TEXT: Color = Color::srgba(0.45, 1.0, 0.91, 1.0);
-pub const PRIMARY_PLACEHOLDER: Color = Color::srgba(0.40, 0.45, 0.44, 0.2);
-pub const PRIMARY_DARK_PLACEHOLDER: Color = Color::srgba(0.15, 0.25, 0.23, 0.4);
+pub const PRIMARY_PLACEHOLDER: Color = Color::srgba(0.45, 0.50, 0.49, 0.8);
+pub const PRIMARY_DARK_PLACEHOLDER: Color = Color::srgba(0.65, 0.75, 0.73, 0.7);
 
 pub const LINK_BG: Color = Color::srgba(0.28, 0.37, 0.82, 1.0);
 pub const LINK_TEXT: Color = Color::srgba(1.0, 1.0, 1.0, 1.0);
 pub const LINK_DARK_BG: Color = Color::srgba(0.22, 0.30, 0.62, 1.0);
 pub const LINK_DARK_TEXT: Color = Color::srgba(0.85, 0.88, 1.0, 1.0);
-pub const LINK_PLACEHOLDER: Color = Color::srgba(0.40, 0.42, 0.50, 0.2);
-pub const LINK_DARK_PLACEHOLDER: Color = Color::srgba(0.18, 0.20, 0.28, 0.4);
+pub const LINK_PLACEHOLDER: Color = Color::srgba(0.60, 0.62, 0.70, 0.8);
+pub const LINK_DARK_PLACEHOLDER: Color = Color::srgba(0.75, 0.78, 0.85, 0.7);
 
 pub const INFO_BG: Color = Color::srgba(0.24, 0.56, 0.82, 1.0);
 pub const INFO_TEXT: Color = Color::srgba(0.21, 0.21, 0.21, 1.0);
 pub const INFO_DARK_BG: Color = Color::srgba(0.16, 0.44, 0.66, 1.0);
 pub const INFO_DARK_TEXT: Color = Color::srgba(0.82, 0.92, 1.0, 1.0);
-pub const INFO_PLACEHOLDER: Color = Color::srgba(0.40, 0.44, 0.48, 0.2);
-pub const INFO_DARK_PLACEHOLDER: Color = Color::srgba(0.15, 0.22, 0.26, 0.4);
+pub const INFO_PLACEHOLDER: Color = Color::srgba(0.40, 0.44, 0.48, 0.9);
+pub const INFO_DARK_PLACEHOLDER: Color = Color::srgba(0.72, 0.82, 0.90, 0.7);
 
 pub const SUCCESS_BG: Color = Color::srgba(0.28, 0.78, 0.56, 1.0);
 pub const SUCCESS_TEXT: Color = Color::srgba(0.21, 0.21, 0.21, 1.0);
 pub const SUCCESS_DARK_BG: Color = Color::srgba(0.22, 0.59, 0.42, 1.0);
 pub const SUCCESS_DARK_TEXT: Color = Color::srgba(0.80, 1.0, 0.89, 1.0);
-pub const SUCCESS_PLACEHOLDER: Color = Color::srgba(0.40, 0.48, 0.44, 0.2);
-pub const SUCCESS_DARK_PLACEHOLDER: Color = Color::srgba(0.15, 0.26, 0.22, 0.4);
+pub const SUCCESS_PLACEHOLDER: Color = Color::srgba(0.50, 0.58, 0.54, 0.8);
+pub const SUCCESS_DARK_PLACEHOLDER: Color = Color::srgba(0.70, 0.85, 0.79, 0.7);
 
 pub const WARNING_BG: Color = Color::srgba(1.0, 0.88, 0.54, 1.0);
 pub const WARNING_TEXT: Color = Color::srgba(0.21, 0.21, 0.21, 1.0);
 pub const WARNING_DARK_BG: Color = Color::srgba(0.76, 0.64, 0.26, 1.0);
 pub const WARNING_DARK_TEXT: Color = Color::srgba(1.0, 0.98, 0.82, 1.0);
-pub const WARNING_PLACEHOLDER: Color = Color::srgba(0.48, 0.46, 0.40, 0.2);
-pub const WARNING_DARK_PLACEHOLDER: Color = Color::srgba(0.28, 0.26, 0.15, 0.4);
+pub const WARNING_PLACEHOLDER: Color = Color::srgba(0.58, 0.56, 0.50, 0.8);
+pub const WARNING_DARK_PLACEHOLDER: Color = Color::srgba(0.85, 0.83, 0.72, 0.7);
 
 pub const DANGER_BG: Color = Color::srgba(0.95, 0.27, 0.41, 1.0);
 pub const DANGER_TEXT: Color = Color::srgba(0.05, 0.05, 0.05, 1.0);
 pub const DANGER_DARK_BG: Color = Color::srgba(0.71, 0.20, 0.30, 1.0);
 pub const DANGER_DARK_TEXT: Color = Color::srgba(1.0, 0.85, 0.88, 1.0);
-pub const DANGER_PLACEHOLDER: Color = Color::srgba(0.48, 0.40, 0.42, 0.2);
-pub const DANGER_DARK_PLACEHOLDER: Color = Color::srgba(0.28, 0.15, 0.18, 0.4);
+pub const DANGER_PLACEHOLDER: Color = Color::srgba(0.48, 0.40, 0.42, 0.9);
+pub const DANGER_DARK_PLACEHOLDER: Color = Color::srgba(0.85, 0.75, 0.78, 0.7);
 
 // Primary
 pub const PRIMARY_BG_HOVER: Color = Color::srgba(0.1, 0.92, 0.8, 1.0);

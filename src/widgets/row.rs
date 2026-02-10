@@ -200,6 +200,7 @@ impl Widget for RowBundle {
     /// Build `row`.
     fn build(mut self) -> impl Bundle {
         process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+        process_built_in_alignment_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,
@@ -236,6 +237,7 @@ pub(crate) fn detect_row_class_change_for_built_in(
 ) {
     for (class, mut node) in rows.iter_mut() {
         process_built_in_spacing_class(class, &mut node);
+        process_built_in_alignment_class(class, &mut node);
     }
 }
 

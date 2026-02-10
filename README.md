@@ -1,6 +1,6 @@
-![Static Badge](https://img.shields.io/badge/Version-0.2.4-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.2.5-blue)
 ![Static Badge](https://img.shields.io/badge/OS-Mac%20Linux%20Window-orange)
-[![static Badge](https://img.shields.io/badge/crate.io-0.2.4-green)](https://crates.io/crates/makara)
+[![static Badge](https://img.shields.io/badge/crate.io-0.2.5-green)](https://crates.io/crates/makara)
 
 <p align="center">
   <img width="180" src="assets/logo.png">
@@ -10,8 +10,10 @@
 
 ## Getting start
 ```rust
-fn on_button_click(click: On<Clicked>, mut text_q: TextQuery) {
-   text_q.get_by_id("my-text", |t| t.set_text("Hello mars"));
+fn on_button_click(click: On<Clicked>, mut text_q: TextQuery, mut router: ResMut<Router>) {
+   if let Some(mut text) = text_q.find_by_id("my-text") {
+       text.set_text("Hello mars");
+   }
 }
 
 fn setup(mut commands: Commands) {    
@@ -33,8 +35,7 @@ fn setup(mut commands: Commands) {
 - Built-in widgets including button, modal, text input and more.
 - Routing systems.
 - Custom styling with ID & Classes similar to HTML/CSS.
-- Built in styling via class.
-- Leverages Bevy’s massive parallelism for smooth and efficient rendering.
+- Leverages Bevy's massive parallelism for smooth and efficient rendering.
 - High level API and flexible.
 
 ## Installation

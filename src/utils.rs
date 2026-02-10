@@ -71,6 +71,77 @@ pub(crate) fn process_built_in_spacing_class(class: &Class, node: &mut Node) {
     }
 }
 
+pub(crate) fn process_built_in_alignment_class(class: &Class, node: &mut Node) {
+    for c in class.class_list() {
+        match c.as_str() {
+            // Justify Content (main axis alignment)
+            "justify-center" | "justify-content-center" => {
+                node.justify_content = JustifyContent::Center;
+            },
+            "justify-start" | "justify-content-start" => {
+                node.justify_content = JustifyContent::Start;
+            },
+            "justify-end" | "justify-content-end" => {
+                node.justify_content = JustifyContent::End;
+            },
+            "justify-between" | "justify-content-between" => {
+                node.justify_content = JustifyContent::SpaceBetween;
+            },
+            "justify-around" | "justify-content-around" => {
+                node.justify_content = JustifyContent::SpaceAround;
+            },
+            "justify-evenly" | "justify-content-evenly" => {
+                node.justify_content = JustifyContent::SpaceEvenly;
+            },
+            "justify-stretch" | "justify-content-stretch" => {
+                node.justify_content = JustifyContent::Stretch;
+            },
+
+            // Align Items (cross axis alignment)
+            "align-center" | "align-items-center" => {
+                node.align_items = AlignItems::Center;
+            },
+            "align-start" | "align-items-start" => {
+                node.align_items = AlignItems::Start;
+            },
+            "align-end" | "align-items-end" => {
+                node.align_items = AlignItems::End;
+            },
+            "align-stretch" | "align-items-stretch" => {
+                node.align_items = AlignItems::Stretch;
+            },
+            "align-baseline" | "align-items-baseline" => {
+                node.align_items = AlignItems::Baseline;
+            },
+
+            // Align Content (multi-line alignment)
+            "align-content-center" => {
+                node.align_content = AlignContent::Center;
+            },
+            "align-content-start" => {
+                node.align_content = AlignContent::Start;
+            },
+            "align-content-end" => {
+                node.align_content = AlignContent::End;
+            },
+            "align-content-stretch" => {
+                node.align_content = AlignContent::Stretch;
+            },
+            "align-content-between" => {
+                node.align_content = AlignContent::SpaceBetween;
+            },
+            "align-content-around" => {
+                node.align_content = AlignContent::SpaceAround;
+            },
+            "align-content-evenly" => {
+                node.align_content = AlignContent::SpaceEvenly;
+            },
+
+            _ => {}
+        }
+    }
+}
+
 pub fn get_bulma_bg_colors(class_name: &str) -> Option<(Color, Color)> {
     match class_name {
         "is-primary"      => Some((PRIMARY_BG, PRIMARY_BG_HOVER)),

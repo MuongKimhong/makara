@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use crate::{ContainerStyle, SetContainerStyle, Widget, Theme, MakaraTheme};
-use crate::{events::*, consts::*};
+use crate::{events::*, consts::*, utils::*};
 use super::*;
 
 /// Marker component for `root`.
@@ -210,12 +210,14 @@ impl RootBundle {
 }
 
 impl Widget for RootBundle {
-    fn build(self) -> impl Bundle {
+    fn build(mut self) -> impl Bundle {
+        process_built_in_spacing_class(&self.id_class.class, &mut self.style.node);
+        process_built_in_alignment_class(&self.id_class.class, &mut self.style.node);
         (
             self.id_class,
             self.style,
             self.route,
-            MakaraRoot
+            MakaraRoot,
         )
     }
 }

@@ -1,3 +1,22 @@
+//! # Makara Routing System
+//!
+//! This module provides a routing system for Makara GUI applications. Routes are managed
+//! by showing/hiding root widgets, making navigation lightweight and efficient.
+//!
+//! ## Navigation
+//!
+//! Use the `navigate!` macro for automatic function exit after navigation:
+//!
+//! ```rust
+//! use makara::prelude::*;
+//!
+//! fn on_button_click(mut router: ResMut<Router>) {
+//!     // Some logic here...
+//!     navigate!(router, "home", ()); // Function exits automatically
+//!     // This line will never execute
+//! }
+//! ```
+
 use bevy::prelude::*;
 
 use super::*;
@@ -69,6 +88,15 @@ impl Router {
     }
 
     /// Navigate to provided route with/without param.
+    ///
+    /// For automatic function exit after navigation, use the `navigate!` macro instead:
+    ///
+    /// # Example
+    /// ```rust
+    /// fn handler(mut router: ResMut<Router>) {
+    ///     navigate!(router, "home", ()); // Automatically exits function
+    /// }
+    /// ```
     pub fn navigate(&mut self, name: &str, param: impl Into<Param>) {
         self.default_route(name, param.into());
     }
@@ -87,11 +115,15 @@ pub(crate) fn handle_match_route_to_root(
     if !router.is_changed() {
         return;
     }
+    println!("router changed");
 
     for (entity, mut node, page) in roots.iter_mut() {
+        println!("page name {:?}", page.0);
+        println!("current route {:?}", router.current_route);
         if let Some(current_page) = &router.current_route {
             if page.0 == current_page.0 {
                 node.display = Display::default();
+                println!("page matched {:?}", page.0);
 
                 commands.trigger(PageLoaded {
                     entity,
@@ -105,6 +137,7 @@ pub(crate) fn handle_match_route_to_root(
                 });
             }
             else {
+                println!("page no matched {:?}", page.0);
                 node.display = Display::None;
             }
         }

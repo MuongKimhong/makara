@@ -2,7 +2,8 @@ use bevy::prelude::*;
 use makara::prelude::*;
 
 fn on_back_btn_click(_clicked: On<Clicked>, mut router: ResMut<Router>) {
-    router.navigate("home", ());
+    navigate!(router, "home", ());
+    // Code after this line will never execute
 }
 
 fn on_mark_complete_btn_click(_clicked: On<Clicked>, mut router: ResMut<Router>, mut btn_q: ButtonQuery) {
@@ -17,8 +18,8 @@ fn on_mark_complete_btn_click(_clicked: On<Clicked>, mut router: ResMut<Router>,
         }
 
         btn.class.0 = "item-btn completed".to_string();
-        router.navigate("home", ());
-        return;
+        navigate!(router, "home", ());
+        // No need for explicit return - navigate! handles it automatically
     }
 }
 

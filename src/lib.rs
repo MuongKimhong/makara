@@ -3,8 +3,10 @@
 //!
 //! # Example
 //! ```rust,ignore
-//! fn on_button_click(click: On<Clicked>, mut text_q: TextQuery) {
-//!    text_q.get_by_id("my-text", |t| t.set_text("Hello mars"));
+//! fn on_button_click(click: On<Clicked>, mut text_q: TextQuery, mut router: ResMut<Router>) {
+//!    if let Some(mut text) = text_q.find_by_id("my-text") {
+//!        text.set_text("Hello mars");
+//!    }
 //! }
 //!
 //! fn setup(mut commands: Commands) {
@@ -40,6 +42,7 @@ pub mod prelude {
     pub use crate::styles::*;
     pub use crate::colors::*;
     pub use crate::routers::*;
+    pub use crate::navigate;
     pub use bevy::ui_widgets::observe;
 
     pub use crate::scroll_;

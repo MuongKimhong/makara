@@ -41,21 +41,22 @@ fn navigation_buttons() -> impl Bundle {
             button_!(
                 "Home", class: "nav_button";
                 on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.navigate("home", ());
+                    navigate!(router, "home", ());
                 }
             ),
             text_!(" / ", class: "nav_button"),
             button_!(
                 "Sale", class: "nav_button";
                 on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.navigate("sale", ());
+                    navigate!(router, "sale", ());
                 }
             ),
             text_!(" / ", class: "nav_button"),
             button_!(
                 "Company", class: "nav_button";
                 on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.navigate("company", ());
+                    println!("company btn called");
+                    navigate!(router, "company", ());
                 }
             ),
         ]

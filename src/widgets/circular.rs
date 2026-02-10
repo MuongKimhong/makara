@@ -243,15 +243,15 @@ impl Widget for CircularBundle {
             self.style,
             self.circular_color,
             self.circular_type,
+            CircularBackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.0)),
             MakaraCircular,
             MakaraWidget,
-            CircularBackgroundColor(LIGHT_CIRCULAR_BG_COLOR),
-            observe(on_circular_value_set),
-            observe(on_circular_mouse_over),
-            observe(on_mouse_out),
             children![
                 self.tooltip_bundle.build()
-            ]
+            ],
+            observe(on_circular_value_set),
+            observe(on_circular_mouse_over),
+            observe(on_mouse_out)
         )
     }
 }

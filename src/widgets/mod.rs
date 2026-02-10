@@ -374,6 +374,45 @@ pub struct WidgetStyle<'a> {
 }
 
 /// Trait used for widgets system param.
+/// 
+/// # Navigation Patterns
+/// 
+/// When using widget queries in event handlers that may navigate, use the `navigate!` macro
+/// to automatically exit the function after navigation:
+/// 
+/// ```rust
+/// fn on_button_click(
+///     _click: On<Clicked>,
+///     mut text_q: TextQuery,
+///     mut router: ResMut<Router>
+/// ) {
+///     if let Some(mut text) = text_q.find_by_id("status") {
+///         text.set_text("Navigating...");
+///     }
+///     
+///     navigate!(router, "next-page", ()); // Function exits here automatically
+///     // This code will never execute
+/// }
+/// ```
+/// 
+/// This prevents common issues where loops or code continue executing after navigation:
+/// 
+/// ```rust
+/// fn mark_items_complete(
+///     _click: On<Clicked>,
+///     mut btn_q: ButtonQuery,
+///     mut router: ResMut<Router>
+/// ) {
+///     for entity in btn_q.find_by_class("item-btn") {
+///         if let Some(mut btn) = btn_q.find_by_entity(entity) {
+///             if btn.text.value.0 == "target_item" {
+///                 btn.class.add_class("completed");
+///                 navigate!(router, "home", ()); // Exits function and loop
+///             }
+///         }
+///     }
+/// }
+/// ```
 pub trait WidgetQuery<'w, 's> {
     /// The specific view struct this query returns (Ex, ButtonWidget, TextWidget).
     type WidgetView<'a> where Self: 'a;
@@ -386,79 +425,6 @@ pub trait WidgetQuery<'w, 's> {
 
     /// Method to find entities that match with provided classes.
     fn find_by_class(&self, target_class: &str) -> Vec<Entity>;
-
-    // /// Get the widget and executes a closure on a widget found by its ID.
-    // ///
-    // /// This is the preferred way to perform single-shot updates to avoid `if let` boilerplate.
-    // ///
-    // /// # Example
-    // /// ```rust
-    // /// text_q.get_by_id("header", |t| t.text.value.0 = "Settings".to_string());
-    // /// ```
-    // fn get_by_id(&mut self, id: &str, f: impl FnOnce(&mut Self::WidgetView<'_>)) {
-    //     if let Some(mut widget) = self.find_by_id(id) {
-    //         f(&mut widget);
-    //     }
-    // }
-
-    // /// Get the widget and executes a closure on a widget found by its Entity.
-    // fn get_by_entity(&mut self, entity: Entity, f: impl FnOnce(&mut Self::WidgetView<'_>)) {
-    //     if let Some(mut widget) = self.find_by_entity(entity) {
-    //         f(&mut widget);
-    //     }
-    // }
-
-    // /// Executes a closure on every widget that matches the specified class.
-    // ///
-    // /// This is useful for bulk-updating styles or states (e.g., highlighting all buttons).
-    // ///
-    // /// # Example
-    // /// ```rust
-    // /// button_q.get_by_class("active", |btn| btn.style.background_color.0 = Color::GOLD);
-    // /// ```
-    // fn get_by_class(&mut self, class: &str, mut f: impl FnMut(&mut Self::WidgetView<'_>)) {
-    //     let entities = self.find_by_class(class);
-
-    //     for entity in entities {
-    //         if let Some(mut widget) = self.find_by_entity(entity) {
-    //             f(&mut widget);
-    //         }
-    //     }
-    // }
-
-    /// Get the widget and executes a closure on a widget found by its ID.
-    fn get_by_id<F>(&mut self, id: &str, f: F)
-    where
-        F: for<'a> FnOnce(&mut Self::WidgetView<'a>)
-    {
-        if let Some(mut widget) = self.find_by_id(id) {
-            f(&mut widget);
-        }
-    }
-
-    /// Get the widget and executes a closure on a widget found by its Entity.
-    fn get_by_entity<F>(&mut self, entity: Entity, f: F)
-    where
-        F: for<'a> FnOnce(&mut Self::WidgetView<'a>)
-    {
-        if let Some(mut widget) = self.find_by_entity(entity) {
-            f(&mut widget);
-        }
-    }
-
-    /// Executes a closure on every widget that matches the specified class.
-    fn get_by_class<F>(&mut self, class: &str, mut f: F)
-    where
-        F: for<'a> FnMut(&mut Self::WidgetView<'a>)
-    {
-        let entities = self.find_by_class(class);
-
-        for entity in entities {
-            if let Some(mut widget) = self.find_by_entity(entity) {
-                f(&mut widget);
-            }
-        }
-    }
 
     /// Get related components of an entity.
     fn get_components<'a>(&'a mut self, entity: Entity) -> Option<Self::WidgetView<'a>>;

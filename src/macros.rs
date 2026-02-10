@@ -1,3 +1,49 @@
+/// Macro for navigation that automatically exits the current function.
+///
+/// This prevents code from continuing to execute after navigation, solving
+/// the common problem of unintended behavior when navigation is called within
+/// loops or incomplete code blocks.
+///
+/// This is the simplest approach for cases where you want navigation to
+/// immediately terminate the current function.
+///
+/// # Example
+/// ```rust
+/// fn on_button_click(mut router: ResMut<Router>) {
+///     // Some code here
+///     navigate!(router, "home", ()); // Function exits here automatically
+///     // This code will never execute
+/// }
+/// ```
+///
+/// # In Loops
+/// ```rust
+/// fn handler_with_loop(mut router: ResMut<Router>, items: Vec<Item>) {
+///     for item in items {
+///         if item.should_navigate {
+///             navigate!(router, "details", Param::new().value("id", &item.id));
+///             // Loop and function exit here - no further iterations
+///         }
+///     }
+/// }
+/// ```
+///
+/// # With Parameters
+/// ```rust
+/// fn navigate_to_details(mut router: ResMut<Router>, id: String) {
+///     navigate!(router, "item-detail", Param::new().value("id", &id));
+/// }
+/// ```
+#[macro_export]
+macro_rules! navigate {
+    ($router:expr, $route:expr, $param:expr) => {
+        {
+            $router.navigate($route, $param);
+            // return;
+        }
+    };
+}
+
 /// Macro for creating a [`ScrollBundle`].
 ///
 /// # Event Handler
@@ -149,6 +195,19 @@ macro_rules! button_ {
 /// ```
 #[macro_export]
 macro_rules! text_ {
+    // Reactive binding syntax
+    (bind: $resource:ty => $formatter:expr $(, $prop:ident : $val:expr )*) => {
+        {
+            let mut t = $crate::widgets::text::text("");
+            $( t = t.$prop($val); )*
+            (
+                t.build(),
+                $crate::reactivity::ReactiveTextBinding::<$resource>::new($formatter),
+            )
+        }
+    };
+
+    // Regular text syntax
     ($text:expr $(, $prop:ident : $val:expr )* $(; on: $handler:expr )*) => {
         {
             let mut t = $crate::widgets::text::text($text);
@@ -157,6 +216,8 @@ macro_rules! text_ {
         }
     };
 }
+
+
 
 /// Macro for creating [`CheckboxBundle`].
 ///
@@ -184,6 +245,60 @@ macro_rules! text_ {
 /// ```
 #[macro_export]
 macro_rules! checkbox_ {
+    // Both model and bind (two-way state + one-way text)
+    (
+        model: $model_type:ty,
+        bind: $text_type:ty => $formatter:expr
+        $(, $prop:ident : $val:expr )* $(,)?
+        $( ; on: $handler:expr )*
+    ) => {
+        {
+            let mut c = $crate::widgets::checkbox::checkbox("");
+            $( c = c.$prop($val); )*
+            (
+                c.build_reactive_both(
+                    $crate::reactivity::CheckboxModel::<$model_type>::new(),
+                    $crate::reactivity::ReactiveTextBinding::<$text_type>::new($formatter)
+                ),
+                $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+
+    // Only model binding (two-way state)
+    (
+        model: $model_type:ty,
+        $text:expr
+        $(, $prop:ident : $val:expr )* $(,)?
+        $( ; on: $handler:expr )*
+    ) => {
+        {
+            let mut c = $crate::widgets::checkbox::checkbox($text);
+            $( c = c.$prop($val); )*
+            (
+                c.build_reactive_model($crate::reactivity::CheckboxModel::<$model_type>::new()),
+                $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+
+    // Only text binding (one-way text)
+    (
+        bind: $text_type:ty => $formatter:expr
+        $(, $prop:ident : $val:expr )* $(,)?
+        $( ; on: $handler:expr )*
+    ) => {
+        {
+            let mut c = $crate::widgets::checkbox::checkbox("");
+            $( c = c.$prop($val); )*
+            (
+                c.build_reactive_text($crate::reactivity::ReactiveTextBinding::<$text_type>::new($formatter)),
+                $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+
+    // Regular checkbox (static text)
     (
         $text:expr
         $(, $prop:ident : $val:expr )* $(,)?
@@ -222,6 +337,24 @@ macro_rules! checkbox_ {
 /// ```
 #[macro_export]
 macro_rules! circular_ {
+    // Reactive progress binding
+    (
+        progress: $resource:ty => $formatter:expr
+        $(, $prop:ident : $val:expr )* $(,)?
+        $( ; on: $handler:expr )*
+    ) => {
+        {
+            let mut c = $crate::widgets::circular::circular();
+            $( c = c.$prop($val); )*
+
+            (
+                c.build_reactive($crate::widgets::circular::ReactiveCircularProgress::<$resource>::new($formatter)),
+                $( $crate::prelude::observe($handler), )*
+            )
+        }
+    };
+
+    // Regular circular (static)
     (
         $( $prop:ident : $val:expr ),* $(,)?
 
