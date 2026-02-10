@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-37b30491.js";
+            window.path_to_searchindex_js = "searchindex-4ae00f6c.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-2ed979a7.js"></script>
+        <script src="toc-8d598e1a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -174,372 +174,769 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <p><strong>Makara</strong> provides built-in widgets that are needed for building GUI applications including
-<strong>button</strong>, <strong>modal</strong>, <strong>text input</strong> and more. There will be more important widgets added
-to <strong>Makara</strong> in upcoming new versions.</p>
+                        <h1 id="widgets"><a class="header" href="#widgets">Widgets</a></h1>
+<p><strong>Makara</strong> provides a comprehensive set of built-in widgets for building modern GUI applications. Each widget comes with styling options, event handling capabilities, and built-in class support for rapid development.</p>
+<h2 id="container-widgets"><a class="header" href="#container-widgets">Container Widgets</a></h2>
+<p>Container widgets manage layout and can contain child elements.</p>
 <h3 id="root"><a class="header" href="#root">Root</a></h3>
-<p><code>root_!</code> is a starting point for UI hierarchy, so it needs to be spawned by commands.</p>
+<p>The <code>root_!</code> widget is the starting point for your UI hierarchy and must be spawned by commands. It supports alignment utility classes.</p>
+<p><strong>Basic Usage:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>commands.spawn(root_!());
+</span>commands.spawn(root_!([
+    text_!("Hello World")
+]));
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootBundle.html">RootBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootQuery.html">RootQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/root/struct.RootWidget.html">RootWidget</a>.</p>
-<h3 id="text"><a class="header" href="#text">Text</a></h3>
+<p><strong>With styling and alignment:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>text_!("Hello world");
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextBundle.html">TextBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextQuery.html">TextQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/text/struct.TextWidget.html">TextWidget</a>.</p>
-<h3 id="button"><a class="header" href="#button">Button</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>button_!("Click me");
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>button_!(
-    "Click me";
-    
-    on: |clicked: On&lt;Clicked&gt;| {}; 
-    on: |over: On&lt;MouseOver&gt;| {}; 
-    on: |out: On&lt;MouseOut&gt;| {}; 
-    on: |built: On&lt;WidgetBuilt&gt;| {}
+</span>commands.spawn(
+    root_!(
+        background_color: Color::srgb(0.1, 0.1, 0.2),
+        class: "justify-center align-center p-4";
+        [
+            column_!([
+                text_!("Welcome to Makara!"),
+                button_!("Get Started")
+            ])
+        ]
+    )
 );
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonBundle.html">ButtonBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonQuery.html">ButtonQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/button/struct.ButtonWidget.html">ButtonWidget</a>.</p>
-<h3 id="checkbox"><a class="header" href="#checkbox">Checkbox</a></h3>
+<p><strong>With custom properties:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>checkbox_!("Check me");
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>checkbox_!(
-    "Check me";
-    
-    on: |clicked: On&lt;Clicked&gt;| {}; 
-    on: |over: On&lt;MouseOver&gt;| {}; 
-    on: |out: On&lt;MouseOut&gt;| {}; 
-    on: |active: On&lt;Active&lt;String&gt;&gt;| {}; 
-    on: |inactive: On&lt;Inactive&lt;String&gt;&gt;| {}; 
-    on: |built: On&lt;WidgetBuilt&gt;| {}
+</span>commands.spawn(
+    root_!(
+        width: percent(100),
+        height: percent(100),
+        id: "main-container",
+        class: "justify-between align-stretch";
+        [/* children */]
+    )
 );
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxBundle.html">CheckboxBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxQuery.html">CheckboxQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/checkbox/struct.CheckboxWidget.html">CheckboxWidget</a>.</p>
-<h3 id="circular"><a class="header" href="#circular">Circular</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>circular_!();
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>circular_!(
-    on: |over: On&lt;MouseOver&gt;| {}; 
-    on: |out: On&lt;MouseOut&gt;| {}; 
-    on: |change: On&lt;Change&lt;f32&gt;&gt;| {}; 
-    on: |built: On&lt;WidgetBuilt&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularBundle.html">CircularBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularQuery.html">CircularQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/circular/struct.CircularWidget.html">CircularWidget</a>.</p>
-<h3 id="progress-bar"><a class="header" href="#progress-bar">Progress Bar</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>progress_bar_!();
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>progress_bar_!(
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |change: On&lt;Change&lt;f32&gt;&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarBundle.html">ProgressBarBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarQuery.html">ProgressBarQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/progress_bar/struct.ProgressBarWidget.html">ProgressBarWidget</a>.</p>
 <h3 id="column"><a class="header" href="#column">Column</a></h3>
+<p>The <code>column_!</code> widget arranges children vertically in a flexbox column layout.</p>
+<p><strong>Basic Usage:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>column_!([
     text_!("Item 1"),
-    text_!("Item 2")
-]);
+    text_!("Item 2"),
+    text_!("Item 3")
+])
 <span class="boring">}</span></code></pre>
-<p>With event listener</p>
+<p><strong>With alignment and spacing:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>column_!(
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-    [ text_!("Item 1") ]
-);
+    class: "justify-center align-center p-4 m-2",
+    background_color: Color::WHITE;
+    [
+        text_!("Centered Column", font_size: 24.0),
+        button_!("Action Button", class: "is-primary mt-3"),
+        text_!("Footer text", class: "mt-2")
+    ]
+)
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnBundle.html">ColumnBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnQuery.html">ColumnQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/column/struct.ColumnWidget.html">ColumnWidget</a>.</p>
+<p><strong>With event handling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>column_!(
+    on: |built: On&lt;WidgetBuilt&gt;| {
+        println!("Column widget built!");
+    };
+    [/* children */]
+)
+<span class="boring">}</span></code></pre>
 <h3 id="row"><a class="header" href="#row">Row</a></h3>
+<p>The <code>row_!</code> widget arranges children horizontally in a flexbox row layout.</p>
+<p><strong>Basic Usage:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>row_!([
     text_!("Left"),
+    text_!("Center"), 
     text_!("Right")
-]);
+])
 <span class="boring">}</span></code></pre>
-<p>With event listener</p>
+<p><strong>Navigation bar example:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>row_!(
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-    [ text_!("Item 1") ]
-);
+    class: "justify-between align-center p-3",
+    background_color: Color::srgb(0.2, 0.3, 0.8);
+    [
+        text_!("MyApp", font_size: 20.0, color: Color::WHITE),
+        row_!(
+            class: "justify-end align-center";
+            [
+                button_!("Home", class: "mr-2"),
+                button_!("About", class: "mr-2"),
+                button_!("Contact")
+            ]
+        )
+    ]
+)
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowBundle.html">RowBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowQuery.html">RowQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/row/struct.RowWidget.html">RowWidget</a>.</p>
-<h3 id="link"><a class="header" href="#link">Link</a></h3>
+<h3 id="scroll"><a class="header" href="#scroll">Scroll</a></h3>
+<p>The <code>scroll_!</code> widget creates a scrollable container for content that exceeds the container size.</p>
+<p><strong>Basic Usage:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>link_!("https://rust-lang.org/");
+</span>scroll_!([
+    text_!("Line 1"),
+    text_!("Line 2"),
+    text_!("Line 3"),
+    // ... many more lines
+])
 <span class="boring">}</span></code></pre>
-<p>With event listeners</p>
+<p><strong>Styled scroll container:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>link_!(
-    "https://rust-lang.org/";
-
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}
-);
+</span>scroll_!(
+    width: px(300),
+    height: px(200),
+    class: "p-3",
+    background_color: Color::srgb(0.95, 0.95, 0.95);
+    [
+        column_!(
+            class: "justify-start align-stretch";
+            [
+                text_!("Scrollable Content", font_size: 18.0, class: "mb-2"),
+                text_!("This is line 1"),
+                text_!("This is line 2"),
+                // ... more content
+            ]
+        )
+    ]
+)
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkBundle.html">LinkBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkQuery.html">LinkQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/link/struct.LinkWidget.html">LinkWidget</a>.</p>
+<p><strong>With scroll event handling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scroll_!(
+    on: |scrolling: On&lt;Scrolling&gt;| {
+        println!("User is scrolling!");
+    };
+    [/* scrollable content */]
+)
+<span class="boring">}</span></code></pre>
+<h2 id="interactive-widgets"><a class="header" href="#interactive-widgets">Interactive Widgets</a></h2>
+<h3 id="button"><a class="header" href="#button">Button</a></h3>
+<p>The <code>button_!</code> widget provides clickable interactions with built-in hover states.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>button_!("Click Me")
+<span class="boring">}</span></code></pre>
+<p><strong>With styling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>button_!("Submit", class: "is-primary p-3 m-2")
+<span class="boring">}</span></code></pre>
+<p><strong>With event handling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>button_!(
+    "Save Data";
+    on: |clicked: On&lt;Clicked&gt;| {
+        println!("Save button clicked!");
+    };
+    on: |over: On&lt;MouseOver&gt;| {
+        println!("Mouse over save button");
+    };
+    on: |out: On&lt;MouseOut&gt;| {
+        println!("Mouse left save button");  
+    }
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Complete example with styling and events:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>button_!(
+    "Delete Item",
+    id: "delete-btn",
+    class: "is-danger p-2 m-1";
+    on: |clicked: On&lt;Clicked&gt;| {
+        // Handle delete action
+    };
+    on: |built: On&lt;WidgetBuilt&gt;| {
+        println!("Delete button ready!");
+    }
+)
+<span class="boring">}</span></code></pre>
+<h3 id="text-input"><a class="header" href="#text-input">Text Input</a></h3>
+<p>The <code>text_input_!</code> widget provides text entry with placeholder support and theming.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text_input_!("Enter your name...")
+<span class="boring">}</span></code></pre>
+<p><strong>With styling and validation:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text_input_!(
+    "Enter email address...",
+    class: "is-primary p-2",
+    width: px(300),
+    id: "email-input"
+)
+<span class="boring">}</span></code></pre>
+<p><strong>With change event handling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text_input_!(
+    "Search...";
+    on: |change: On&lt;Change&lt;String&gt;&gt;| {
+        println!("Search text: {}", change.0);
+    };
+    on: |clicked: On&lt;Clicked&gt;| {
+        println!("Input field focused");
+    }
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Form example:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>column_!(
+    class: "justify-start align-stretch p-4";
+    [
+        text_!("User Registration", font_size: 20.0, class: "mb-3"),
+        text_input_!("Full Name...", class: "mb-2", width: px(300)),
+        text_input_!("Email Address...", class: "is-info mb-2", width: px(300)),
+        text_input_!("Password...", class: "is-warning mb-3", width: px(300)),
+        button_!("Register", class: "is-success")
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h3 id="checkbox"><a class="header" href="#checkbox">Checkbox</a></h3>
+<p>The <code>checkbox_!</code> widget provides boolean toggle functionality.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>checkbox_!("Accept terms and conditions")
+<span class="boring">}</span></code></pre>
+<p><strong>With styling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>checkbox_!("Enable notifications", class: "is-primary p-2")
+<span class="boring">}</span></code></pre>
+<p><strong>With state change handling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>checkbox_!(
+    "Subscribe to newsletter";
+    on: |active: On&lt;Active&lt;String&gt;&gt;| {
+        println!("Checkbox activated: {}", active.0);
+    };
+    on: |inactive: On&lt;Inactive&lt;String&gt;&gt;| {
+        println!("Checkbox deactivated: {}", inactive.0);
+    }
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Settings panel example:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>column_!(
+    class: "justify-start align-start p-4";
+    [
+        text_!("Settings", font_size: 18.0, class: "mb-3"),
+        checkbox_!("Dark mode", class: "is-info mb-2"),
+        checkbox_!("Auto-save", class: "is-success mb-2"),  
+        checkbox_!("Show tooltips", class: "is-primary mb-2"),
+        button_!("Apply Settings", class: "is-primary mt-2")
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h3 id="radio-group--radio"><a class="header" href="#radio-group--radio">Radio Group &amp; Radio</a></h3>
+<p>Radio widgets provide single-selection from multiple options.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>radio_group_!([
+    radio_!("Option A"),
+    radio_!("Option B"),
+    radio_!("Option C")
+])
+<span class="boring">}</span></code></pre>
+<p><strong>Payment method selector:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>radio_group_!(
+    class: "p-3";
+    on: |change: On&lt;Change&lt;String&gt;&gt;| {
+        println!("Selected payment method: {}", change.0);
+    };
+    [
+        radio_!("Credit Card", class: "is-primary mb-2"),
+        radio_!("PayPal", class: "is-info mb-2"),
+        radio_!("Bank Transfer", class: "is-success mb-2"),
+        radio_!("Cash on Delivery", class: "is-warning")
+    ]
+)
+<span class="boring">}</span></code></pre>
+<p><strong>With individual radio event handling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>radio_group_!([
+    radio_!(
+        "Small Size";
+        on: |active: On&lt;Active&gt;| {
+            println!("Small size selected");
+        }
+    ),
+    radio_!("Medium Size"),
+    radio_!("Large Size")
+])
+<span class="boring">}</span></code></pre>
+<h3 id="select"><a class="header" href="#select">Select</a></h3>
+<p>The <code>select_!</code> widget provides a dropdown selection interface.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>select_!("Choose country...", choices: &amp;["USA", "Canada", "Mexico"])
+<span class="boring">}</span></code></pre>
+<p><strong>With styling and events:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>select_!(
+    "Select payment method...",
+    choices: &amp;["Credit Card", "Debit Card", "PayPal"],
+    class: "is-primary p-2",
+    width: px(250);
+    on: |change: On&lt;Change&lt;String&gt;&gt;| {
+        println!("Selected: {}", change.0);
+    };
+    on: |active: On&lt;Active&gt;| {
+        println!("Dropdown opened");
+    };
+    on: |inactive: On&lt;Inactive&gt;| {
+        println!("Dropdown closed");
+    }
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Form integration:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>column_!(
+    class: "justify-start align-stretch p-4";
+    [
+        text_!("Shipping Information"),
+        select_!("Country...", choices: &amp;["USA", "Canada", "UK"], class: "mb-2"),
+        select_!("State/Province...", choices: &amp;["CA", "NY", "TX"], class: "mb-2"),
+        button_!("Continue", class: "is-success")
+    ]
+)
+<span class="boring">}</span></code></pre>
 <h3 id="dropdown"><a class="header" href="#dropdown">Dropdown</a></h3>
+<p>The <code>dropdown_!</code> widget creates a button that shows/hides child content.</p>
+<p><strong>Basic Usage:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>dropdown_!(
-    "Click me to show option";
+    "Menu";
     [
-        button_!("Sign In"),
-        button_!("Sign Up"),
-        button_!("About us")
+        button_!("Profile"),
+        button_!("Settings"),
+        button_!("Logout")
     ]
-);
+)
 <span class="boring">}</span></code></pre>
-<p>With event listeners</p>
+<p><strong>Navigation dropdown:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>dropdown_!(
-    "Click me to show option";
-
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-
+    "Products",
+    class: "is-primary";
+    on: |clicked: On&lt;Clicked&gt;| {
+        println!("Products dropdown toggled");
+    };
     [
-        button_!("Sign In"),
-        button_!("Sign Up")
+        button_!("Laptops", class: "mb-1"),
+        button_!("Phones", class: "mb-1"),
+        button_!("Tablets", class: "mb-1"),
+        button_!("Accessories")
     ]
-);
+)
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownBundle.html">DropdownBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownQuery.html">DropdownQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/dropdown/struct.DropdownWidget.html">DropdownWidget</a>.</p>
+<h3 id="slider"><a class="header" href="#slider">Slider</a></h3>
+<p>The <code>slider_!</code> widget provides numeric input via draggable control.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>slider_!(min: 0.0, max: 100.0)
+<span class="boring">}</span></code></pre>
+<p><strong>Volume control example:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>column_!(
+    class: "justify-start align-center p-4";
+    [
+        text_!("Volume Control", class: "mb-2"),
+        slider_!(
+            min: 0.0, 
+            max: 100.0,
+            class: "is-primary p-2";
+            on: |change: On&lt;Change&lt;f32&gt;&gt;| {
+                println!("Volume: {:.1}%", change.0);
+            }
+        )
+    ]
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Settings panel with multiple sliders:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>column_!(
+    class: "justify-start align-stretch p-4";
+    [
+        text_!("Audio Settings", font_size: 18.0, class: "mb-3"),
+        
+        column_!(class: "mb-2"; [
+            text_!("Master Volume"),
+            slider_!(min: 0.0, max: 100.0, class: "is-primary")
+        ]),
+        
+        column_!(class: "mb-2"; [
+            text_!("Music Volume"),
+            slider_!(min: 0.0, max: 100.0, class: "is-info")
+        ]),
+        
+        column_!(class: "mb-2"; [
+            text_!("Effects Volume"), 
+            slider_!(min: 0.0, max: 100.0, class: "is-success")
+        ])
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h2 id="display-widgets"><a class="header" href="#display-widgets">Display Widgets</a></h2>
+<h3 id="text"><a class="header" href="#text">Text</a></h3>
+<p>The <code>text_!</code> widget displays styled text content.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text_!("Hello World")
+<span class="boring">}</span></code></pre>
+<p><strong>With styling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text_!("Welcome!", font_size: 24.0, color: Color::srgb(0.2, 0.6, 0.8))
+<span class="boring">}</span></code></pre>
+<p><strong>With classes:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text_!("Error message", class: "is-danger", font_size: 16.0)
+<span class="boring">}</span></code></pre>
+<p><strong>Typography example:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>column_!(
+    class: "justify-start align-start p-4";
+    [
+        text_!("Main Heading", font_size: 32.0, class: "mb-3"),
+        text_!("Subheading", font_size: 20.0, class: "is-info mb-2"),
+        text_!("Regular paragraph text with some content.", font_size: 14.0, class: "mb-2"),
+        text_!("Small caption text", font_size: 12.0, class: "is-secondary")
+    ]
+)
+<span class="boring">}</span></code></pre>
 <h3 id="image"><a class="header" href="#image">Image</a></h3>
+<p>The <code>image_!</code> widget displays images from file paths or URLs.</p>
+<p><strong>Basic Usage:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>// path or url
-image_!("path/to/image.png");
+</span>image_!("assets/logo.png")
 <span class="boring">}</span></code></pre>
-<p>With event listeners</p>
+<p><strong>With sizing:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>image_!(
-    "path/to/image.png";
-    
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}
-);
+    "assets/hero-banner.jpg",
+    width: px(400),
+    height: px(200)
+)
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageBundle.html">ImageBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageQuery.html">ImageQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/image/struct.ImageWidget.html">ImageWidget</a>.</p>
-<h3 id="modal"><a class="header" href="#modal">Modal</a></h3>
-<p>Modal is independent and doesn’t need to be part of <code>root</code> widget.</p>
+<p><strong>With events:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>command.spawn(
+</span>image_!(
+    "assets/profile.png";
+    on: |clicked: On&lt;Clicked&gt;| {
+        println!("Profile image clicked");
+    };
+    on: |over: On&lt;MouseOver&gt;| {
+        println!("Hovering over image");
+    }
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Image gallery example:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>row_!(
+    class: "justify-around align-center p-4";
+    [
+        image_!("assets/thumb1.jpg", width: px(150), height: px(150)),
+        image_!("assets/thumb2.jpg", width: px(150), height: px(150)),
+        image_!("assets/thumb3.jpg", width: px(150), height: px(150))
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h3 id="link"><a class="header" href="#link">Link</a></h3>
+<p>The <code>link_!</code> widget creates clickable links that open in the browser.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>link_!("https://rust-lang.org/")
+<span class="boring">}</span></code></pre>
+<p><strong>With custom text:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>link_!("Visit Rust Website", url: "https://rust-lang.org/")
+<span class="boring">}</span></code></pre>
+<p><strong>With styling and events:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>link_!(
+    "Documentation", 
+    url: "https://docs.rs/makara",
+    class: "is-primary";
+    on: |clicked: On&lt;Clicked&gt;| {
+        println!("Documentation link clicked");
+    }
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Footer links example:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>row_!(
+    class: "justify-center align-center p-3";
+    [
+        link_!("Privacy Policy", url: "https://example.com/privacy", class: "mr-4"),
+        link_!("Terms of Service", url: "https://example.com/terms", class: "mr-4"),
+        link_!("Contact Us", url: "https://example.com/contact")
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h2 id="progress--loading-widgets"><a class="header" href="#progress--loading-widgets">Progress &amp; Loading Widgets</a></h2>
+<h3 id="progress-bar"><a class="header" href="#progress-bar">Progress Bar</a></h3>
+<p>The <code>progress_bar_!</code> widget shows linear progress indication.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>progress_bar_!()
+<span class="boring">}</span></code></pre>
+<p><strong>With styling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>progress_bar_!(
+    class: "is-primary p-2",
+    width: px(300)
+)
+<span class="boring">}</span></code></pre>
+<p><strong>With progress tracking:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>progress_bar_!(
+    class: "is-success";
+    on: |change: On&lt;Change&lt;f32&gt;&gt;| {
+        println!("Progress: {:.1}%", change.0 * 100.0);
+    }
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Loading interface example:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>column_!(
+    class: "justify-center align-center p-4";
+    [
+        text_!("Loading...", class: "mb-2"),
+        progress_bar_!(class: "is-info", width: px(250)),
+        text_!("Please wait while we process your request", 
+               font_size: 12.0, class: "mt-2")
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h3 id="circular"><a class="header" href="#circular">Circular</a></h3>
+<p>The <code>circular_!</code> widget shows circular/spinner progress indication.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>circular_!()
+<span class="boring">}</span></code></pre>
+<p><strong>With styling:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>circular_!(
+    class: "is-primary p-3",
+    width: px(50),
+    height: px(50)
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Loading spinner example:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>column_!(
+    class: "justify-center align-center p-4";
+    [
+        circular_!(class: "is-info mb-3"),
+        text_!("Processing...", class: "is-info")
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h2 id="modal"><a class="header" href="#modal">Modal</a></h2>
+<p>The <code>modal_!</code> widget creates overlay dialogs and is independent of the root widget hierarchy.</p>
+<p><strong>Basic Usage:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>commands.spawn(
     modal_!([
         column_!([
-            text_!("Hello world"),
-            button_!("Close modal")
+            text_!("Are you sure?"),
+            button_!("Confirm")
         ])
     ])
 );
 <span class="boring">}</span></code></pre>
-<p>With event listeners</p>
+<p><strong>Confirmation dialog:</strong></p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>modal_!(
-    on: |active: On&lt;Active&gt;| {};
-    on: |inactive: On&lt;Inactive&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {};
+    on: |active: On&lt;Active&gt;| {
+        println!("Modal opened");
+    };
+    on: |inactive: On&lt;Inactive&gt;| {
+        println!("Modal closed"); 
+    };
+    [
+        column_!(
+            class: "justify-center align-center p-4",
+            background_color: Color::WHITE,
+            width: px(300),
+            height: px(200);
+            [
+                text_!("Delete Confirmation", font_size: 18.0, class: "mb-3"),
+                text_!("Are you sure you want to delete this item?", class: "mb-4"),
+                row_!(
+                    class: "justify-center align-center";
+                    [
+                        button_!("Cancel", class: "is-secondary mr-2"),
+                        button_!("Delete", class: "is-danger")
+                    ]
+                )
+            ]
+        )
+    ]
+)
+<span class="boring">}</span></code></pre>
+<p><strong>Settings modal:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>modal_!([
+    column_!(
+        class: "justify-start align-stretch p-4",
+        background_color: Color::WHITE,
+        width: px(400),
+        height: px(500);
+        [
+            text_!("Settings", font_size: 24.0, class: "mb-4"),
+            
+            checkbox_!("Enable notifications", class: "mb-2"),
+            checkbox_!("Auto-save documents", class: "mb-2"),
+            
+            text_!("Theme", class: "mb-1"),
+            select_!("Choose theme...", choices: &amp;["Light", "Dark", "Auto"], class: "mb-4"),
+            
+            row_!(
+                class: "justify-end align-center";
+                [
+                    button_!("Cancel", class: "mr-2"),
+                    button_!("Save", class: "is-primary")
+                ]
+            )
+        ]
+    )
+])
+<span class="boring">}</span></code></pre>
+<h2 id="built-in-classes"><a class="header" href="#built-in-classes">Built-in Classes</a></h2>
+<p>All widgets support built-in utility classes:</p>
+<h3 id="color-classes"><a class="header" href="#color-classes">Color Classes</a></h3>
+<ul>
+<li><code>is-primary</code>, <code>is-primary-dark</code></li>
+<li><code>is-link</code>, <code>is-link-dark</code></li>
+<li><code>is-info</code>, <code>is-info-dark</code></li>
+<li><code>is-success</code>, <code>is-success-dark</code></li>
+<li><code>is-warning</code>, <code>is-warning-dark</code></li>
+<li><code>is-danger</code>, <code>is-danger-dark</code></li>
+</ul>
+<h3 id="spacing-classes-container-widgets-only"><a class="header" href="#spacing-classes-container-widgets-only">Spacing Classes (Container widgets only)</a></h3>
+<ul>
+<li>Margin: <code>m-0</code> to <code>m-6</code>, <code>mt-2</code>, <code>mr-3</code>, <code>mb-1</code>, <code>ml-4</code>, <code>mx-2</code>, <code>my-3</code></li>
+<li>Padding: <code>p-0</code> to <code>p-6</code>, <code>pt-2</code>, <code>pr-3</code>, <code>pb-1</code>, <code>pl-4</code>, <code>px-2</code>, <code>py-3</code></li>
+</ul>
+<h3 id="alignment-classes-container-widgets-only"><a class="header" href="#alignment-classes-container-widgets-only">Alignment Classes (Container widgets only)</a></h3>
+<ul>
+<li>Justify: <code>justify-start</code>, <code>justify-center</code>, <code>justify-end</code>, <code>justify-between</code>, <code>justify-around</code>, <code>justify-evenly</code></li>
+<li>Align: <code>align-start</code>, <code>align-center</code>, <code>align-end</code>, <code>align-stretch</code>, <code>align-baseline</code></li>
+</ul>
+<h2 id="complete-example"><a class="header" href="#complete-example">Complete Example</a></h2>
+<p>Here’s a complete application example using multiple widgets:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use makara::prelude::*;
+use bevy::prelude::*;
 
-    [
-        column_!([
-            text_!("Hello world"),
-            button_!("Close modal")
-        ])
-    ]
-);
+fn setup(mut commands: Commands) {
+    commands.spawn(
+        root_!(
+            class: "justify-center align-center p-4",
+            background_color: Color::srgb(0.9, 0.9, 0.9);
+            [
+                column_!(
+                    class: "justify-start align-stretch p-4",
+                    background_color: Color::WHITE,
+                    width: px(500);
+                    [
+                        // Header
+                        text_!("User Profile", font_size: 24.0, class: "mb-4"),
+                        
+                        // Profile image
+                        row_!(
+                            class: "justify-center align-center mb-4";
+                            [
+                                image_!("assets/avatar.png", width: px(100), height: px(100))
+                            ]
+                        ),
+                        
+                        // Form fields
+                        text_input_!("Full Name...", class: "mb-2"),
+                        text_input_!("Email...", class: "is-info mb-2"),
+                        
+                        // Preferences
+                        text_!("Preferences", font_size: 16.0, class: "mb-2"),
+                        checkbox_!("Email notifications", class: "mb-1"),
+                        checkbox_!("Dark mode", class: "mb-3"),
+                        
+                        // Theme selection
+                        select_!("Theme...", choices: &amp;["Light", "Dark", "Auto"], class: "mb-4"),
+                        
+                        // Actions
+                        row_!(
+                            class: "justify-end align-center";
+                            [
+                                button_!("Cancel", class: "mr-2"),
+                                button_!("Save Profile", class: "is-primary")
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
+    );
+}
 <span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalBundle.html">ModalBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalQuery.html">ModalQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/modal/struct.ModalWidget.html">ModalWidget</a>.</p>
-<h3 id="radio-group--radio"><a class="header" href="#radio-group--radio">Radio Group &amp; Radio</a></h3>
-<p><code>radio_group</code> needs <code>radio</code> as its item.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>radio_group_!([
-    radio_!("Pay by Card"),
-    radio_!("Pay by Cash")
-]);
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>radio_group_!(
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |change: On&lt;Change&lt;String&gt;&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-
-    [
-        radio_!(
-            "Pay by Card";
-            on: |active: On&lt;Active&gt;| {}; 
-            on: |inactive: On&lt;Inactive&gt;| {}
-        ),
-        radio_!("Pay by Cash")
-    ]
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupBundle.html">RadioGroupBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupQuery.html">RadioGroupQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioGroupWidget.html">RadioGroupWidget</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioBundle.html">RadioBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioQuery.html">RadioQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/radio/struct.RadioWidget.html">RadioWidget</a>.</p>
-<h3 id="scroll"><a class="header" href="#scroll">Scroll</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>scroll_!([
-    text_!("Hello world"),
-    text_!("Hello there")
-]);
-<span class="boring">}</span></code></pre>
-<p>With event listener</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>scroll_!(
-    on: |scrolling: On&lt;Scrolling&gt;| {};
-    [
-        text_!("Hello world"),
-        text_!("Hello there")
-    ]
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollBundle.html">ScrollBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollQuery.html">ScrollQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/scroll/struct.ScrollWidget.html">ScrollWidget</a>.</p>
-<h3 id="select"><a class="header" href="#select">Select</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>select_!("Click me to show option", choices: &amp;["Cash", "Card", "Afterpay"]);    
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>select_!(
-    "Click me to show option", 
-    choices: &amp;["Cash", "Card", "Afterpay"];
-    
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {};
-    on: |active: On&lt;Active&gt;| {};
-    on: |inactive: On&lt;Inactive&gt;| {};
-    on: |change: On&lt;Change&lt;String&gt;&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectBundle.html">SelectBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectQuery.html">SelectQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/select/struct.SelectWidget.html">SelectWidget</a>.</p>
-<h3 id="slider"><a class="header" href="#slider">Slider</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// Takes range-start &amp; range-end as arguments.
-// In this case start at 0.0, end at 100.0 .
-slider_!(min: 0.0, max: 100.0);
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>slider_!(
-    min: 0.0, max: 100.0;
-    
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}; 
-    on: |change: On&lt;Change&lt;f32&gt;&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderBundle.html">SliderBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderQuery.html">SliderQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/slider/struct.SliderWidget.html">SliderWidget</a>.</p>
-<h3 id="text-input"><a class="header" href="#text-input">Text Input</a></h3>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>text_input_!("Enter something");
-<span class="boring">}</span></code></pre>
-<p>With event listeners</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>text_input_!(
-    "Enter something";
-    
-    on: |clicked: On&lt;Clicked&gt;| {};
-    on: |over: On&lt;MouseOver&gt;| {};
-    on: |out: On&lt;MouseOut&gt;| {};
-    on: |built: On&lt;WidgetBuilt&gt;| {}; 
-    on: |change: On&lt;Change&lt;String&gt;&gt;| {}
-);
-<span class="boring">}</span></code></pre>
-<p>For more detail, see <a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputBundle.html">TextInputBundle</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputQuery.html">TextInputQuery</a>,
-<a href="https://docs.rs/makara/latest/makara/widgets/text_input/struct.TextInputWidget.html">TextInputWidget</a>.</p>
+<p>For detailed API documentation, visit the <a href="https://docs.rs/makara/latest/makara/">Rust docs</a>.</p>
 
                     </main>
 
