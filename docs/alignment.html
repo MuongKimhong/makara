@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Routing - Makara Book</title>
+        <title>Built In Alignment classes - Makara Book</title>
 
 
         <!-- Custom HTML head -->
@@ -174,150 +174,220 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h2 id="routing"><a class="header" href="#routing">Routing</a></h2>
-<p>Routing in Makara is really easy. There are only 3 steps.</p>
-<ol>
-<li>Specifying route name on <code>root</code> widget.</li>
-<li>Register route.</li>
-<li>Navigating.</li>
-</ol>
-<h3 id="specifying-route"><a class="header" href="#specifying-route">Specifying route</a></h3>
-<p>Just like I mentioned in previous chapter about <a href="gettingstart.html#understand-makara-hierarchy">hierarchy</a>,
-we need to use <code>root</code> widget as a starting point for UI hierarchy.</p>
-<p>If you want to have multiple pages or views, you need to create multiple starting points. In other words,
-each <code>root</code> defines one page or view.</p>
-<p>For example, let’s say you want to have <strong>Home</strong> view and <strong>About Us</strong> view.</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    App::new()
-        .add_plugins(MakaraPlugin::default())
-        .add_systems(Startup, (setup_home_view, setup_about_us_view))
-        .run();
-}
-
-fn setup_home_view(mut commands: Commands) {
-    commands.spawn(
-        root_!(route: "home"; [ text_!("This is home view") ])
-    );
-}
-
-fn setup_about_us_view(mut commands: Commands) {
-    commands.spawn(
-        root_!(route: "about-us"; [ text_!("This is about us view") ])
-    );
-}</code></pre>
-<p>We can specify route name for each view by using <code>route</code> property.</p>
-<h3 id="registering-routes"><a class="header" href="#registering-routes">Registering Routes</a></h3>
-<p>After we defined route on each view, we need to register those routes.
-We can do so by using <code>Router</code> resource.</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    App::new()
-        .add_plugins(MakaraPlugin::default())
-        .add_systems(Startup, (
-            setup_home_view, 
-            setup_about_us_view, 
-            setup_routes // add here
-        ))
-        .run();
-}
-
-fn setup_routes(mut router: ResMut&lt;Router&gt;) {
-    router.register_routes(["home", "about-us"]);
-    
-    // define which route you want to see when the application started
-    router.default_route("home", ());
-}
-
-// setup view systems..</code></pre>
-<p>You may also want to set the default route. If you don’t, the first route in the list
-will be set to default automatically.</p>
-<h3 id="route-navigation"><a class="header" href="#route-navigation">Route Navigation</a></h3>
-<p>Let’s update the above examples to demonstrate how to nagivate to specific route.</p>
+                        <h1 id="alignment-utility-classes"><a class="header" href="#alignment-utility-classes">Alignment Utility Classes</a></h1>
+<p>Makara provides a comprehensive set of alignment utility classes that allow you to control the layout and positioning of widgets without writing custom styles. These classes follow CSS flexbox conventions and work similarly to utility frameworks like Tailwind CSS.</p>
+<h2 id="justify-content-classes"><a class="header" href="#justify-content-classes">Justify Content Classes</a></h2>
+<p>Justify content classes control the alignment of child elements along the <strong>main axis</strong> (horizontal for rows, vertical for columns).</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Class Name</th><th>Alternative</th><th>Effect</th></tr>
+</thead>
+<tbody>
+<tr><td><code>justify-start</code></td><td><code>justify-content-start</code></td><td>Align children to the start of the main axis</td></tr>
+<tr><td><code>justify-center</code></td><td><code>justify-content-center</code></td><td>Center children along the main axis</td></tr>
+<tr><td><code>justify-end</code></td><td><code>justify-content-end</code></td><td>Align children to the end of the main axis</td></tr>
+<tr><td><code>justify-between</code></td><td><code>justify-content-between</code></td><td>Distribute children with equal space between them</td></tr>
+<tr><td><code>justify-around</code></td><td><code>justify-content-around</code></td><td>Distribute children with equal space around them</td></tr>
+<tr><td><code>justify-evenly</code></td><td><code>justify-content-evenly</code></td><td>Distribute children with equal space around and between them</td></tr>
+<tr><td><code>justify-stretch</code></td><td><code>justify-content-stretch</code></td><td>Stretch children to fill the main axis</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="align-items-classes"><a class="header" href="#align-items-classes">Align Items Classes</a></h2>
+<p>Align items classes control the alignment of child elements along the <strong>cross axis</strong> (vertical for rows, horizontal for columns).</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Class Name</th><th>Alternative</th><th>Effect</th></tr>
+</thead>
+<tbody>
+<tr><td><code>align-start</code></td><td><code>align-items-start</code></td><td>Align children to the start of the cross axis</td></tr>
+<tr><td><code>align-center</code></td><td><code>align-items-center</code></td><td>Center children along the cross axis</td></tr>
+<tr><td><code>align-end</code></td><td><code>align-items-end</code></td><td>Align children to the end of the cross axis</td></tr>
+<tr><td><code>align-stretch</code></td><td><code>align-items-stretch</code></td><td>Stretch children to fill the cross axis</td></tr>
+<tr><td><code>align-baseline</code></td><td><code>align-items-baseline</code></td><td>Align children along their baseline</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="align-content-classes"><a class="header" href="#align-content-classes">Align Content Classes</a></h2>
+<p>Align content classes control the alignment of wrapped lines when there are multiple rows/columns of content.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Class Name</th><th>Effect</th></tr>
+</thead>
+<tbody>
+<tr><td><code>align-content-start</code></td><td>Align wrapped lines to the start</td></tr>
+<tr><td><code>align-content-center</code></td><td>Center wrapped lines</td></tr>
+<tr><td><code>align-content-end</code></td><td>Align wrapped lines to the end</td></tr>
+<tr><td><code>align-content-stretch</code></td><td>Stretch wrapped lines to fill the container</td></tr>
+<tr><td><code>align-content-between</code></td><td>Distribute wrapped lines with equal space between them</td></tr>
+<tr><td><code>align-content-around</code></td><td>Distribute wrapped lines with equal space around them</td></tr>
+<tr><td><code>align-content-evenly</code></td><td>Distribute wrapped lines with equal space around and between them</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="usage-examples"><a class="header" href="#usage-examples">Usage Examples</a></h2>
+<h3 id="basic-centering"><a class="header" href="#basic-centering">Basic Centering</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>fn setup_home_view(mut commands: Commands) {
-    commands.spawn(
-        root_!(route: "home"; [
-            text_!("This is home view"),
-            button_!(
-                "Go to about us view";
-                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
-                    router.nagivate("about-us", ());
-                }
-            )
-        ])
-    );
-}
-
-fn setup_about_us_view(mut commands: Commands) {
-    commands.spawn(
-        root_!(route: "about-us"; [
-            text_!("This is about us view"),
-            button_!(
-                "Go to home view";
-                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
-                    router.nagivate("home", ());
-                }
-            )
-        ])
-    );
-}
+</span>// Center content both horizontally and vertically
+root_!(
+    class: "justify-center align-center";
+    [ text_!("Centered content") ]
+)
 <span class="boring">}</span></code></pre>
-<p>We can navigate to any route by calling <code>navigate</code> method.</p>
-<h3 id="route-params"><a class="header" href="#route-params">Route Params</a></h3>
-<p>Of course, each route can have one or multiple params.</p>
-<p>For example, let’s say we have a view called <strong>product-detail</strong>, but this view is dynamic based
-on product id or name.</p>
+<h3 id="button-layout"><a class="header" href="#button-layout">Button Layout</a></h3>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>fn setup_home_view(mut commands: Commands) {
-    commands.spawn(
-        root_!(route: "home"; [
-            text_!("This is home view"),
-            button_!(
-                "See product";
-                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
-                    router.nagivate(
-                        "product-detail", 
-                        Param::new()
-                            .value("id", "1234") // just random product id
-                            .value("name", "Iphone 17 256GB") // product name
-                    );
-                }
-            )
-        ])
-    );
-}
-
-fn setup_product_detail_view(mut commands: Commands) { 
-    commands.spawn(
-        root_!(
-            route: "product-detail";
-            
-            on: |page_loaded: On&lt;PageLoaded&gt;, mut text_q: TextQuery| {
-                if let Some(text) = text_q.find_by_id("product-name") {
-                    if let Some(name) = page_loaded.param.get("name") { 
-                        text.text.value.0 = name.clone();
-                    } 
-                }
-            };
-            
-            [ text_!("Product name: Unknown", id: "product-name") ]
+</span>// Distribute buttons evenly across a row
+row_!(
+    class: "justify-between align-center";
+    [
+        button_!("Cancel"),
+        button_!("Submit")
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h3 id="card-layout"><a class="header" href="#card-layout">Card Layout</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Create a vertically centered card with content aligned to start
+column_!(
+    class: "justify-center align-start p-4";
+    [
+        text_!("Card Title", font_size: 18.0),
+        text_!("Card content goes here..."),
+        button_!("Action", class: "mt-3")
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h3 id="navigation-bar"><a class="header" href="#navigation-bar">Navigation Bar</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Create a navigation bar with logo on left, menu on right
+row_!(
+    class: "justify-between align-center p-3";
+    [
+        text_!("Logo", font_size: 20.0),
+        row_!(
+            class: "justify-end align-center";
+            [
+                button_!("Home", class: "mr-2"),
+                button_!("About", class: "mr-2"),
+                button_!("Contact")
+            ]
         )
-    );
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h3 id="grid-like-layout"><a class="header" href="#grid-like-layout">Grid-like Layout</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Create a grid of items with even spacing
+column_!(
+    class: "justify-start align-stretch";
+    [
+        row_!(
+            class: "justify-around align-center mb-4";
+            [
+                button_!("Item 1"),
+                button_!("Item 2"),
+                button_!("Item 3")
+            ]
+        ),
+        row_!(
+            class: "justify-around align-center";
+            [
+                button_!("Item 4"),
+                button_!("Item 5"),
+                button_!("Item 6")
+            ]
+        )
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h2 id="combining-with-other-classes"><a class="header" href="#combining-with-other-classes">Combining with Other Classes</a></h2>
+<p>Alignment classes work seamlessly with other built-in utility classes:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Combine alignment with spacing and color classes
+column_!(
+    class: "justify-center align-center p-4 m-2";
+    background_color: Color::WHITE;
+    [
+        text_!("Welcome!", class: "mb-3", font_size: 24.0),
+        button_!("Get Started", class: "is-primary")
+    ]
+)
+<span class="boring">}</span></code></pre>
+<h2 id="responsive-considerations"><a class="header" href="#responsive-considerations">Responsive Considerations</a></h2>
+<p>While Makara doesn’t have built-in responsive breakpoints like web CSS frameworks, you can dynamically change classes based on window size or other conditions in your Bevy systems:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn adjust_layout_system(
+    mut commands: Commands,
+    windows: Query&lt;&amp;Window&gt;,
+    mut widgets: Query&lt;(Entity, &amp;mut Class), With&lt;SomeWidget&gt;&gt;
+) {
+    if let Ok(window) = windows.get_single() {
+        for (entity, mut class) in widgets.iter_mut() {
+            if window.width() &lt; 600.0 {
+                // Mobile layout
+                class.set("justify-center align-center".to_string());
+            } else {
+                // Desktop layout
+                class.set("justify-between align-center".to_string());
+            }
+        }
+    }
 }
 <span class="boring">}</span></code></pre>
-<p>See <a href="https://docs.rs/makara/latest/makara/routers/struct.Router.html">Router</a> and
-<a href="https://docs.rs/makara/latest/makara/routers/struct.Param.html">Param</a> for more info.</p>
+<h2 id="supported-widgets"><a class="header" href="#supported-widgets">Supported Widgets</a></h2>
+<p>Alignment utility classes are supported on <strong>container widgets</strong> that manage child element layout:</p>
+<ul>
+<li><code>root_!()</code> - Main application container</li>
+<li><code>row_!()</code> - Horizontal flex container</li>
+<li><code>column_!()</code> - Vertical flex container</li>
+<li><code>scroll_!()</code> - Scrollable container</li>
+</ul>
+<p>Other widgets like <code>button_!()</code>, <code>text_!()</code>, <code>image_!()</code>, etc. have fixed internal layouts and don’t support alignment classes since they’re not intended to be containers for user-defined child elements.</p>
+<h2 id="performance-notes"><a class="header" href="#performance-notes">Performance Notes</a></h2>
+<ul>
+<li>Alignment classes are processed during widget build and when the class attribute changes</li>
+<li>No runtime overhead once the layout is computed</li>
+<li>Classes are parsed once and cached until the class attribute is modified</li>
+<li>Bevy’s layout system handles the actual positioning efficiently</li>
+</ul>
+<h2 id="migration-from-manual-styling"><a class="header" href="#migration-from-manual-styling">Migration from Manual Styling</a></h2>
+<p>If you were previously setting alignment properties manually:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Old way
+root_!(
+    justify_content: JustifyContent::Center,
+    align_items: AlignItems::Center;
+    [ /* children */ ]
+)
+
+// New way with utility classes
+root_!(
+    class: "justify-center align-center";
+    [ /* children */ ]
+)
+<span class="boring">}</span></code></pre>
+<p>The utility class approach provides the same functionality with more concise syntax and better consistency across your application.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="alignment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="styling.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="organization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="routing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -327,11 +397,11 @@ fn setup_product_detail_view(mut commands: Commands) {
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="alignment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="styling.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="organization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="routing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
