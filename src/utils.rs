@@ -144,6 +144,8 @@ pub(crate) fn process_built_in_alignment_class(class: &Class, node: &mut Node) {
 
 pub fn get_bulma_bg_colors(class_name: &str) -> Option<(Color, Color)> {
     match class_name {
+        "is-light"        => Some((LIGHT_BG, LIGHT_BG_HOVER)),
+        "is-dark"         => Some((DARK_BG, DARK_BG_HOVER)),
         "is-primary"      => Some((PRIMARY_BG, PRIMARY_BG_HOVER)),
         "is-primary-dark" => Some((PRIMARY_DARK_BG, PRIMARY_DARK_BG_HOVER)),
         "is-link"         => Some((LINK_BG, LINK_BG_HOVER)),
@@ -174,6 +176,8 @@ pub fn get_bulma_text_colors(class_name: &str) -> Option<Color> {
         "is-warning-dark" => Some(WARNING_DARK_TEXT),
         "is-danger"       => Some(DANGER_TEXT),
         "is-danger-dark"  => Some(DANGER_DARK_TEXT),
+        "is-light"        => Some(LIGHT_TEXT),
+        "is-dark"         => Some(DARK_TEXT),
         _ => None,
     }
 }

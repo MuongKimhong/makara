@@ -41,8 +41,8 @@ fn setup(mut commands: Commands, count: Res<Count>) {
                     margin_top: px(5);
 
                     [
-                        button_!("+", margin_right: px(5); on: on_plus_click),
-                        button_!("-", margin_left: px(5); on: on_minus_click),
+                        button_!("+", class: "is-light", margin_right: px(5); on: on_plus_click),
+                        button_!("-", class: "is-dark", margin_left: px(5); on: on_minus_click),
                     ]
                 )
             ]

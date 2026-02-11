@@ -265,6 +265,18 @@ pub const DANGER_DARK_TEXT: Color = Color::srgba(1.0, 0.85, 0.88, 1.0);
 pub const DANGER_PLACEHOLDER: Color = Color::srgba(0.48, 0.40, 0.42, 0.9);
 pub const DANGER_DARK_PLACEHOLDER: Color = Color::srgba(0.85, 0.75, 0.78, 0.7);
 
+// Light (Bulma's specific "is-light" color)
+pub const LIGHT_BG: Color = Color::srgba(0.96, 0.96, 0.96, 1.0);
+pub const LIGHT_TEXT: Color = Color::srgba(0.2, 0.2, 0.2, 1.0);
+pub const LIGHT_BG_HOVER: Color = Color::srgba(0.92, 0.92, 0.92, 1.0);
+pub const LIGHT_PLACEHOLDER: Color = Color::srgba(0.50, 0.50, 0.50, 0.7);
+
+// Dark (Bulma's specific "is-dark" color)
+pub const DARK_BG: Color = Color::srgba(0.22, 0.22, 0.22, 1.0);
+pub const DARK_TEXT: Color = Color::srgba(1.0, 1.0, 1.0, 1.0);
+pub const DARK_BG_HOVER: Color = Color::srgba(0.18, 0.18, 0.18, 1.0);
+pub const DARK_PLACEHOLDER: Color = Color::srgba(0.65, 0.65, 0.65, 0.5);
+
 // Primary
 pub const PRIMARY_BG_HOVER: Color = Color::srgba(0.1, 0.92, 0.8, 1.0);
 pub const PRIMARY_DARK_BG_HOVER: Color = Color::srgba(0.1, 0.68, 0.59, 1.0);

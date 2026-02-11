@@ -3,7 +3,7 @@
 use bevy::{prelude::*, ui::InteractionDisabled, ui_widgets::observe};
 use bevy::window::{CursorIcon, SystemCursorIcon};
 
-use crate::{consts::*, events::*, on_mouse_out, utils::*};
+use crate::{consts::*, events::*, on_mouse_out, utils::*, colors::*};
 use super::*;
 
 /// Marker component for `button`.
@@ -295,7 +295,7 @@ fn on_button_mouse_over(
 
         commands.entity(*window).insert(cursor_icon);
         show_or_hide_tooltip(true, &mut tooltips, Some(computed), Some(transform), children);
-         process_button_built_in_color_class_hover_only(&class, &mut bg);
+        process_button_built_in_color_class_hover_only(&class, &mut bg);
     }
 
     commands.trigger(MouseOver { entity: over.entity });
@@ -328,7 +328,9 @@ pub(crate) fn update_button_style_on_theme_change_system(
 
     for mut bg_color in button_q.iter_mut() {
         // only react to theme change if color is default
-        if bg_color.0 == LIGHT_BUTTON_BG_COLOR || bg_color.0 == DARK_BUTTON_BG_COLOR {
+        if bg_color.0 == LIGHT_BUTTON_BG_COLOR ||
+           bg_color.0 == DARK_BUTTON_BG_COLOR
+        {
             bg_color.0 = new_bg_color;
         }
     }
