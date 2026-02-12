@@ -154,7 +154,9 @@ impl Default for ButtonBundle {
             ..default()
         };
 
-        let text_bundle = TextBundle::default();
+        let mut text_bundle = TextBundle::default();
+        text_bundle.text_style.layout.linebreak = LineBreak::NoWrap;
+
         let tooltip_bundle = TooltipBundle::default();
         let id_class = IdAndClass::default();
 
@@ -322,16 +324,21 @@ pub(crate) fn update_button_style_on_theme_change_system(
     }
 
     let new_bg_color = match makara_theme.theme {
-        Theme::Light => LIGHT_BUTTON_BG_COLOR,
-        Theme::Dark => DARK_BUTTON_BG_COLOR
+        Theme::Light => (LIGHT_BG, LIGHT_BUTTON_BG_COLOR),
+        Theme::Dark => (DARK_BG, DARK_BUTTON_BG_COLOR)
     };
 
     for mut bg_color in button_q.iter_mut() {
-        // only react to theme change if color is default
+        if bg_color.0 == LIGHT_BG || bg_color.0 == DARK_BG {
+            bg_color.0 = new_bg_color.0;
+            break;
+        }
+
         if bg_color.0 == LIGHT_BUTTON_BG_COLOR ||
            bg_color.0 == DARK_BUTTON_BG_COLOR
         {
-            bg_color.0 = new_bg_color;
+            bg_color.0 = new_bg_color.1;
+            break;
         }
     }
 }

@@ -374,12 +374,12 @@ pub struct WidgetStyle<'a> {
 }
 
 /// Trait used for widgets system param.
-/// 
+///
 /// # Navigation Patterns
-/// 
+///
 /// When using widget queries in event handlers that may navigate, use the `navigate!` macro
 /// to automatically exit the function after navigation:
-/// 
+///
 /// ```rust
 /// fn on_button_click(
 ///     _click: On<Clicked>,
@@ -389,14 +389,14 @@ pub struct WidgetStyle<'a> {
 ///     if let Some(mut text) = text_q.find_by_id("status") {
 ///         text.set_text("Navigating...");
 ///     }
-///     
+///
 ///     navigate!(router, "next-page", ()); // Function exits here automatically
 ///     // This code will never execute
 /// }
 /// ```
-/// 
+///
 /// This prevents common issues where loops or code continue executing after navigation:
-/// 
+///
 /// ```rust
 /// fn mark_items_complete(
 ///     _click: On<Clicked>,

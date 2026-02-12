@@ -13,6 +13,14 @@ pub struct MakaraDropdown;
 #[derive(Component)]
 pub struct MakaraDropdownOverlay;
 
+#[derive(Component, Default)]
+pub enum DropdownItemPosition {
+    #[default]
+    Center,
+    Left,
+    Right
+}
+
 #[derive(Component)]
 pub struct MakaraDropdownOverlayStyle(pub ContainerStyle);
 
@@ -145,14 +153,14 @@ impl<'w, 's> WidgetQuery<'w, 's> for DropdownQuery<'w, 's> {
 }
 
 /// Bundle for creating `dropdown`.
-#[derive(Bundle)]
 pub struct DropdownBundle {
     pub id_class: IdAndClass,
     pub style: ContainerStyle,
     pub overlay_style: ContainerStyle,
     pub state: MakaraDropdownState,
     pub text_bundle: TextBundle,
-    pub tooltip_bundle: TooltipBundle
+    pub tooltip_bundle: TooltipBundle,
+    pub item_position: DropdownItemPosition
 }
 
 impl Default for DropdownBundle {
@@ -175,6 +183,7 @@ impl Default for DropdownBundle {
             node: Node {
                 width: auto(),
                 height: auto(),
+                min_width: percent(100.0),
                 justify_content: JustifyContent::Stretch,
                 position_type: PositionType::Absolute,
                 flex_direction: FlexDirection::Column,
@@ -191,8 +200,9 @@ impl Default for DropdownBundle {
         let state = MakaraDropdownState(false);
         let tooltip_bundle = TooltipBundle::default();
         let id_class = IdAndClass::default();
+        let item_position = DropdownItemPosition::default();
 
-        Self { style, overlay_style, text_bundle, state, tooltip_bundle, id_class }
+        Self { style, overlay_style, text_bundle, state, tooltip_bundle, id_class, item_position }
     }
 }
 
@@ -206,6 +216,16 @@ impl DropdownBundle {
     /// Replace overlay style with provided style
     pub fn overlay_style(mut self, style: ContainerStyle) -> Self {
         self.overlay_style = style;
+        self
+    }
+
+    /// Set position of dropdown items (left, center, right).
+    pub fn item_position(mut self, position: &str) -> Self {
+        match position {
+            "left" => self.item_position = DropdownItemPosition::Left,
+            "right" => self.item_position = DropdownItemPosition::Right,
+            _ => self.item_position = DropdownItemPosition::Center
+        }
         self
     }
 
@@ -236,6 +256,7 @@ impl Widget for DropdownBundle {
             self.id_class,
             self.style,
             self.state,
+            self.item_position,
             MakaraDropdown,
             MakaraWidget,
             MakaraDropdownOverlayStyle(self.overlay_style),
@@ -270,7 +291,7 @@ impl SetIdAndClass for DropdownBundle {
 /// Create default dropdown (light variant) as default theme is light.
 pub fn dropdown(text: &str) -> DropdownBundle {
     let mut bundle = DropdownBundle::default();
-    bundle.text_bundle.text.0 = format!("{text} v");
+    bundle.text_bundle.text.0 = format!("{text}");
     bundle
 }
 
@@ -369,7 +390,8 @@ pub(crate) fn detect_user_provided_children_system(
             &Class,
             &mut MakaraDropdownOverlayStyle,
             &MakaraDropdownTextBundle,
-            &MakaraDropdownTooltipBundle
+            &MakaraDropdownTooltipBundle,
+            &DropdownItemPosition
         ),
         (With<MakaraDropdown>, Added<Children>)
     >,
@@ -377,13 +399,23 @@ pub(crate) fn detect_user_provided_children_system(
     mut makara_theme: ResMut<MakaraTheme>,
     mut overlay_and_text_added: ResMut<DropdownOverlayAndTextAdded>,
     mut text_q: Query<&mut TextColor>,
+    mut btn_q: Query<&mut Node, With<MakaraButton>>,
     children_q: Query<&Children>
 ) {
     if overlay_and_text_added.0 {
         return;
     }
 
-    for (entity, children, class, mut overlay_style, text_bundle, tooltip_bundle) in dropdown_q.iter_mut() {
+    for (
+        entity,
+        children,
+        class,
+        mut overlay_style,
+        text_bundle,
+        tooltip_bundle,
+        item_position
+    ) in dropdown_q.iter_mut()
+    {
         let mut child_entities: Vec<Entity> = Vec::new();
 
         for child in children.iter() {
@@ -401,6 +433,14 @@ pub(crate) fn detect_user_provided_children_system(
                     }
                     click.propagate(false);
                 });
+
+            if let Ok(mut btn_node) = btn_q.get_mut(child) {
+                match *item_position {
+                    DropdownItemPosition::Center => btn_node.justify_content = JustifyContent::Center,
+                    DropdownItemPosition::Left => btn_node.justify_content = JustifyContent::Start,
+                    DropdownItemPosition::Right => btn_node.justify_content = JustifyContent::End,
+                }
+            }
 
             if let Ok(btn_children) = children_q.get(child) {
                 for btn_child in btn_children.iter() {
@@ -458,6 +498,9 @@ pub(crate) fn detect_dropdown_overlay_added(
         if let Ok(dropdown_computed) = dropdown_q.get(parent.0) {
             if overlay_computed_node.size.x < dropdown_computed.size.x {
                 node.width = px(dropdown_computed.size.x * dropdown_computed.inverse_scale_factor);
+            }
+            else {
+                node.width = auto();
             }
         }
     }
