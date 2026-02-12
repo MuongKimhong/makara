@@ -326,27 +326,33 @@ fn on_dropdown_mouse_over(
 
 fn on_dropdown_click(
     mut click: On<Pointer<Click>>,
-    mut dropdown_q: Query<&mut MakaraDropdownState>,
+    mut dropdown_q: Query<(&mut MakaraDropdownState, Entity)>,
     mut widgets: Query<(Entity, &mut WidgetFocus)>,
     mut commands: Commands
 ) {
     update_focus_state_for_widgets_on_click(click.entity, &mut widgets);
 
-    if let Ok(mut state) = dropdown_q.get_mut(click.entity) {
-        state.0 = !state.0;
+    for (mut state, entity) in dropdown_q.iter_mut() {
+        if entity == click.entity {
+            state.0 = !state.0;
 
-        match state.0 {
-            true => commands.trigger(Active {
-                entity: click.entity,
-                data: true
-            }),
-            false => commands.trigger(Inactive {
-                entity: click.entity,
-                data: false
-            })
+            match state.0 {
+                true => commands.trigger(Active {
+                    entity: click.entity,
+                    data: true
+                }),
+                false => commands.trigger(Inactive {
+                    entity: click.entity,
+                    data: false
+                })
+            }
+            commands.trigger(Clicked { entity: click.entity });
+            continue;
         }
+
+        state.0 = false;
+        commands.trigger(Inactive { entity, data: false });
     }
-    commands.trigger(Clicked { entity: click.entity });
     click.propagate(false);
 }
 
