@@ -17,7 +17,7 @@ fn on_mark_complete_btn_click(_clicked: On<Clicked>, mut router: ResMut<Router>,
             continue;
         }
 
-        btn.class.0 = "item-btn completed".to_string();
+        btn.class.set_class("item-btn completed");
         navigate!(router, "home", ());
         // No need for explicit return - navigate! handles it automatically
     }

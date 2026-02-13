@@ -99,7 +99,8 @@ pub trait SetIdAndClass: Sized {
     }
 
     fn class(mut self, class: &str) -> Self {
-        self.id_and_class().class.0 = class.to_string();
+        self.id_and_class().class.value = class.to_string();
+        self.id_and_class().class.changed = true;
         self
     }
 }
@@ -293,12 +294,23 @@ pub struct Id(pub String);
 
 /// Component used to store class for a widget.
 #[derive(Component, Debug, Default, PartialEq, Eq, Clone)]
-pub struct Class(pub String);
+pub struct Class {
+    pub value: String,
+    pub changed: bool
+}
 
 impl Class {
+    /// Replace current class with new class.
+    ///
+    /// You need to use this method to set new class for new class to be effective.
+    pub fn set_class(&mut self, class: &str) {
+        self.value = class.to_string();
+        self.changed = true;
+    }
+
     /// Adds a class (or multiple space-separated classes) to the widget.
     pub fn add_class(&mut self, class: &str) {
-        let mut classes: Vec<_> = self.0.split_whitespace().collect();
+        let mut classes: Vec<_> = self.value.split_whitespace().collect();
 
         for new_class in class.split_whitespace() {
             if !classes.contains(&new_class) {
@@ -306,26 +318,28 @@ impl Class {
             }
         }
 
-        self.0 = classes.join(" ");
+        self.value = classes.join(" ");
+        self.changed = true;
     }
 
     /// Removes a specific class (or multiple) from the widget.
     pub fn remove_class(&mut self, class: &str) {
         let to_remove: Vec<_> = class.split_whitespace().collect();
 
-        let classes: Vec<_> = self.0
+        let classes: Vec<_> = self.value
             .split_whitespace()
             .filter(|c| !to_remove.contains(c))
             .collect();
 
-        self.0 = classes.join(" ");
+        self.value = classes.join(" ");
+        self.changed = true
     }
 
     /// Returns an iterator over the individual class names.
     ///
     /// Useful for checking specific styles or logic conditions.
     pub fn class_list(&self) -> Vec<String> {
-        self.0
+        self.value
             .split_whitespace()
             .map(|s| s.to_string())
             .collect()
@@ -333,7 +347,7 @@ impl Class {
 
     /// Checks if the widget contains a specific class.
     pub fn has_class(&self, class: &str) -> bool {
-        self.0.split_whitespace().any(|c| c == class)
+        self.value.split_whitespace().any(|c| c == class)
     }
 }
 

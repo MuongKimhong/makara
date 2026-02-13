@@ -166,7 +166,7 @@ impl<'w, 's> WidgetQuery<'w, 's> for RootQuery<'w, 's> {
 
     fn find_by_class(&self, target_class: &str) -> Vec<Entity> {
         self.class.iter()
-            .filter(|(_, class)| class.0.split(" ").any(|word| word == target_class))
+            .filter(|(_, class)| class.value.split(" ").any(|word| word == target_class))
             .map(|(e, _)| e)
             .collect()
     }

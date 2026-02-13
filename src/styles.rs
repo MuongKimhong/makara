@@ -316,6 +316,11 @@ impl Style {
         self
     }
 
+    pub fn border_radius(mut self, value: Val) -> Self {
+        self.border_radius = Some(BorderRadius::all(value));
+        self
+    }
+
     pub fn z_index(mut self, value: i32) -> Self {
         self.z_index = Some(ZIndex(value));
         self
@@ -483,25 +488,59 @@ fn set_text_style(text_style: &mut ChildText, custom_style: &Style) {
     }
 }
 
+// pub(crate) fn detect_widget_class_change(
+//     class_q: Query<&Class, Changed<Class>>,
+//     mut custom_style: ResMut<CustomStyle>
+// ) {
+//     for class_data in class_q.iter() {
+//         if class_data.0.trim().is_empty() {
+//             continue;
+//         }
+
+//         for class_name in class_data.0.split(" ").into_iter() {
+//             custom_style.class_changed.insert(class_name.to_string());
+//             custom_style.has_changed = true;
+
+//             if let Some(base_class) = class_name.split("::").next() {
+//                 if base_class != class_name {
+//                     custom_style.class_changed.insert(base_class.to_string());
+//                 }
+//             }
+//         }
+//     }
+// }
+
 pub(crate) fn detect_widget_class_change(
-    class_q: Query<&Class, Changed<Class>>,
+    mut class_q: Query<&mut Class>,
     mut custom_style: ResMut<CustomStyle>
 ) {
-    for class_data in class_q.iter() {
-        if class_data.0.trim().is_empty() {
+    for mut class_data in class_q.iter_mut() {
+        if !class_data.changed {
             continue;
         }
 
-        for class_name in class_data.0.split(" ").into_iter() {
-            custom_style.class_changed.insert(class_name.to_string());
-            custom_style.has_changed = true;
+        let raw_classes = class_data.value.trim();
+        if raw_classes.is_empty() { continue; }
 
+        for class_name in raw_classes.split_whitespace() {
+            // Check if this class is actually defined in our maps
+            // AND if it's not already in the changed set for this frame
+            if custom_style.class_maps.contains_key(class_name) {
+                if custom_style.class_changed.insert(class_name.to_string()) {
+                     custom_style.has_changed = true;
+                }
+            }
+
+            // Handle pseudo-classes/sub-elements (::overlay, etc)
             if let Some(base_class) = class_name.split("::").next() {
-                if base_class != class_name {
-                    custom_style.class_changed.insert(base_class.to_string());
+                if base_class != class_name && custom_style.class_maps.contains_key(base_class) {
+                    if custom_style.class_changed.insert(base_class.to_string()) {
+                        custom_style.has_changed = true;
+                    }
                 }
             }
         }
+        class_data.changed = false;
     }
 }
 
@@ -922,6 +961,10 @@ pub(crate) fn apply_custom_style_to_dropdown(
                 if let Some(overlay_style) = overlay_style {
                     set_style(&mut dropdown.overlay_style, overlay_style);
                 }
+                should_set_unchanged = true;
+            }
+            else {
+                should_set_unchanged = false;
             }
         }
     }
