@@ -27,9 +27,6 @@ pub mod styles;
 pub mod colors;
 pub mod routers;
 
-#[macro_use]
-pub mod macros;
-
 pub mod prelude {
     use bevy::prelude::*;
     use bevy::asset::embedded_asset;
@@ -42,27 +39,8 @@ pub mod prelude {
     pub use crate::styles::*;
     pub use crate::colors::*;
     pub use crate::routers::*;
-    pub use crate::navigate;
     pub use bevy::ui_widgets::observe;
-
-    pub use crate::scroll_;
-    pub use crate::row_;
-    pub use crate::column_;
-    pub use crate::root_;
-    pub use crate::button_;
-    pub use crate::text_;
-    pub use crate::checkbox_;
-    pub use crate::circular_;
-    pub use crate::progress_bar_;
-    pub use crate::dropdown_;
-    pub use crate::image_;
-    pub use crate::link_;
-    pub use crate::slider_;
-    pub use crate::radio_;
-    pub use crate::radio_group_;
-    pub use crate::text_input_;
-    pub use crate::select_;
-    pub use crate::modal_;
+    pub use makara_macros::*;
 
     /// Schedule for this plugin to run at.
     /// Default is `AtUpdate`.
@@ -182,6 +160,7 @@ pub mod prelude {
                 // dropdown
                 (
                     update_dropdown_style_on_theme_change_system,
+                    update_dropdown_state_on_focus_change,
                     show_and_hide_dropdown_overlay_on_state_change_system,
                     detect_user_provided_children_system,
                     detect_dropdown_overlay_added,
@@ -192,6 +171,7 @@ pub mod prelude {
                 // select
                 (
                     update_select_style_on_theme_change_system,
+                    update_select_state_on_focus_change,
                     show_and_hide_select_overlay_on_state_change_system,
                     detect_select_items_added_and_overlay_resized,
                     detect_select_placeholder_added

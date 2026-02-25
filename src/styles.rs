@@ -9,12 +9,17 @@ use super::*;
 pub struct Style {
     pub width: Option<Val>,
     pub height: Option<Val>,
+    pub min_width: Option<Val>,
+    pub min_height: Option<Val>,
+    pub max_width: Option<Val>,
+    pub max_height: Option<Val>,
     pub display: Option<Display>,
     pub overflow: Option<Overflow>,
     pub left: Option<Val>,
     pub right: Option<Val>,
     pub top: Option<Val>,
     pub bottom: Option<Val>,
+    pub position_type: Option<PositionType>,
     pub align_items: Option<AlignItems>,
     pub justify_items: Option<JustifyItems>,
     pub align_self: Option<AlignSelf>,
@@ -67,8 +72,33 @@ impl Style {
         self
     }
 
+    pub fn min_width(mut self, value: Val) -> Self {
+        self.min_width = Some(value);
+        self
+    }
+
+    pub fn min_height(mut self, value: Val) -> Self {
+        self.min_height = Some(value);
+        self
+    }
+
+    pub fn max_width(mut self, value: Val) -> Self {
+        self.max_width = Some(value);
+        self
+    }
+
+    pub fn max_height(mut self, value: Val) -> Self {
+        self.max_height = Some(value);
+        self
+    }
+
     pub fn display(mut self, value: Display) -> Self {
         self.display = Some(value);
+        self
+    }
+
+    pub fn position_type(mut self, value: PositionType) -> Self {
+        self.position_type = Some(value);
         self
     }
 
@@ -321,6 +351,16 @@ impl Style {
         self
     }
 
+    pub fn border_radius_from(mut self, radius: (Val, Val, Val, Val)) -> Self {
+        self.border_radius = Some(BorderRadius {
+            top_left: radius.0,
+            top_right: radius.1,
+            bottom_right: radius.2,
+            bottom_left: radius.3
+        });
+        self
+    }
+
     pub fn z_index(mut self, value: i32) -> Self {
         self.z_index = Some(ZIndex(value));
         self
@@ -441,6 +481,10 @@ fn set_style(widget_style: &mut WidgetStyle, custom_style: &Style) {
 
     if let Some(v) = custom_style.width { node.width = v; }
     if let Some(v) = custom_style.height { node.height = v; }
+    if let Some(v) = custom_style.min_width { node.min_width = v; }
+    if let Some(v) = custom_style.min_height { node.min_height = v; }
+    if let Some(v) = custom_style.max_width { node.max_width = v; }
+    if let Some(v) = custom_style.max_height { node.max_height = v; }
     if let Some(v) = custom_style.display { node.display = v; }
     if let Some(v) = custom_style.overflow { node.overflow = v; }
     if let Some(v) = custom_style.border_radius { node.border_radius= v; }

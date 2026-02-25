@@ -1,6 +1,7 @@
 //! A container with flex direction set to column.
 
 use bevy::prelude::*;
+use bevy::picking::Pickable;
 
 use crate::{ContainerStyle, SetContainerStyle, Widget, events::*, utils::*};
 use super::*;
@@ -204,6 +205,7 @@ impl Widget for ColumnBundle {
         (
             self.id_class,
             self.style,
+            Pickable::IGNORE,
             MakaraColumn,
         )
     }

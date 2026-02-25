@@ -474,28 +474,40 @@ fn on_select_mouse_over(
 
 fn on_select_click(
     mut click: On<Pointer<Click>>,
-    mut select_q: Query<&mut MakaraSelectState>,
     mut widgets: Query<(Entity, &mut WidgetFocus)>,
     mut commands: Commands
 ) {
     update_focus_state_for_widgets_on_click(click.entity, &mut widgets);
+    commands.trigger(Clicked { entity: click.entity });
+    click.propagate(false);
+}
 
-    if let Ok(mut state) = select_q.get_mut(click.entity) {
-        state.0 = !state.0;
+pub(crate) fn update_select_state_on_focus_change(
+    mut commands: Commands,
+    mut select_q: Query<
+        (Entity, &WidgetFocus, &mut MakaraSelectState),
+        (With<MakaraSelect>, Changed<WidgetFocus>)
+    >,
+) {
+    for (entity, focus, mut state) in select_q.iter_mut() {
+        if focus.0 && state.0 {
+            state.0 = false;
+        }
+        else {
+            state.0 = focus.0;
+        }
 
         match state.0 {
             true => commands.trigger(Active {
-                entity: click.entity,
+                entity,
                 data: true
             }),
             false => commands.trigger(Inactive {
-                entity: click.entity,
+                entity,
                 data: false
             })
         }
     }
-    commands.trigger(Clicked { entity: click.entity });
-    click.propagate(false);
 }
 
 pub(crate) fn update_select_style_on_theme_change_system(

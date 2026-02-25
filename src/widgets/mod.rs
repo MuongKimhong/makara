@@ -123,6 +123,11 @@ pub trait SetContainerStyle: Sized {
         self
     }
 
+    fn display(mut self, value: Display) -> Self {
+        self.container_style().node.display = value;
+        self
+    }
+
     fn align_items(mut self, ai: AlignItems) -> Self {
         self.container_style().node.align_items = ai;
         self
@@ -242,8 +247,19 @@ pub trait SetContainerStyle: Sized {
         self
     }
 
-    fn border_radius(mut self, radius: BorderRadius) -> Self{
-        self.container_style().node.border_radius = radius;
+    fn border_radius(mut self, radius: Val) -> Self{
+        self.container_style().node.border_radius = BorderRadius::all(radius);
+        self
+    }
+
+    /// Set border radius from tuple (top_left, top_right, bottom_right, bottom_left)
+    fn border_radius_from(mut self, radius: (Val, Val, Val, Val)) -> Self {
+        self.container_style().node.border_radius = BorderRadius {
+            top_left: radius.0,
+            top_right: radius.1,
+            bottom_right: radius.2,
+            bottom_left: radius.3
+        };
         self
     }
 
@@ -272,8 +288,38 @@ pub trait SetContainerStyle: Sized {
         self
     }
 
-    fn shadow(mut self, shadow: ShadowStyle) -> Self {
-        self.container_style().shadow = BoxShadow(vec![shadow]);
+    fn left(mut self, value: Val) -> Self {
+        self.container_style().node.left = value;
+        self
+    }
+
+    fn right(mut self, value: Val) -> Self {
+        self.container_style().node.right = value;
+        self
+    }
+
+    fn top(mut self, value: Val) -> Self {
+        self.container_style().node.top = value;
+        self
+    }
+
+    fn bottom(mut self, value: Val) -> Self {
+        self.container_style().node.bottom = value;
+        self
+    }
+
+    fn position_type(mut self, position_type: PositionType) -> Self {
+        self.container_style().node.position_type = position_type;
+        self
+    }
+
+    fn shadow(mut self, shadow: Option<ShadowStyle>) -> Self {
+        if let Some(shadow) = shadow {
+            self.container_style().shadow = BoxShadow(vec![shadow]);
+        }
+        else {
+            self.container_style().shadow = BoxShadow::default();
+        }
         self
     }
 

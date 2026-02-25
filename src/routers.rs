@@ -1,7 +1,7 @@
 //! # Makara Routing System
 //!
 //! This module provides a routing system for Makara GUI applications. Routes are managed
-//! by showing/hiding root widgets, making navigation lightweight and efficient.
+//! by showing/hiding root widgets, making navigation lightweight and fast.
 //!
 //! ## Navigation
 //!
@@ -115,15 +115,11 @@ pub(crate) fn handle_match_route_to_root(
     if !router.is_changed() {
         return;
     }
-    println!("router changed");
 
     for (entity, mut node, page) in roots.iter_mut() {
-        println!("page name {:?}", page.0);
-        println!("current route {:?}", router.current_route);
         if let Some(current_page) = &router.current_route {
             if page.0 == current_page.0 {
                 node.display = Display::default();
-                println!("page matched {:?}", page.0);
 
                 commands.trigger(PageLoaded {
                     entity,
@@ -137,7 +133,6 @@ pub(crate) fn handle_match_route_to_root(
                 });
             }
             else {
-                println!("page no matched {:?}", page.0);
                 node.display = Display::None;
             }
         }

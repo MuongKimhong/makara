@@ -326,34 +326,40 @@ fn on_dropdown_mouse_over(
 
 fn on_dropdown_click(
     mut click: On<Pointer<Click>>,
-    mut dropdown_q: Query<(&mut MakaraDropdownState, Entity)>,
     mut widgets: Query<(Entity, &mut WidgetFocus)>,
     mut commands: Commands
 ) {
     update_focus_state_for_widgets_on_click(click.entity, &mut widgets);
+    commands.trigger(Clicked { entity: click.entity });
+    click.propagate(false);
+}
 
-    for (mut state, entity) in dropdown_q.iter_mut() {
-        if entity == click.entity {
-            state.0 = !state.0;
-
-            match state.0 {
-                true => commands.trigger(Active {
-                    entity: click.entity,
-                    data: true
-                }),
-                false => commands.trigger(Inactive {
-                    entity: click.entity,
-                    data: false
-                })
-            }
-            commands.trigger(Clicked { entity: click.entity });
-            continue;
+pub(crate) fn update_dropdown_state_on_focus_change(
+    mut commands: Commands,
+    mut dropdown_q: Query<
+        (Entity, &WidgetFocus, &mut MakaraDropdownState),
+        (With<MakaraDropdown>, Changed<WidgetFocus>)
+    >,
+) {
+    for (entity, focus, mut state) in dropdown_q.iter_mut() {
+        if focus.0 && state.0 {
+            state.0 = false;
+        }
+        else {
+            state.0 = focus.0;
         }
 
-        state.0 = false;
-        commands.trigger(Inactive { entity, data: false });
+        match state.0 {
+            true => commands.trigger(Active {
+                entity,
+                data: true
+            }),
+            false => commands.trigger(Inactive {
+                entity,
+                data: false
+            })
+        }
     }
-    click.propagate(false);
 }
 
 pub(crate) fn show_and_hide_dropdown_overlay_on_state_change_system(

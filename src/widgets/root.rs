@@ -1,6 +1,7 @@
 //! UI Root. This widget must be used as starting point for all other widgets.
 
 use bevy::prelude::*;
+use bevy::picking::Pickable;
 
 use crate::{ContainerStyle, SetContainerStyle, Widget, Theme, MakaraTheme};
 use crate::{events::*, consts::*, utils::*};
@@ -217,6 +218,7 @@ impl Widget for RootBundle {
             self.id_class,
             self.style,
             self.route,
+            Pickable::IGNORE,
             MakaraRoot,
         )
     }

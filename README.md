@@ -1,6 +1,6 @@
-![Static Badge](https://img.shields.io/badge/Version-0.2.8-blue)
+![Static Badge](https://img.shields.io/badge/Version-0.2.9-blue)
 ![Static Badge](https://img.shields.io/badge/OS-Mac%20Linux%20Window-orange)
-[![static Badge](https://img.shields.io/badge/crate.io-0.2.8-green)](https://crates.io/crates/makara)
+[![static Badge](https://img.shields.io/badge/crate.io-0.2.9-green)](https://crates.io/crates/makara)
 
 <p align="center">
   <img width="180" src="assets/logo.png">
@@ -24,7 +24,7 @@ fn setup(mut commands: Commands) {
             
             [
                 text_!("Hello earth", id: "my-text"),
-                button_!("Click me"; on: on_button_click)
+                button_!("Click me", on: on_button_click)
             ]
         )
     );
