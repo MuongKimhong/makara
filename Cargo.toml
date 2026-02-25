@@ -22,7 +22,7 @@ bevy = { version="0.18.0", features=[
     "https",
     "experimental_bevy_ui_widgets"
 ]}
-makara_macros = { git = "https://github.com/MuongKimhong/makara_macros", branch = "master", version = "0.1.0" }
+makara_macros = "0.1.0"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 arboard = "3.6.1"
