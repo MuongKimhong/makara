@@ -2,14 +2,13 @@
     Build high performance GUI app with power of Game Engine (Bevy).
 </h3>
 
-Makara is a UI Library built on top of Bevy engine.
+## What is Bevy?
 
 [Bevy](https://bevy.org/) is a game engine written in Rust, based on 
 [ECS](https://bevy.org/learn/quick-start/getting-started/ecs/) architecture. 
-It's capable of rendering 2D and 3D graphics.
-
-[Bevy](https://bevy.org/) also provides full UI system to build GPU accelerated GUI application but because it's based on 
-[ECS](https://bevy.org/learn/quick-start/getting-started/ecs/), building UI with Bevy is verbosity.
+It's capable of rendering 2D and 3D graphics. [Bevy](https://bevy.org/) also provides full UI system 
+to build GPU accelerated GUI application but because it's based on [ECS](https://bevy.org/learn/quick-start/getting-started/ecs/), 
+building UI with Bevy is verbosity.
 
 Let's see an example below of creating a simple button with pure Bevy's UI.
 
@@ -44,10 +43,13 @@ fn on_button_click(_click: On<Pointer<Click>>) {
 ```
 
 As you can see, it's really easy to get lost with Bevy's UI. A real GUI application 
-will have more than just a button and complex hierarchy.
+will have more than just a button and complex hierarchy. 
 
-**Makara** simplifies this problem but providing **built-in widgets** and high level api with builder pattern
-that most rust devs familiar with, to make it easy to write and maintain the code.
+## What is Makara?
+
+**Makara** is a UI Library built on top of Bevy engine. It simplifies the verbosity
+by providing **built-in widgets** and high level api with builder 
+pattern that most rust devs familiar with, to make it easy to write and maintain the code.
 
 Let's see how **Makara** reduce the verbosity.
 
@@ -55,7 +57,9 @@ Let's see how **Makara** reduce the verbosity.
 fn setup(mut commands: Commands) {
     commands.spawn(
         button_!(
-            "Click me", background_color: "white", padding: px(10);
+            "Click me", 
+            background_color: "white", 
+            padding: px(10),
             on: on_button_click
         )
     );

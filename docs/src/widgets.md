@@ -22,7 +22,8 @@ commands.spawn(root_!([
 commands.spawn(
     root_!(
         background_color: Color::srgb(0.1, 0.1, 0.2),
-        class: "justify-center align-center p-4";
+        class: "justify-center align-center p-4",
+        
         [
             column_!([
                 text_!("Welcome to Makara!"),
@@ -40,7 +41,8 @@ commands.spawn(
         width: percent(100),
         height: percent(100),
         id: "main-container",
-        class: "justify-between align-stretch";
+        class: "justify-between align-stretch",
+        
         [/* children */]
     )
 );
@@ -63,7 +65,8 @@ column_!([
 ```rust
 column_!(
     class: "justify-center align-center p-4 m-2",
-    background_color: Color::WHITE;
+    background_color: "white",
+    
     [
         text_!("Centered Column", font_size: 24.0),
         button_!("Action Button", class: "is-primary mt-3"),
@@ -75,9 +78,10 @@ column_!(
 **With event handling:**
 ```rust
 column_!(
-    on: |built: On<WidgetBuilt>| {
+    on: |_built: On<WidgetBuilt>| {
         println!("Column widget built!");
-    };
+    },
+    
     [/* children */]
 )
 ```
@@ -99,11 +103,13 @@ row_!([
 ```rust
 row_!(
     class: "justify-between align-center p-3",
-    background_color: Color::srgb(0.2, 0.3, 0.8);
+    background_color: Color::srgb(0.2, 0.3, 0.8),
+    
     [
         text_!("MyApp", font_size: 20.0, color: Color::WHITE),
         row_!(
-            class: "justify-end align-center";
+            class: "justify-end align-center",
+            
             [
                 button_!("Home", class: "mr-2"),
                 button_!("About", class: "mr-2"),
@@ -134,10 +140,12 @@ scroll_!(
     width: px(300),
     height: px(200),
     class: "p-3",
-    background_color: Color::srgb(0.95, 0.95, 0.95);
+    background_color: Color::srgb(0.95, 0.95, 0.95),
+    
     [
         column_!(
-            class: "justify-start align-stretch";
+            class: "justify-start align-stretch",
+            
             [
                 text_!("Scrollable Content", font_size: 18.0, class: "mb-2"),
                 text_!("This is line 1"),
@@ -154,7 +162,8 @@ scroll_!(
 scroll_!(
     on: |scrolling: On<Scrolling>| {
         println!("User is scrolling!");
-    };
+    },
+    
     [/* scrollable content */]
 )
 ```
@@ -181,10 +190,10 @@ button_!(
     "Save Data";
     on: |clicked: On<Clicked>| {
         println!("Save button clicked!");
-    };
+    },
     on: |over: On<MouseOver>| {
         println!("Mouse over save button");
-    };
+    },
     on: |out: On<MouseOut>| {
         println!("Mouse left save button");  
     }
@@ -196,10 +205,10 @@ button_!(
 button_!(
     "Delete Item",
     id: "delete-btn",
-    class: "is-danger p-2 m-1";
+    class: "is-danger p-2 m-1",
     on: |clicked: On<Clicked>| {
         // Handle delete action
-    };
+    },
     on: |built: On<WidgetBuilt>| {
         println!("Delete button ready!");
     }
@@ -230,7 +239,7 @@ text_input_!(
 text_input_!(
     "Search...";
     on: |change: On<Change<String>>| {
-        println!("Search text: {}", change.0);
+        println!("Search text: {}", change.data);
     };
     on: |clicked: On<Clicked>| {
         println!("Input field focused");
@@ -271,10 +280,10 @@ checkbox_!("Enable notifications", class: "is-primary p-2")
 checkbox_!(
     "Subscribe to newsletter";
     on: |active: On<Active<String>>| {
-        println!("Checkbox activated: {}", active.0);
+        println!("Checkbox activated: {}", active.data);
     };
     on: |inactive: On<Inactive<String>>| {
-        println!("Checkbox deactivated: {}", inactive.0);
+        println!("Checkbox deactivated: {}", inactive.data);
     }
 )
 ```
@@ -311,7 +320,7 @@ radio_group_!([
 radio_group_!(
     class: "p-3";
     on: |change: On<Change<String>>| {
-        println!("Selected payment method: {}", change.0);
+        println!("Selected payment method: {}", change.data);
     };
     [
         radio_!("Credit Card", class: "is-primary mb-2"),
@@ -353,7 +362,7 @@ select_!(
     class: "is-primary p-2",
     width: px(250);
     on: |change: On<Change<String>>| {
-        println!("Selected: {}", change.0);
+        println!("Selected: {}", change.data);
     };
     on: |active: On<Active>| {
         println!("Dropdown opened");
@@ -430,7 +439,7 @@ column_!(
             max: 100.0,
             class: "is-primary p-2";
             on: |change: On<Change<f32>>| {
-                println!("Volume: {:.1}%", change.0);
+                println!("Volume: {:.1}%", change.data);
             }
         )
     ]
@@ -601,7 +610,7 @@ progress_bar_!(
 progress_bar_!(
     class: "is-success";
     on: |change: On<Change<f32>>| {
-        println!("Progress: {:.1}%", change.0 * 100.0);
+        println!("Progress: {:.1}%", change.data * 100.0);
     }
 )
 ```

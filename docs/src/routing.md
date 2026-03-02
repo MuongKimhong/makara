@@ -76,7 +76,7 @@ fn setup_home_view(mut commands: Commands) {
             button_!(
                 "Go to about us view";
                 on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.nagivate("about-us", ());
+                    navigate_!(router, "about-us");
                 }
             )
         ])
@@ -90,7 +90,7 @@ fn setup_about_us_view(mut commands: Commands) {
             button_!(
                 "Go to home view";
                 on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.nagivate("home", ());
+                    navigate_!(router, "home");
                 }
             )
         ])
@@ -112,13 +112,14 @@ fn setup_home_view(mut commands: Commands) {
             text_!("This is home view"),
             button_!(
                 "See product";
-                on: |_clicked: On<Clicked>, mut router: ResMut<Router>| {
-                    router.nagivate(
-                        "product-detail", 
+                on: |_clicked: On<Clicked>, mut router: ResMut<Router>| { 
+                    navigate_!(
+                        router,
+                        "product-detail",
                         Param::new()
                             .value("id", "1234") // just random product id
                             .value("name", "Iphone 17 256GB") // product name
-                    );
+                    )
                 }
             )
         ])

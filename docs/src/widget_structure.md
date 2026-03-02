@@ -3,67 +3,58 @@
 In **Makara**, creating a widget can be done by calling its pre-defined macro.
 A button can be created using `button_!` and a text can be created using `text_!`.
 
-Each macro is splitted into 3 parts with specific orders and the orders are:
+Each widget macro is splitted into 3 parts:
 
 1. Properties
 2. Event handlers
-3. Children
+3. Children array
 
-Let's have a look at a few examples.
-
-Button
+For example,
 ```rust
-button_!(
-    "Click me", 
-    id: "my-btn", 
-    background_color: "blue"; // properties end with ;
+scroll_!( 
+    // properties
+    background_color: "red",
+    border_radius: px(5),
+    margin: px(5),
+    padding: px(10),
     
-    on: |clicked: On<Clicked>| { 
-        println("Button is clicked"); 
-    };
-    on: |mouse_over: On<MouseOver>| {
-        println!("Mouse is over button");
-    }
-);
-
-// We don't need ; at the end of properties because we don't have an event handler.
-button_!("Click me", border_color: "red");
-```
-
-Column
-```rust
-column_!(
-    id: "my-column",
-    align_items: AlignItems::Center; // properties end with ;
+    // event handlers (if there's any)
+    on: |_scrolling: On<Scrolling>| {},
+    on: |_built: On<WidgetBuilt>| {},
     
+    // children array
     [
-        text_!("Hello world"), 
-        text_!("Hello again")
-    ]
-);
-
-// We don't need ; at the end of properties because we don't have any children.
-column_!(id: "my-column", align_items: AlignItems::Center);
-```
-
-Scroll
-```rust
-scroll_!(
-    align_items: AlignItems::Center;  // properties end with ;
-    
-    on: |scrolling; On<Scrolling>| {
-        println!("scrolling");
-    }; // event handler ends with ;
-    
-    [
-        text_!("Hello world"),
-        text_!("Hello mom"),
-        text_!("Hello friends")
+        button_!("Click me", background_color: "blue"),
+        text_!("This is some text")
     ]
 );
 ```
 
-### The rules for using widget macro
+For event handlers, you can also create functions for it to make it cleaner.
+```rust
+scroll_!( 
+    // properties
+    background_color: "red",
+    border_radius: px(5),
+    margin: px(5),
+    padding: px(10),
+    
+    // event handlers (if there's any)
+    on: handle_scrolling,
+    on: handle_widget_built,
+    
+    // children array
+    [
+        button_!("Click me", background_color: "blue"),
+        text_!("This is some text")
+    ]
+);
 
-1. Always put `;` after properties if there are event handlers or children `[]`.
-2. Always put `;` after an event handler if there are more event handlers or children `[]`.
+fn handle_scrolling(_scrolling: On<Scrolling>) {
+    // do something
+}
+
+fn handle_widget_built(_built: On<WidgetBuilt>) {
+    // do something
+}
+```

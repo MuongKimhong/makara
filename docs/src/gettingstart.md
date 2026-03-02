@@ -23,7 +23,7 @@ fn setup(mut commands: Commands) {
     commands.spawn(
         root_!(
             align_items: AlignItems::Center,
-            justify_content: JustifyContent::Center;
+            justify_content: JustifyContent::Center,
             
             [ text_!("Hello world", font_size: 20.0) ]
         )
