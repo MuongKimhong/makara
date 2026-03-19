@@ -264,6 +264,7 @@ impl Widget for DropdownBundle {
             MakaraDropdownTooltipBundle(self.tooltip_bundle),
             WidgetFocus(false),
             observe(on_dropdown_mouse_over),
+            observe(on_dropdown_mouse_out),
             observe(on_mouse_out),
             observe(on_dropdown_click)
         )
@@ -298,7 +299,14 @@ pub fn dropdown(text: &str) -> DropdownBundle {
 fn on_dropdown_mouse_over(
     mut over: On<Pointer<Over>>,
     mut dropdowns: Query<
-        (Has<InteractionDisabled>, &Children, &UiTransform, &ComputedNode),
+        (
+            Has<InteractionDisabled>,
+            &Children,
+            &UiTransform,
+            &ComputedNode,
+            &Class,
+            &mut BackgroundColor
+        ),
         With<MakaraDropdown>
     >,
     mut commands: Commands,
@@ -309,7 +317,7 @@ fn on_dropdown_mouse_over(
     window: Single<Entity, With<Window>>,
 ) {
 
-    if let Ok((is_disabled, children, transform, computed)) = dropdowns.get_mut(over.entity) {
+    if let Ok((is_disabled, children, transform, computed, class, mut bg)) = dropdowns.get_mut(over.entity) {
         let cursor_icon = if is_disabled {
             CursorIcon::System(SystemCursorIcon::Default)
         } else {
@@ -318,10 +326,22 @@ fn on_dropdown_mouse_over(
 
         commands.entity(*window).insert(cursor_icon);
         show_or_hide_tooltip(true, &mut tooltips, Some(computed), Some(transform), children);
+        process_button_built_in_color_class_hover_only(&class, &mut bg);
     }
 
     commands.trigger(MouseOver { entity: over.entity });
     over.propagate(false);
+}
+
+fn on_dropdown_mouse_out(
+    mut out: On<Pointer<Out>>,
+    mut dropdowns: Query<(&mut BackgroundColor, &Class), With<MakaraDropdown>>
+) {
+    if let Ok((mut bg, class)) = dropdowns.get_mut(out.entity) {
+        process_built_in_color(&class, &mut bg.0);
+    }
+
+    out.propagate(false);
 }
 
 fn on_dropdown_click(
