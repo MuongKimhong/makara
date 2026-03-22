@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4ae00f6c.js";
+            window.path_to_searchindex_js = "searchindex-7ae203d1.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d598e1a.js"></script>
@@ -180,12 +180,12 @@
     Build high performance GUI app with power of Game Engine (Bevy).
 </h3>
 
-<p>Makara is a UI Library built on top of Bevy engine.</p>
+<h2 id="what-is-bevy"><a class="header" href="#what-is-bevy">What is Bevy?</a></h2>
 <p><a href="https://bevy.org/">Bevy</a> is a game engine written in Rust, based on
 <a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a> architecture.
-It’s capable of rendering 2D and 3D graphics.</p>
-<p><a href="https://bevy.org/">Bevy</a> also provides full UI system to build GPU accelerated GUI application but because it’s based on
-<a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a>, building UI with Bevy is verbosity.</p>
+It’s capable of rendering 2D and 3D graphics. <a href="https://bevy.org/">Bevy</a> also provides full UI system
+to build GPU accelerated GUI application but because it’s based on <a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a>,
+building UI with Bevy is verbosity.</p>
 <p>Let’s see an example below of creating a simple button with pure Bevy’s UI.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -219,15 +219,19 @@ fn on_button_click(_click: On&lt;Pointer&lt;Click&gt;&gt;) {
 <span class="boring">}</span></code></pre>
 <p>As you can see, it’s really easy to get lost with Bevy’s UI. A real GUI application
 will have more than just a button and complex hierarchy.</p>
-<p><strong>Makara</strong> simplifies this problem but providing <strong>built-in widgets</strong> and high level api with builder pattern
-that most rust devs familiar with, to make it easy to write and maintain the code.</p>
+<h2 id="what-is-makara"><a class="header" href="#what-is-makara">What is Makara?</a></h2>
+<p><strong>Makara</strong> is a UI Library built on top of Bevy engine. It simplifies the verbosity
+by providing <strong>built-in widgets</strong> and high level api with builder
+pattern that most rust devs familiar with, to make it easy to write and maintain the code.</p>
 <p>Let’s see how <strong>Makara</strong> reduce the verbosity.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn setup(mut commands: Commands) {
     commands.spawn(
         button_!(
-            "Click me", background_color: "white", padding: px(10);
+            "Click me", 
+            background_color: "white", 
+            padding: px(10),
             on: on_button_click
         )
     );
@@ -282,7 +286,7 @@ fn setup(mut commands: Commands) {
     commands.spawn(
         root_!(
             align_items: AlignItems::Center,
-            justify_content: JustifyContent::Center;
+            justify_content: JustifyContent::Center,
             
             [ text_!("Hello world", font_size: 20.0) ]
         )
@@ -349,70 +353,62 @@ as children of <strong>root</strong> except <strong>modal</strong>.</p>
 <h3 id="understanding-the-structure-of-widgets-in-makara"><a class="header" href="#understanding-the-structure-of-widgets-in-makara">Understanding the structure of widgets in Makara</a></h3>
 <p>In <strong>Makara</strong>, creating a widget can be done by calling its pre-defined macro.
 A button can be created using <code>button_!</code> and a text can be created using <code>text_!</code>.</p>
-<p>Each macro is splitted into 3 parts with specific orders and the orders are:</p>
+<p>Each widget macro is splitted into 3 parts:</p>
 <ol>
 <li>Properties</li>
 <li>Event handlers</li>
-<li>Children</li>
+<li>Children array</li>
 </ol>
-<p>Let’s have a look at a few examples.</p>
-<p>Button</p>
+<p>For example,</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>button_!(
-    "Click me", 
-    id: "my-btn", 
-    background_color: "blue"; // properties end with ;
+</span>scroll_!( 
+    // properties
+    background_color: "red",
+    border_radius: px(5),
+    margin: px(5),
+    padding: px(10),
     
-    on: |clicked: On&lt;Clicked&gt;| { 
-        println("Button is clicked"); 
-    };
-    on: |mouse_over: On&lt;MouseOver&gt;| {
-        println!("Mouse is over button");
-    }
-);
-
-// We don't need ; at the end of properties because we don't have an event handler.
-button_!("Click me", border_color: "red");
-<span class="boring">}</span></code></pre>
-<p>Column</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>column_!(
-    id: "my-column",
-    align_items: AlignItems::Center; // properties end with ;
+    // event handlers (if there's any)
+    on: |_scrolling: On&lt;Scrolling&gt;| {},
+    on: |_built: On&lt;WidgetBuilt&gt;| {},
     
+    // children array
     [
-        text_!("Hello world"), 
-        text_!("Hello again")
-    ]
-);
-
-// We don't need ; at the end of properties because we don't have any children.
-column_!(id: "my-column", align_items: AlignItems::Center);
-<span class="boring">}</span></code></pre>
-<p>Scroll</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>scroll_!(
-    align_items: AlignItems::Center;  // properties end with ;
-    
-    on: |scrolling; On&lt;Scrolling&gt;| {
-        println!("scrolling");
-    }; // event handler ends with ;
-    
-    [
-        text_!("Hello world"),
-        text_!("Hello mom"),
-        text_!("Hello friends")
+        button_!("Click me", background_color: "blue"),
+        text_!("This is some text")
     ]
 );
 <span class="boring">}</span></code></pre>
-<h3 id="the-rules-for-using-widget-macro"><a class="header" href="#the-rules-for-using-widget-macro">The rules for using widget macro</a></h3>
-<ol>
-<li>Always put <code>;</code> after properties if there are event handlers or children <code>[]</code>.</li>
-<li>Always put <code>;</code> after an event handler if there are more event handlers or children <code>[]</code>.</li>
-</ol>
+<p>For event handlers, you can also create functions for it to make it cleaner.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scroll_!( 
+    // properties
+    background_color: "red",
+    border_radius: px(5),
+    margin: px(5),
+    padding: px(10),
+    
+    // event handlers (if there's any)
+    on: handle_scrolling,
+    on: handle_widget_built,
+    
+    // children array
+    [
+        button_!("Click me", background_color: "blue"),
+        text_!("This is some text")
+    ]
+);
+
+fn handle_scrolling(_scrolling: On&lt;Scrolling&gt;) {
+    // do something
+}
+
+fn handle_widget_built(_built: On&lt;WidgetBuilt&gt;) {
+    // do something
+}
+<span class="boring">}</span></code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="widgets"><a class="header" href="#widgets">Widgets</a></h1>
 <p><strong>Makara</strong> provides a comprehensive set of built-in widgets for building modern GUI applications. Each widget comes with styling options, event handling capabilities, and built-in class support for rapid development.</p>
@@ -433,7 +429,8 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 </span>commands.spawn(
     root_!(
         background_color: Color::srgb(0.1, 0.1, 0.2),
-        class: "justify-center align-center p-4";
+        class: "justify-center align-center p-4",
+        
         [
             column_!([
                 text_!("Welcome to Makara!"),
@@ -451,7 +448,8 @@ column_!(id: "my-column", align_items: AlignItems::Center);
         width: percent(100),
         height: percent(100),
         id: "main-container",
-        class: "justify-between align-stretch";
+        class: "justify-between align-stretch",
+        
         [/* children */]
     )
 );
@@ -472,7 +470,8 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 </span><span class="boring">fn main() {
 </span>column_!(
     class: "justify-center align-center p-4 m-2",
-    background_color: Color::WHITE;
+    background_color: "white",
+    
     [
         text_!("Centered Column", font_size: 24.0),
         button_!("Action Button", class: "is-primary mt-3"),
@@ -484,9 +483,10 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>column_!(
-    on: |built: On&lt;WidgetBuilt&gt;| {
+    on: |_built: On&lt;WidgetBuilt&gt;| {
         println!("Column widget built!");
-    };
+    },
+    
     [/* children */]
 )
 <span class="boring">}</span></code></pre>
@@ -506,11 +506,13 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 </span><span class="boring">fn main() {
 </span>row_!(
     class: "justify-between align-center p-3",
-    background_color: Color::srgb(0.2, 0.3, 0.8);
+    background_color: Color::srgb(0.2, 0.3, 0.8),
+    
     [
         text_!("MyApp", font_size: 20.0, color: Color::WHITE),
         row_!(
-            class: "justify-end align-center";
+            class: "justify-end align-center",
+            
             [
                 button_!("Home", class: "mr-2"),
                 button_!("About", class: "mr-2"),
@@ -539,10 +541,12 @@ column_!(id: "my-column", align_items: AlignItems::Center);
     width: px(300),
     height: px(200),
     class: "p-3",
-    background_color: Color::srgb(0.95, 0.95, 0.95);
+    background_color: Color::srgb(0.95, 0.95, 0.95),
+    
     [
         column_!(
-            class: "justify-start align-stretch";
+            class: "justify-start align-stretch",
+            
             [
                 text_!("Scrollable Content", font_size: 18.0, class: "mb-2"),
                 text_!("This is line 1"),
@@ -559,7 +563,8 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 </span>scroll_!(
     on: |scrolling: On&lt;Scrolling&gt;| {
         println!("User is scrolling!");
-    };
+    },
+    
     [/* scrollable content */]
 )
 <span class="boring">}</span></code></pre>
@@ -583,10 +588,10 @@ column_!(id: "my-column", align_items: AlignItems::Center);
     "Save Data";
     on: |clicked: On&lt;Clicked&gt;| {
         println!("Save button clicked!");
-    };
+    },
     on: |over: On&lt;MouseOver&gt;| {
         println!("Mouse over save button");
-    };
+    },
     on: |out: On&lt;MouseOut&gt;| {
         println!("Mouse left save button");  
     }
@@ -598,10 +603,10 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 </span>button_!(
     "Delete Item",
     id: "delete-btn",
-    class: "is-danger p-2 m-1";
+    class: "is-danger p-2 m-1",
     on: |clicked: On&lt;Clicked&gt;| {
         // Handle delete action
-    };
+    },
     on: |built: On&lt;WidgetBuilt&gt;| {
         println!("Delete button ready!");
     }
@@ -630,7 +635,7 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 </span>text_input_!(
     "Search...";
     on: |change: On&lt;Change&lt;String&gt;&gt;| {
-        println!("Search text: {}", change.0);
+        println!("Search text: {}", change.data);
     };
     on: |clicked: On&lt;Clicked&gt;| {
         println!("Input field focused");
@@ -669,10 +674,10 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 </span>checkbox_!(
     "Subscribe to newsletter";
     on: |active: On&lt;Active&lt;String&gt;&gt;| {
-        println!("Checkbox activated: {}", active.0);
+        println!("Checkbox activated: {}", active.data);
     };
     on: |inactive: On&lt;Inactive&lt;String&gt;&gt;| {
-        println!("Checkbox deactivated: {}", inactive.0);
+        println!("Checkbox deactivated: {}", inactive.data);
     }
 )
 <span class="boring">}</span></code></pre>
@@ -707,7 +712,7 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 </span>radio_group_!(
     class: "p-3";
     on: |change: On&lt;Change&lt;String&gt;&gt;| {
-        println!("Selected payment method: {}", change.0);
+        println!("Selected payment method: {}", change.data);
     };
     [
         radio_!("Credit Card", class: "is-primary mb-2"),
@@ -747,7 +752,7 @@ column_!(id: "my-column", align_items: AlignItems::Center);
     class: "is-primary p-2",
     width: px(250);
     on: |change: On&lt;Change&lt;String&gt;&gt;| {
-        println!("Selected: {}", change.0);
+        println!("Selected: {}", change.data);
     };
     on: |active: On&lt;Active&gt;| {
         println!("Dropdown opened");
@@ -820,7 +825,7 @@ column_!(id: "my-column", align_items: AlignItems::Center);
             max: 100.0,
             class: "is-primary p-2";
             on: |change: On&lt;Change&lt;f32&gt;&gt;| {
-                println!("Volume: {:.1}%", change.0);
+                println!("Volume: {:.1}%", change.data);
             }
         )
     ]
@@ -981,7 +986,7 @@ column_!(id: "my-column", align_items: AlignItems::Center);
 </span>progress_bar_!(
     class: "is-success";
     on: |change: On&lt;Change&lt;f32&gt;&gt;| {
-        println!("Progress: {:.1}%", change.0 * 100.0);
+        println!("Progress: {:.1}%", change.data * 100.0);
     }
 )
 <span class="boring">}</span></code></pre>
@@ -1575,7 +1580,7 @@ will be set to default automatically.</p>
             button_!(
                 "Go to about us view";
                 on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
-                    router.nagivate("about-us", ());
+                    navigate_!(router, "about-us");
                 }
             )
         ])
@@ -1589,7 +1594,7 @@ fn setup_about_us_view(mut commands: Commands) {
             button_!(
                 "Go to home view";
                 on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
-                    router.nagivate("home", ());
+                    navigate_!(router, "home");
                 }
             )
         ])
@@ -1609,13 +1614,14 @@ on product id or name.</p>
             text_!("This is home view"),
             button_!(
                 "See product";
-                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
-                    router.nagivate(
-                        "product-detail", 
+                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| { 
+                    navigate_!(
+                        router,
+                        "product-detail",
                         Param::new()
                             .value("id", "1234") // just random product id
                             .value("name", "Iphone 17 256GB") // product name
-                    );
+                    )
                 }
             )
         ])

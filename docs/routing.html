@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4ae00f6c.js";
+            window.path_to_searchindex_js = "searchindex-7ae203d1.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d598e1a.js"></script>
@@ -241,7 +241,7 @@ will be set to default automatically.</p>
             button_!(
                 "Go to about us view";
                 on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
-                    router.nagivate("about-us", ());
+                    navigate_!(router, "about-us");
                 }
             )
         ])
@@ -255,7 +255,7 @@ fn setup_about_us_view(mut commands: Commands) {
             button_!(
                 "Go to home view";
                 on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
-                    router.nagivate("home", ());
+                    navigate_!(router, "home");
                 }
             )
         ])
@@ -275,13 +275,14 @@ on product id or name.</p>
             text_!("This is home view"),
             button_!(
                 "See product";
-                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| {
-                    router.nagivate(
-                        "product-detail", 
+                on: |_clicked: On&lt;Clicked&gt;, mut router: ResMut&lt;Router&gt;| { 
+                    navigate_!(
+                        router,
+                        "product-detail",
                         Param::new()
                             .value("id", "1234") // just random product id
                             .value("name", "Iphone 17 256GB") // product name
-                    );
+                    )
                 }
             )
         ])

@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4ae00f6c.js";
+            window.path_to_searchindex_js = "searchindex-7ae203d1.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d598e1a.js"></script>
@@ -178,12 +178,12 @@
     Build high performance GUI app with power of Game Engine (Bevy).
 </h3>
 
-<p>Makara is a UI Library built on top of Bevy engine.</p>
+<h2 id="what-is-bevy"><a class="header" href="#what-is-bevy">What is Bevy?</a></h2>
 <p><a href="https://bevy.org/">Bevy</a> is a game engine written in Rust, based on
 <a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a> architecture.
-It’s capable of rendering 2D and 3D graphics.</p>
-<p><a href="https://bevy.org/">Bevy</a> also provides full UI system to build GPU accelerated GUI application but because it’s based on
-<a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a>, building UI with Bevy is verbosity.</p>
+It’s capable of rendering 2D and 3D graphics. <a href="https://bevy.org/">Bevy</a> also provides full UI system
+to build GPU accelerated GUI application but because it’s based on <a href="https://bevy.org/learn/quick-start/getting-started/ecs/">ECS</a>,
+building UI with Bevy is verbosity.</p>
 <p>Let’s see an example below of creating a simple button with pure Bevy’s UI.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -217,15 +217,19 @@ fn on_button_click(_click: On&lt;Pointer&lt;Click&gt;&gt;) {
 <span class="boring">}</span></code></pre>
 <p>As you can see, it’s really easy to get lost with Bevy’s UI. A real GUI application
 will have more than just a button and complex hierarchy.</p>
-<p><strong>Makara</strong> simplifies this problem but providing <strong>built-in widgets</strong> and high level api with builder pattern
-that most rust devs familiar with, to make it easy to write and maintain the code.</p>
+<h2 id="what-is-makara"><a class="header" href="#what-is-makara">What is Makara?</a></h2>
+<p><strong>Makara</strong> is a UI Library built on top of Bevy engine. It simplifies the verbosity
+by providing <strong>built-in widgets</strong> and high level api with builder
+pattern that most rust devs familiar with, to make it easy to write and maintain the code.</p>
 <p>Let’s see how <strong>Makara</strong> reduce the verbosity.</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn setup(mut commands: Commands) {
     commands.spawn(
         button_!(
-            "Click me", background_color: "white", padding: px(10);
+            "Click me", 
+            background_color: "white", 
+            padding: px(10),
             on: on_button_click
         )
     );

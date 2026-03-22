@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4ae00f6c.js";
+            window.path_to_searchindex_js = "searchindex-7ae203d1.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-8d598e1a.js"></script>
@@ -193,7 +193,8 @@
 </span>commands.spawn(
     root_!(
         background_color: Color::srgb(0.1, 0.1, 0.2),
-        class: "justify-center align-center p-4";
+        class: "justify-center align-center p-4",
+        
         [
             column_!([
                 text_!("Welcome to Makara!"),
@@ -211,7 +212,8 @@
         width: percent(100),
         height: percent(100),
         id: "main-container",
-        class: "justify-between align-stretch";
+        class: "justify-between align-stretch",
+        
         [/* children */]
     )
 );
@@ -232,7 +234,8 @@
 </span><span class="boring">fn main() {
 </span>column_!(
     class: "justify-center align-center p-4 m-2",
-    background_color: Color::WHITE;
+    background_color: "white",
+    
     [
         text_!("Centered Column", font_size: 24.0),
         button_!("Action Button", class: "is-primary mt-3"),
@@ -244,9 +247,10 @@
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>column_!(
-    on: |built: On&lt;WidgetBuilt&gt;| {
+    on: |_built: On&lt;WidgetBuilt&gt;| {
         println!("Column widget built!");
-    };
+    },
+    
     [/* children */]
 )
 <span class="boring">}</span></code></pre>
@@ -266,11 +270,13 @@
 </span><span class="boring">fn main() {
 </span>row_!(
     class: "justify-between align-center p-3",
-    background_color: Color::srgb(0.2, 0.3, 0.8);
+    background_color: Color::srgb(0.2, 0.3, 0.8),
+    
     [
         text_!("MyApp", font_size: 20.0, color: Color::WHITE),
         row_!(
-            class: "justify-end align-center";
+            class: "justify-end align-center",
+            
             [
                 button_!("Home", class: "mr-2"),
                 button_!("About", class: "mr-2"),
@@ -299,10 +305,12 @@
     width: px(300),
     height: px(200),
     class: "p-3",
-    background_color: Color::srgb(0.95, 0.95, 0.95);
+    background_color: Color::srgb(0.95, 0.95, 0.95),
+    
     [
         column_!(
-            class: "justify-start align-stretch";
+            class: "justify-start align-stretch",
+            
             [
                 text_!("Scrollable Content", font_size: 18.0, class: "mb-2"),
                 text_!("This is line 1"),
@@ -319,7 +327,8 @@
 </span>scroll_!(
     on: |scrolling: On&lt;Scrolling&gt;| {
         println!("User is scrolling!");
-    };
+    },
+    
     [/* scrollable content */]
 )
 <span class="boring">}</span></code></pre>
@@ -343,10 +352,10 @@
     "Save Data";
     on: |clicked: On&lt;Clicked&gt;| {
         println!("Save button clicked!");
-    };
+    },
     on: |over: On&lt;MouseOver&gt;| {
         println!("Mouse over save button");
-    };
+    },
     on: |out: On&lt;MouseOut&gt;| {
         println!("Mouse left save button");  
     }
@@ -358,10 +367,10 @@
 </span>button_!(
     "Delete Item",
     id: "delete-btn",
-    class: "is-danger p-2 m-1";
+    class: "is-danger p-2 m-1",
     on: |clicked: On&lt;Clicked&gt;| {
         // Handle delete action
-    };
+    },
     on: |built: On&lt;WidgetBuilt&gt;| {
         println!("Delete button ready!");
     }
@@ -390,7 +399,7 @@
 </span>text_input_!(
     "Search...";
     on: |change: On&lt;Change&lt;String&gt;&gt;| {
-        println!("Search text: {}", change.0);
+        println!("Search text: {}", change.data);
     };
     on: |clicked: On&lt;Clicked&gt;| {
         println!("Input field focused");
@@ -429,10 +438,10 @@
 </span>checkbox_!(
     "Subscribe to newsletter";
     on: |active: On&lt;Active&lt;String&gt;&gt;| {
-        println!("Checkbox activated: {}", active.0);
+        println!("Checkbox activated: {}", active.data);
     };
     on: |inactive: On&lt;Inactive&lt;String&gt;&gt;| {
-        println!("Checkbox deactivated: {}", inactive.0);
+        println!("Checkbox deactivated: {}", inactive.data);
     }
 )
 <span class="boring">}</span></code></pre>
@@ -467,7 +476,7 @@
 </span>radio_group_!(
     class: "p-3";
     on: |change: On&lt;Change&lt;String&gt;&gt;| {
-        println!("Selected payment method: {}", change.0);
+        println!("Selected payment method: {}", change.data);
     };
     [
         radio_!("Credit Card", class: "is-primary mb-2"),
@@ -507,7 +516,7 @@
     class: "is-primary p-2",
     width: px(250);
     on: |change: On&lt;Change&lt;String&gt;&gt;| {
-        println!("Selected: {}", change.0);
+        println!("Selected: {}", change.data);
     };
     on: |active: On&lt;Active&gt;| {
         println!("Dropdown opened");
@@ -580,7 +589,7 @@
             max: 100.0,
             class: "is-primary p-2";
             on: |change: On&lt;Change&lt;f32&gt;&gt;| {
-                println!("Volume: {:.1}%", change.0);
+                println!("Volume: {:.1}%", change.data);
             }
         )
     ]
@@ -741,7 +750,7 @@
 </span>progress_bar_!(
     class: "is-success";
     on: |change: On&lt;Change&lt;f32&gt;&gt;| {
-        println!("Progress: {:.1}%", change.0 * 100.0);
+        println!("Progress: {:.1}%", change.data * 100.0);
     }
 )
 <span class="boring">}</span></code></pre>
