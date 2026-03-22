@@ -81,7 +81,9 @@ fn form_container() -> impl Bundle {
                 };
 
                 [ radio_!("Male"), radio_!("Female") ]
-            )
+            ),
+
+            file_picker().build(),
         ]
     )
 }

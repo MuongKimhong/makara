@@ -101,6 +101,7 @@ pub mod prelude {
             app.insert_resource(ImageHandleMap::default());
             app.insert_resource(CustomStyle::default());
             app.insert_resource(Router::default());
+            app.insert_resource(FilePickerState::default());
             app.insert_resource(CustomFont {
                 font_path: self.font_path.clone(),
                 font_handle: None
@@ -259,7 +260,9 @@ pub mod prelude {
                 detect_bar_class_change_for_built_in_color,
                 detect_select_class_change_for_built_in,
                 detect_slider_class_change_for_built_in,
-                detect_text_input_class_change_for_built_in
+                detect_text_input_class_change_for_built_in,
+                handle_file_picker_result_received_system,
+                detect_file_picker_built
             ));
             app.add_systems(
                 Update,

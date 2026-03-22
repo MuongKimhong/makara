@@ -19,6 +19,7 @@ pub mod text_input;
 pub mod text_edit;
 pub mod scroll;
 pub mod image;
+pub mod file_picker;
 
 pub use button::*;
 pub use text::*;
@@ -39,6 +40,7 @@ pub use text_input::*;
 pub use text_edit::*;
 pub use scroll::*;
 pub use image::*;
+pub use file_picker::*;
 
 use bevy::prelude::*;
 use bevy::window::{CursorIcon, SystemCursorIcon};
