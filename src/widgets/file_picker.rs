@@ -47,6 +47,12 @@ pub struct MainFilePickerEntity(pub Entity);
 #[derive(Component)]
 pub struct MakaraFilePickerDisplayText;
 
+#[derive(Component)]
+pub struct FilePickerDisplayTextWrapper;
+
+#[derive(Component, Default)]
+pub struct FilePickerDisplayTextWrapperWidthSet(pub bool);
+
 /// Bundle for creating file picker.
 pub struct FilePickerBundle {
     pub id_class: IdAndClass,
@@ -120,7 +126,16 @@ impl Widget for FilePickerBundle {
             self.id_class,
             self.style,
             children![
-                (self.text_bundle, MakaraFilePickerDisplayText, MakaraText),
+                (
+                    Node {
+                        overflow: Overflow::clip_x(),
+                        height: auto(),
+                        ..default()
+                    },
+                    FilePickerDisplayTextWrapper,
+                    FilePickerDisplayTextWrapperWidthSet::default(),
+                    children![(self.text_bundle, MakaraFilePickerDisplayText, MakaraText)]
+                ),
                 (
                     self.button_bundle.build(),
                     MakaraFilePickerButton,
@@ -148,10 +163,25 @@ pub fn file_picker() -> FilePickerBundle {
     FilePickerBundle::default()
 }
 
+pub(crate) fn detect_display_text_wrapper_built(
+    mut display_text_wrapper: Query<
+        (&mut Node, &mut FilePickerDisplayTextWrapperWidthSet, &ComputedNode),
+        (With<FilePickerDisplayTextWrapper>, Changed<ComputedNode>)
+    >
+) {
+    for (mut node, mut width_set, computed_node) in display_text_wrapper.iter_mut() {
+        if computed_node.size.x > 0.0 && !width_set.0 {
+            node.max_width = px(computed_node.size.x * computed_node.inverse_scale_factor);
+            width_set.0 = true;
+        }
+    }
+}
+
 pub(crate) fn detect_file_picker_built(
     mut commands: Commands,
     pickers: Query<Entity, Added<MakaraFilePicker>>,
-    picker_children: Query<(Entity, &Children), Added<Children>>
+    picker_children: Query<(Entity, &Children), (Added<Children>, With<MakaraFilePicker>)>,
+    display_text_wrapper: Query<&Children, With<FilePickerDisplayTextWrapper>>
 ) {
     for entity in pickers.iter() {
         commands.trigger(WidgetBuilt {
@@ -161,6 +191,12 @@ pub(crate) fn detect_file_picker_built(
 
     for (entity, children) in picker_children.iter() {
         for child in children {
+            if let Ok(wrapper_children) = display_text_wrapper.get(*child) {
+                for wrapper_child in wrapper_children {
+                    commands.entity(*wrapper_child).insert(MainFilePickerEntity(entity));
+                }
+            }
+
             commands.entity(*child).insert(MainFilePickerEntity(entity));
         }
     }

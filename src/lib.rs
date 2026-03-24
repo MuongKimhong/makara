@@ -262,7 +262,8 @@ pub mod prelude {
                 detect_slider_class_change_for_built_in,
                 detect_text_input_class_change_for_built_in,
                 handle_file_picker_result_received_system,
-                detect_file_picker_built
+                detect_file_picker_built,
+                detect_display_text_wrapper_built
             ));
             app.add_systems(
                 Update,
