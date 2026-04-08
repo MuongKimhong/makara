@@ -347,6 +347,10 @@ impl Widget for SelectBundle {
             &self.id_class.class,
             &mut self.arrow_text_bundle.text_style.color.0
         );
+        process_placeholder_text_built_in_color_class(
+            &self.id_class.class,
+            &mut self.text_bundle.text_style.color.0
+        );
 
         (
             self.id_class,
@@ -408,6 +412,8 @@ impl SetIdAndClass for SelectBundle {
 pub fn select(placeholder: &str, choices: &[&str]) -> SelectBundle {
     let mut bundle = SelectBundle::default();
     bundle.text_bundle.text.0 = format!("{placeholder}");
+    bundle.text_bundle.text_style.color.0 = LIGHT_PLACEHOLDER_COLOR;
+    bundle.arrow_text_bundle.text_style.color.0 = LIGHT_PLACEHOLDER_COLOR;
     bundle.choices.0 = choices.iter().map(|s| s.to_string()).collect();
     bundle.placeholder.0 = placeholder.to_string();
     bundle
@@ -627,7 +633,7 @@ pub(crate) fn detect_select_items_added_and_overlay_resized(
 fn on_select_choice_click(
     mut click: On<Pointer<Click>>,
     mut select: Query<(&mut MakaraSelectState, &mut Node, &MakaraSelectPlaceholder, &ComputedNode, &Children)>,
-    mut text: Query<&mut Text, (With<MakaraText>, Without<SelectArrow>)>,
+    mut text: Query<(&mut Text, &mut TextColor), (With<MakaraText>, Without<SelectArrow>)>,
     mut commands: Commands,
     pl_node: Query<&SelectPlaceholderTextEntity, With<SelectPlaceholderNodeResized>>,
     select_choice: Query<(&MakaraSelectChoice, &MakaraSelectEntity), With<MakaraSelectChoice>>,
@@ -644,11 +650,13 @@ fn on_select_choice_click(
 
             for select_child in select_children {
                 if let Ok(pl_text_entity) = pl_node.get(*select_child) {
-                    if let Ok(mut text) = text.get_mut(pl_text_entity.0) {
+                    if let Ok((mut text, mut text_color)) = text.get_mut(pl_text_entity.0) {
                         if choice.0 == "-/-" {
                             text.0 = format!("{}", pl.0);
+                            text_color.0 = LIGHT_PLACEHOLDER_COLOR;
                         } else {
                             text.0 = format!("{}", choice.0);
+                            text_color.0 = LIGHT_THEME_TEXT_COLOR;
                         }
                         node.width = px(select_computed.size.x * select_computed.inverse_scale_factor());
                         break;
